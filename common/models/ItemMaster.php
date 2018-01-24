@@ -73,5 +73,9 @@ class ItemMaster extends \yii\db\ActiveRecord {
             'DOU' => 'Dou',
         ];
     }
+    
+     public function getName() {
+                return $this->item_name . " (" . $this->item_code . ") ";
+        }
 
 }

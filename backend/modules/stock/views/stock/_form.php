@@ -20,7 +20,7 @@ use kartik\date\DatePicker;
     <div class="row">
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
             <?php $items = ItemMaster::find()->where(['status' => 1])->all() ?>
-            <?= $form->field($model, 'item_id')->dropDownList(ArrayHelper::map($items, 'id', 'item_name'), ['prompt' => '--Select--']) ?>
+            <?= $form->field($model, 'item_id')->dropDownList(ArrayHelper::map($items, 'id', 'name'), ['prompt' => '--Select--']) ?>
 
         </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'item_code')->textInput(['maxlength' => true, 'readonly' => true]) ?>
 

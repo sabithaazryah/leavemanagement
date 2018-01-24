@@ -55,5 +55,10 @@ class Locations extends \yii\db\ActiveRecord {
             'DOU' => 'Dou',
         ];
     }
+    
+    
+        public function getLocation() {
+                return $this->location_name . " (" . $this->location_code . ") ";
+        }
 
 }
