@@ -121,6 +121,10 @@ AppAsset::register($this);
                                     <li>
                                         <?= Html::a('Opening Stock', ['/stock/stock/index'], ['class' => 'title']) ?>
                                     </li>
+                                    <li>
+                                        <?= Html::a('Stock Adjustment', ['/stock/stock-adjustment/index'], ['class' => 'title']) ?>
+                                    </li>
+                                    
                                 </ul>
                             </li>
                             <?php
@@ -354,5 +358,14 @@ AppAsset::register($this);
         <script src="<?= Yii::$app->homeUrl; ?>js/xenon-custom.js"></script>
         <?php $this->endBody() ?>
     </body>
+    
+    <!------------------------------------------------------ popup---------------------------------------------------->
+<div class="modal fade" id="modal-6">
+        <div class="modal-dialog" id="modal-pop-up" style="width:60%">
+
+        </div>
+</div>
+    
+    
 </html>
 <?php $this->endPage() ?>

@@ -41,12 +41,31 @@ $(function () {
               $("#stock-closing_stock").val(total_weight);
         });
         
-        $(document).on('keyup', '#stock-pieces', function () {
-              var total_weight=$(this).val();
-              $("#stock-stock").val(total_weight);
-              $("#stock-available_stock").val(total_weight);
-              $("#stock-closing_stock").val(total_weight);
-        });
+  $(document).on('click', '.select-stock-item', function () {
+            var id = 1;
+                $.ajax({
+                        type: 'POST',
+                        cache: false,
+                        data: {id: id},
+                        url: homeUrl + 'stock/stock-adjustment/item-details',
+                        success: function (data) {
+                                $("#modal-pop-up").html(data);
+                                $('#modal-6').modal('show', {backdrop: 'static'});
+                        }
+                });
+            });
+            
+            $(document).on('keyup', '#stockadjustment-adjust_weight', function () {
+                var adjust_weight=$(this).val();  
+                var stock_weight=$('#stockadjustment-total_weight').val();
+                
+                if(parseFloat(adjust_weight)>parseFloat(stock_weight)){
+                    $('#stockadjustment-stock_type').val('Stock In');
+                } else{
+                    $('#stockadjustment-stock_type').val('Stock Out');
+                }
+            });
+            
 
 
 });
