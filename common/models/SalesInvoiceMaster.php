@@ -46,44 +46,42 @@ use Yii;
  * @property string $DOC
  * @property string $DOU
  */
-class SalesInvoiceMaster extends \yii\db\ActiveRecord
-{
+class SalesInvoiceMaster extends \yii\db\ActiveRecord {
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'sales_invoice_master';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['sales_invoice_date', 'po_date', 'due_date', 'DOC', 'DOU'], 'safe'],
-            [['order_type', 'busines_partner_code', 'salesman', 'terms', 'payment_status', 'receipt_id', 'status', 'CB', 'UB'], 'integer'],
-            [['general_terms', 'delivery_address'], 'string'],
-            [['amount', 'tax_amount', 'order_amount', 'discount_amount', 'cash_amount', 'card_amount', 'round_of_amount', 'amount_payed', 'due_amount', 'goods_total', 'service_total'], 'number'],
-            [['sales_invoice_number', 'ship_to_adress', 'reference', 'error_message'], 'string', 'max' => 50],
-            [['payment_terms', 'delivery_terms', 'contact_number'], 'string', 'max' => 30],
-            [['po_no', 'email', 'receipt_no'], 'string', 'max' => 100],
-            [['sales_invoice_number'], 'unique'],
+                [['sales_invoice_number', 'ship_to_adress', 'delivery_address', 'busines_partner_code', 'contact_number', 'email'], 'required'],
+                [['sales_invoice_date', 'po_date', 'due_date', 'DOC', 'DOU'], 'safe'],
+                [['order_type', 'busines_partner_code', 'salesman', 'terms', 'payment_status', 'receipt_id', 'status', 'CB', 'UB'], 'integer'],
+                [['general_terms', 'delivery_address'], 'string'],
+                [['amount', 'tax_amount', 'order_amount', 'discount_amount', 'cash_amount', 'card_amount', 'round_of_amount', 'amount_payed', 'due_amount', 'goods_total', 'service_total'], 'number'],
+                [['sales_invoice_number', 'ship_to_adress', 'reference', 'error_message'], 'string', 'max' => 50],
+                [['payment_terms', 'delivery_terms', 'contact_number'], 'string', 'max' => 30],
+                [['po_no', 'email', 'receipt_no'], 'string', 'max' => 100],
+                [['sales_invoice_number'], 'unique'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
             'sales_invoice_number' => 'Sales Invoice Number',
             'sales_invoice_date' => 'Sales Invoice Date',
             'order_type' => 'Order Type',
-            'busines_partner_code' => 'Busines Partner Code',
+            'busines_partner_code' => 'Customer',
             'salesman' => 'Salesman',
             'payment_terms' => 'Payment Terms',
             'delivery_terms' => 'Delivery Terms',
@@ -119,4 +117,5 @@ class SalesInvoiceMaster extends \yii\db\ActiveRecord
             'DOU' => 'Dou',
         ];
     }
+
 }

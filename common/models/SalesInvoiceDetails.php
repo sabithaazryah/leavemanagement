@@ -58,13 +58,13 @@ class SalesInvoiceDetails extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['sales_invoice_master_id'], 'required'],
-            [['sales_invoice_master_id', 'base_unit', 'qty', 'tax_id', 'status', 'CB', 'UB', 'busines_partner_code', 'item_id', 'discount_type', 'tax_type'], 'integer'],
-            [['sales_invoice_date', 'DOC', 'DOU', 'hsn', 'CB', 'UB', 'comments'], 'safe'],
-            [['rate', 'amount', 'discount_value', 'net_amount', 'tax_amount', 'line_total', 'discount_amount'], 'number'],
-            [['sales_invoice_number', 'reference', 'error_message'], 'string', 'max' => 50],
-            [['item_code', 'item_name', 'tax_percentage'], 'string', 'max' => 30],
-            [['sales_invoice_master_id'], 'exist', 'skipOnError' => true, 'targetClass' => SalesInvoiceMaster::className(), 'targetAttribute' => ['sales_invoice_master_id' => 'id']],
+                [['sales_invoice_master_id'], 'required'],
+                [['sales_invoice_master_id', 'base_unit', 'qty', 'tax_id', 'status', 'CB', 'UB', 'busines_partner_code', 'item_id', 'discount_type', 'tax_type', 'type'], 'integer'],
+                [['sales_invoice_date', 'DOC', 'DOU', 'hsn', 'CB', 'UB', 'comments'], 'safe'],
+                [['rate', 'amount', 'discount_value', 'net_amount', 'tax_amount', 'line_total', 'discount_amount'], 'number'],
+                [['sales_invoice_number', 'reference', 'error_message'], 'string', 'max' => 50],
+                [['item_code', 'item_name', 'tax_percentage'], 'string', 'max' => 30],
+                [['sales_invoice_master_id'], 'exist', 'skipOnError' => true, 'targetClass' => SalesInvoiceMaster::className(), 'targetAttribute' => ['sales_invoice_master_id' => 'id']],
         ];
     }
 

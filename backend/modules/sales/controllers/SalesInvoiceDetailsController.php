@@ -11,12 +11,6 @@ use yii\filters\VerbFilter;
 use common\models\SalesInvoiceMaster;
 use common\models\SalesInvoiceMasterSearch;
 use common\models\BusinessPartner;
-use common\models\SalesInvoiceTemp;
-use common\models\PaymentMst;
-use common\models\PaymentDtl;
-use common\models\Notifications;
-use common\models\StockRegister;
-use common\models\StockView;
 
 /**
  * SalesInvoiceDetailsController implements the CRUD actions for SalesInvoiceDetails model.
@@ -141,63 +135,47 @@ class SalesInvoiceDetailsController extends Controller {
     public function actionAdd($estimate = NULL) {
         $model = new SalesInvoiceDetails();
         $model_sales_master = new SalesInvoiceMaster();
-        $report_id = '';
-        if ($model->load(Yii::$app->request->post())) {
-            $payment_type = 0;
+        if ($model_sales_master->load(Yii::$app->request->post())) {
             $data = Yii::$app->request->post();
-            if ($data['order_sub_total'] > 0) {
-                $today = strtotime(date('Y-m-d'));
-                $due_date = strtotime($data['due_date']);
-                $arr = $this->SaveSalesDetails($model_sales_master, $data);
-                $model_sales_master = $this->SaveSalesMaster($model_sales_master, $data, $arr);
-                $transaction = Yii::$app->db->beginTransaction();
+            $model_sales_master = $this->SaveSalesMaster($model_sales_master, $data);
+            $transaction = Yii::$app->db->beginTransaction();
 
-                try {
-                    if ($model_sales_master->save() && $this->AddSalesDetails($arr, $model_sales_master)) {
-                        $transaction->commit();
-                    } else {
-                        $transaction->rollBack();
-                    }
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                    Yii::$app->session->setFlash('error', "There was a problem creating new invoice. Please try again.");
-                }
-                if (isset($_POST['save-print'])) {
-                    $report_id = $model_sales_master->id;
+            try {
+                if ($model_sales_master->save()) {
+                    $transaction->commit();
                 } else {
-                    Yii::$app->session->setFlash('success', "New invoice create successfully.");
-                    $report_id = '';
+                    $transaction->rollBack();
                 }
-                return $this->redirect(['add']);
+            } catch (Exception $e) {
+                $transaction->rollBack();
+                Yii::$app->session->setFlash('error', "There was a problem creating new invoice. Please try again.");
             }
+            return $this->redirect(['add']);
         }
         return $this->render('add', [
                     'model' => $model,
                     'model_sales_master' => $model_sales_master,
-                    'report_id' => $report_id,
-                    'estimate' => $estimate,
         ]);
     }
 
-    public function SaveSalesMaster($model_sales_master, $data, $arr) {
-        $model_sales_master->sales_invoice_number = $data['SalesInvoiceMaster']['sales_invoice_number'];
-        $model_sales_master->sales_invoice_date = date("Y-m-d H:i:s", strtotime(str_replace('/', '-', $data['sales_invoice_date'])));
-        $model_sales_master->busines_partner_code = $data['SalesInvoiceDetails']['busines_partner_code'];
+    public function SaveSalesMaster($model_sales_master, $data) {
+        $model_sales_master->sales_invoice_date = date("Y-m-d H:i:s");
+        $model_sales_master->po_date = date("Y-m-d", strtotime(str_replace('/', '-', $model_sales_master->po_date)));
         $model_sales_master->salesman = $data['SalesInvoiceMaster']['salesman'];
         $model_sales_master->reference = $data['SalesInvoiceMaster']['reference'];
         $model_sales_master->general_terms = $data['SalesInvoiceMaster']['general_terms'];
-        $model_sales_master->amount = $data['amount_without_tax'];
-        $model_sales_master->tax_amount = $data['tax_sub_total'];
-        $model_sales_master->order_amount = $data['order_sub_total'];
-        $model_sales_master->cash_amount = $data['cash_amount'];
-        $model_sales_master->card_amount = $data['card_amount'];
-        $model_sales_master->round_of_amount = $data['round_of'];
-        $model_sales_master->discount_amount = $data['discount_sub_total'];
-        $model_sales_master->amount_payed = $data['payed_amount'];
-        $model_sales_master->due_amount = $data['balance'];
-        $goods_service = $this->GetGoodsServiceTotal($arr);
-        $model_sales_master->goods_total = $goods_service['goods-total'];
-        $model_sales_master->due_date = date("Y-m-d", strtotime($data['due_date']));
+        if ($data['order_sub_total'] > 0) {
+            $model_sales_master->amount = $data['amount_without_tax'];
+            $model_sales_master->tax_amount = $data['tax_sub_total'];
+            $model_sales_master->order_amount = $data['order_sub_total'];
+            $model_sales_master->cash_amount = $data['cash_amount'];
+            $model_sales_master->card_amount = $data['card_amount'];
+            $model_sales_master->round_of_amount = $data['round_of'];
+            $model_sales_master->discount_amount = $data['discount_sub_total'];
+            $model_sales_master->amount_payed = $data['payed_amount'];
+            $model_sales_master->due_amount = $data['balance'];
+            $model_sales_master->due_date = date("Y-m-d", strtotime($data['due_date']));
+        }
         $model_sales_master->status = 1;
         Yii::$app->SetValues->Attributes($model_sales_master);
         return $model_sales_master;
@@ -608,8 +586,7 @@ class SalesInvoiceDetailsController extends Controller {
         if (empty($last_item)) {
             $code = 'INV' . date('Y') . '-' . sprintf('%04d', 1);
         } else {
-            $last = substr($last_item->item_code, -4);
-            $last = ltrim($last, '0');
+            $last = $last_item->id;
             $code = 'INV' . date('Y') . '-' . (sprintf('%04d', ++$last));
         }
         return $code;
@@ -620,7 +597,49 @@ class SalesInvoiceDetailsController extends Controller {
      */
     public function actionCustomerDetails() {
         if (Yii::$app->request->isAjax) {
+            $customer_id = $_POST['id'];
+            $billing_address = '';
+            $delivery_address = '';
+            $contact_number = '';
+            $email = '';
+            $customer = BusinessPartner::find()->where(['id' => $customer_id])->one();
+            if (!empty($customer)) {
+                $billing_address = $customer->billing_address;
+                $delivery_address = $customer->shipping_address;
+                $contact_number = $customer->phone_no;
+                $email = $customer->email;
+            }
+            $arrr_variable = array('billing_address' => $billing_address, 'delivery_address' => $delivery_address, 'contact_number' => $contact_number, 'email' => $email);
+            $data['result'] = $arrr_variable;
+            echo json_encode($data);
+        }
+    }
 
+    public function actionGetItems() {
+        if (Yii::$app->request->isAjax) {
+            $item_id = $_POST['item_id'];
+            $next_row_id = $_POST['next_row_id'];
+            $next = $next_row_id + 1;
+            $items = \common\models\ItemMaster::find()->where(['status' => 1])->all();
+            if ($item_id == '') {
+                echo '0';
+                exit;
+            } else {
+                $item_datas = \common\models\ItemMaster::find()->where(['id' => $item_id])->one();
+                if (empty($item_datas)) {
+                    echo '0';
+                    exit;
+                } else {
+                    $next_row = $this->renderPartial('next_row', [
+                        'next' => $next,
+                        'items' => $items,
+                    ]);
+                    $tax = \common\models\Tax::findOne($item_datas->tax_id);
+                    $arr_variable1 = array('next_row_html' => $next_row, 'next' => $next, 'item_rate' => $item_datas->MRP, 'tax_id' => $item_datas->tax_id, 'tax_type' => $tax->type, 'tax_value' => $tax->value);
+                    $data1['result'] = $arr_variable1;
+                    return json_encode($data1);
+                }
+            }
         }
     }
 
