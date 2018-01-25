@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 // 'warehouse',
                                                 // 'supplier',
                                                 // 'origin',
-                                                'cost',
+//                                                'cost',
                                                 'cartons',
                                                 'total_weight',
                                                 'pieces',

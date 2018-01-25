@@ -130,7 +130,7 @@ class StockAdjustmentController extends Controller {
         public function actionItemDetails() {
                 if (Yii::$app->request->isAjax) {
                         $items = StockView::find()->select('item_id')->distinct()->all();
-                        $list = $this->renderPartial('items', ['items' => $items, 'status' => $status]);
+                        $list = $this->renderPartial('items', ['items' => $items,]);
                         return $list;
                 }
         }

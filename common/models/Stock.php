@@ -25,9 +25,9 @@ use Yii;
  * @property int $supplier
  * @property int $origin
  * @property string $cost
- * @property int $cartons
+ * @property string $cartons
  * @property string $total_weight
- * @property int $pieces
+ * @property string $pieces
  * @property string $stock
  * @property string $available_stock
  * @property string $closing_stock
@@ -57,8 +57,8 @@ class Stock extends \yii\db\ActiveRecord {
          */
         public function rules() {
                 return [
-                        [['type', 'item_id', 'location', 'supplier', 'origin', 'cartons', 'pieces', 'stock_type', 'stock_view_id', 'status', 'CB', 'UB'], 'integer'],
-                        [['price', 'cost', 'total_weight', 'stock', 'available_stock', 'closing_stock', 'adjust_cartons', 'adjust_weight', 'adjust_pieces'], 'number'],
+                        [['type', 'item_id', 'location', 'supplier', 'origin', 'stock_type', 'stock_view_id', 'status', 'CB', 'UB'], 'integer'],
+                        [['price', 'cost', 'cartons', 'total_weight', 'pieces', 'stock', 'available_stock', 'closing_stock', 'adjust_cartons', 'adjust_weight', 'adjust_pieces'], 'number'],
                         [['slaughter_date_from', 'slaughter_date_to', 'production_date', 'due_date', 'DOC', 'DOU'], 'safe'],
                         [['remarks'], 'string'],
                         [['item_name', 'item_code'], 'string', 'max' => 30],
