@@ -21,13 +21,16 @@
                     <select id="salesinvoicedetails-type-<?= $next ?>" class="form-control salesinvoicedetails-type" name="create[type][]">
                         <option value="1">Carton</option>
                         <option value="2">Kg</option>
-                        <option value="1">Pieces</option>
+                        <option value="3">Pieces</option>
                     </select>
                 </div>
             </div>
-            <div id="stock-table-1">
+            <div id="stock-table-<?= $next ?>" class="stock-dtl-tble">
 
             </div>
+            <input type="hidden" id="salesinvoicedetails-avail_carton-<?= $next ?>" value="" class="form-control salesinvoicedetails-avail_carton" name="create[avail_carton][]" >
+            <input type="hidden" id="salesinvoicedetails-avail_weight-<?= $next ?>" value="" class="form-control salesinvoicedetails-avail_weight" name="create[avail_weight][]" >
+            <input type="hidden" id="salesinvoicedetails-avail_pieces-<?= $next ?>" value="" class="form-control salesinvoicedetails-avail_pieces" name="create[avail_pieces][]" >
         </div>
     </td>
     <td>

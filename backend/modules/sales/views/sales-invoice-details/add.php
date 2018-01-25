@@ -29,6 +29,24 @@ if (isset($estimate)) {
     #add-invoicee td{
         padding: 0px;
     }
+    .stock-dtl-tble{
+        max-height: 75px;
+        overflow-y: scroll;
+    }
+    .stock-dtl-tble table{
+        width:100%;
+        border: 1px solid #9e9e9e;
+        border-collapse: collapse;
+    }
+    .stock-dtl-tble th{
+        border: 1px solid #9e9e9e;
+        text-align: center;
+    }
+    .stock-dtl-tble td{
+        border: 1px solid #9e9e9e;
+        text-align: center;
+    }
+
 </style>
 <script>
     $(document).ready(function () {
@@ -55,18 +73,7 @@ if (isset($estimate)) {
 
                     </div>
                 </div>
-                <?php if (Yii::$app->session->hasFlash('success')): ?>
-                    <div class="alert alert-success alert-dismissable">
-                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-                        <h4><i class="fa fa-check" aria-hidden="true"></i><span style="padding-left:10px;"><?= Yii::$app->session->getFlash('success') ?>!</span></h4>
-                    </div>
-                <?php endif; ?>
-                <?php if (Yii::$app->session->hasFlash('error')): ?>
-                    <div class="alert alert-danger alert-dismissable">
-                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-                        <h4><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><span style="padding-left:10px;"><?= Yii::$app->session->getFlash('error') ?>!</span></h4>
-                    </div>
-                <?php endif; ?>
+                <?= \common\widgets\Alert::widget(); ?>
                 <?php $form = ActiveForm::begin(); ?>
                 <div class="panel-body">
                     <input type="hidden" id="salesreturninvoicemaster-amount" class="form-control" name="SalesReturnInvoiceMaster[amount]" readonly="" aria-invalid="false">
@@ -161,11 +168,16 @@ if (isset($estimate)) {
                                         <select id="salesinvoicedetails-type-1" class="form-control salesinvoicedetails-type" name="create[type][]">
                                             <option value="1">Carton</option>
                                             <option value="2">Kg</option>
-                                            <option value="1">Pieces</option>
+                                            <option value="3">Pieces</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
+                            <div id="stock-table-1" class="stock-dtl-tble">
+                            </div>
+                            <input type="hidden" id="salesinvoicedetails-avail_carton-1" value="" class="form-control salesinvoicedetails-avail_carton" name="create[avail_carton][]" >
+                            <input type="hidden" id="salesinvoicedetails-avail_weight-1" value="" class="form-control salesinvoicedetails-avail_weight" name="create[avail_weight][]" >
+                            <input type="hidden" id="salesinvoicedetails-avail_pieces-1" value="" class="form-control salesinvoicedetails-avail_pieces" name="create[avail_pieces][]" >
                         </td>
                         <td>
                             <div class="form-group field-salesinvoicedetails-rate has-success">
@@ -322,6 +334,104 @@ if (isset($estimate)) {
                 }
             });
         });
+        $(document).on('change', '.salesinvoicedetails-qty', function (e) {
+            var current_row_id = $(this).attr('id').match(/\d+/); // 123456
+            var qty = $(this).val();
+            var rate = $('#salesinvoicedetails-rate-' + current_row_id).val();
+            var type = $('#salesinvoicedetails-type-' + current_row_id).val();
+            var avail_carton_tot = $('#salesinvoicedetails-avail_carton-' + current_row_id).val();
+            var avail_weight_tot = $('#salesinvoicedetails-avail_weight-' + current_row_id).val();
+            var avail_pieces_tot = $('#salesinvoicedetails-avail_pieces-' + current_row_id).val();
+            var type = $('#salesinvoicedetails-type-' + current_row_id).val();
+            var item = $('#salesinvoicedetails-item_id-' + current_row_id).val();
+            if (qty != "" && item != '' && rate != '') {
+                if (type == 1) {
+                    if (parseInt(qty) > parseInt(avail_carton_tot)) {
+                        $('#salesinvoicedetails-qty-' + current_row_id).val(avail_carton_tot);
+                        alert(' Quantity exeeds the Available Stock.');
+                    }
+                } else if (type == 2) {
+                    if (parseInt(qty) > parseInt(avail_weight_tot)) {
+                        $('#salesinvoicedetails-qty-' + current_row_id).val(avail_weight_tot);
+                        alert(' Quantity exeeds the Available Stock.');
+                    }
+                } else if (type == 2) {
+                    if (parseInt(qty) > parseInt(avail_pieces_tot)) {
+                        $('#salesinvoicedetails-qty-' + current_row_id).val(avail_pieces_tot);
+                        alert(' Quantity exeeds the Available Stock.');
+                    }
+                }
+                lineTotalAmount(current_row_id);
+            }
+        });
+
+        $(document).on('change', '.salesinvoicedetails-type', function (e) {
+            var current_row_id = $(this).attr('id').match(/\d+/); // 123456
+            var qty = $('#salesinvoicedetails-qty-' + current_row_id).val();
+            var rate = $('#salesinvoicedetails-rate-' + current_row_id).val();
+            var type = $('#salesinvoicedetails-type-' + current_row_id).val();
+            var avail_carton_tot = $('#salesinvoicedetails-avail_carton-' + current_row_id).val();
+            var avail_weight_tot = $('#salesinvoicedetails-avail_weight-' + current_row_id).val();
+            var avail_pieces_tot = $('#salesinvoicedetails-avail_pieces-' + current_row_id).val();
+            var type = $('#salesinvoicedetails-type-' + current_row_id).val();
+            var item = $('#salesinvoicedetails-item_id-' + current_row_id).val();
+            if (qty != "" && item != '' && rate != '') {
+                if (type == 1) {
+                    if (parseInt(qty) > parseInt(avail_carton_tot)) {
+                        $('#salesinvoicedetails-qty-' + current_row_id).val(avail_carton_tot);
+                        alert(' Quantity exeeds the Available Stock.');
+                    }
+                } else if (type == 2) {
+                    if (parseInt(qty) > parseInt(avail_weight_tot)) {
+                        $('#salesinvoicedetails-qty-' + current_row_id).val(avail_weight_tot);
+                        alert(' Quantity exeeds the Available Stock.');
+                    }
+                } else if (type == 2) {
+                    if (parseInt(qty) > parseInt(avail_pieces_tot)) {
+                        $('#salesinvoicedetails-qty-' + current_row_id).val(avail_pieces_tot);
+                        alert(' Quantity exeeds the Available Stock.');
+                    }
+                }
+                lineTotalAmount(current_row_id);
+            }
+        });
+
+        $(document).on('keyup mouseup', '.salesinvoicedetails-rate', function () {
+            var current_row_id = $(this).attr('id').match(/\d+/); // 123456
+            var item = $('#salesinvoicedetails-item_id-' + current_row_id).val();
+            var qty = $('#salesinvoicedetails-qty-' + current_row_id).val();
+            var rate = $('#salesinvoicedetails-rate-' + current_row_id).val();
+            if (qty != "" && item != "") {
+                lineTotalAmount(current_row_id);
+            }
+
+        });
+
+        $(document).on('change', '.salesinvoicedetails-discount_type', function () {
+            var current_row_id = $(this).attr('id').match(/\d+/); // 123456
+            var item = $('#salesinvoicedetails-item_id-' + current_row_id).val();
+            var qty = $('#salesinvoicedetails-qty-' + current_row_id).val();
+            var rate = $('#salesinvoicedetails-rate-' + current_row_id).val();
+            if (qty != "" && rate != "" && item != "") {
+                lineTotalAmount(current_row_id);
+            }
+
+        });
+        /*
+         * on keyup of the quantity
+         * @parameter quantity,rate
+         * @return total amount
+         */
+        $(document).on('keyup mouseup', '.salesinvoicedetails-discount_value', function () {
+            var current_row_id = $(this).attr('id').match(/\d+/); // 123456
+            var item = $('#salesinvoicedetails-item_id-' + current_row_id).val();
+            var qty = $('#salesinvoicedetails-qty-' + current_row_id).val();
+            var rate = $('#salesinvoicedetails-rate-' + current_row_id).val();
+            if (qty != "" && rate != "" && item != "") {
+                lineTotalAmount(current_row_id);
+            }
+
+        });
 
     });
     function itemChange(item_id, current_row_id, next_row_id) {
@@ -341,7 +451,13 @@ if (isset($estimate)) {
                         $("#next_item_id").val(next);
                         $('.salesinvoicedetails-qty').attr('type', 'number');
                         $('.salesinvoicedetails-qty').attr('min', 1);
+                        $("#stock-table-" + current_row_id).html(res.result['stock-table']);
                         $("#salesinvoicedetails-rate-" + current_row_id).val(res.result['item_rate']);
+                        $("#salesinvoicedetails-avail_pieces-" + current_row_id).val(res.result['avail-pieces']);
+                        $("#salesinvoicedetails-avail_weight-" + current_row_id).val(res.result['avail-weight']);
+                        $("#salesinvoicedetails-avail_carton-" + current_row_id).val(res.result['avail-carton']);
+                        $("#salesinvoicedetails-tax_type-" + current_row_id).val(res.result['tax_type']);
+                        $("#salesinvoicedetails-tax_value-" + current_row_id).val(res.result['tax_value']);
                         var iddd = '#salesinvoicedetails-tax-' + current_row_id;
                         $("" + iddd + " option[value='" + res.result['tax_id'] + "']").prop('selected', true);
                         $('#salesinvoicedetails-item_id-' + current_row_id).removeClass("add-next");
@@ -366,17 +482,16 @@ if (isset($estimate)) {
         var tax_amount = 0;
         var discount_amount = 0;
         var qty = $('#salesinvoicedetails-qty-' + current_row_id).val();
-        var tax_type = $('#salesinvoicedetails-tax-type-' + current_row_id).val();
+        var tax_type = $('#salesinvoicedetails-tax_type-' + current_row_id).val();
         var rate = $('#salesinvoicedetails-rate-' + current_row_id).val();
-        var tax = $('#salesinvoicedetails-tax-value-' + current_row_id).val();
+        var tax = $('#salesinvoicedetails-tax_value-' + current_row_id).val();
         var discount = $('#salesinvoicedetails-discount_value-' + current_row_id).val();
         var discount_type = $('#salesinvoicedetails-discount_type-' + current_row_id).val();
-
         var amount = qty * rate;
 
         if (discount != "") {
 
-            if (discount_type == 0) {
+            if (discount_type == 1) {
                 var discount_amount = discount;
             } else {
                 var discount_amount = (amount * discount) / 100;

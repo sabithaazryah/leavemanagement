@@ -132,7 +132,7 @@ class SalesInvoiceDetailsController extends Controller {
         }
     }
 
-    public function actionAdd($estimate = NULL) {
+    public function actionAdd($id = NULL) {
         $model = new SalesInvoiceDetails();
         $model_sales_master = new SalesInvoiceMaster();
         if ($model_sales_master->load(Yii::$app->request->post())) {
@@ -143,6 +143,7 @@ class SalesInvoiceDetailsController extends Controller {
             try {
                 if ($model_sales_master->save()) {
                     $transaction->commit();
+                    Yii::$app->session->setFlash('success', "New Invoice created successfully.");
                 } else {
                     $transaction->rollBack();
                 }
@@ -626,17 +627,31 @@ class SalesInvoiceDetailsController extends Controller {
                 exit;
             } else {
                 $item_datas = \common\models\ItemMaster::find()->where(['id' => $item_id])->one();
-//                $stock_details = S
+                $stock_details = \common\models\StockView::find()->where(['item_id' => $item_id])->all();
+                $options = '';
+                $avail_carton = 0;
+                $avail_weight = 0;
+                $avail_pieces = 0;
                 if (empty($item_datas)) {
                     echo '0';
                     exit;
                 } else {
+                    if (!empty($stock_details)) {
+                        $options = '<table><tr><th rowspan="2">Batch</th><th colspan="3">Available</th></tr><tr><th>Carton</th><th>Weight</th><th>Pieces</th></tr>';
+                        foreach ($stock_details as $stock_detail) {
+                            $options .= "<tr><td>" . $stock_detail->batch_no . "</td><td>" . $stock_detail->available_carton . "</td><td>" . $stock_detail->available_weight . "</td><td>" . $stock_detail->available_pieces . "</td></tr>";
+                            $avail_carton += $stock_detail->available_carton;
+                            $avail_weight += $stock_detail->available_weight;
+                            $avail_pieces += $stock_detail->available_pieces;
+                        }
+                        $options .= '</table>';
+                    }
                     $next_row = $this->renderPartial('next_row', [
                         'next' => $next,
                         'items' => $items,
                     ]);
                     $tax = \common\models\Tax::findOne($item_datas->tax_id);
-                    $arr_variable1 = array('next_row_html' => $next_row, 'next' => $next, 'item_rate' => $item_datas->MRP, 'tax_id' => $item_datas->tax_id, 'tax_type' => $tax->type, 'tax_value' => $tax->value);
+                    $arr_variable1 = array('next_row_html' => $next_row, 'next' => $next, 'item_rate' => $item_datas->MRP, 'tax_id' => $item_datas->tax_id, 'tax_type' => $tax->type, 'tax_value' => $tax->value, 'stock-table' => $options, 'avail-carton' => $avail_carton, 'avail-weight' => $avail_weight, 'avail-pieces' => $avail_pieces);
                     $data1['result'] = $arr_variable1;
                     return json_encode($data1);
                 }
