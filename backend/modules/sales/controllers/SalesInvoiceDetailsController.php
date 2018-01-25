@@ -626,6 +626,7 @@ class SalesInvoiceDetailsController extends Controller {
                 exit;
             } else {
                 $item_datas = \common\models\ItemMaster::find()->where(['id' => $item_id])->one();
+//                $stock_details = S
                 if (empty($item_datas)) {
                     echo '0';
                     exit;
@@ -640,6 +641,21 @@ class SalesInvoiceDetailsController extends Controller {
                     return json_encode($data1);
                 }
             }
+        }
+    }
+
+    public function actionAddAnotherRow() {
+        if (Yii::$app->request->isAjax) {
+            $next_row_id = $_POST['next_row_id'];
+            $next = $next_row_id + 1;
+            $items = \common\models\ItemMaster::find()->where(['status' => 1])->all();
+            $next_row = $this->renderPartial('next_row', [
+                'next' => $next,
+                'items' => $items,
+            ]);
+            $new_row = array('next_row_html' => $next_row);
+            $data['result'] = $new_row;
+            return json_encode($data);
         }
     }
 

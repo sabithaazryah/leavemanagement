@@ -26,6 +26,9 @@ if (isset($estimate)) {
     .form-group {
         margin-bottom: 0px;
     }
+    #add-invoicee td{
+        padding: 0px;
+    }
 </style>
 <script>
     $(document).ready(function () {
@@ -128,7 +131,8 @@ if (isset($estimate)) {
                             <th data-priority="6" style="width: 14%;">Discount</th>
                             <th data-priority="6" style="width: 14%;">Tax</th>
                             <th data-priority="6" style="width: 8%;">Amount</th>
-                            <th data-priority="1" style="width: 1%;"></th>
+                            <th data-priority="6" style="width: 8%;">Inventory</th>
+                            <th data-priority="1" style="width: 50px;"></th>
                         </tr>
                         <tr>
                     </thead>
@@ -145,14 +149,15 @@ if (isset($estimate)) {
                                 <?php }
                                 ?>
                             </select>
+                            <input type="text" value="" placeholder="Description" class="form-control salesinvoicedetails-item_comment bill-comment" id="salesinvoicedetails-item-comment-1" name="create[comment][]" autocomplete="off" style="display: none;">
                         </td>
                         <td>
                             <div class="form-group field-salesinvoicedetails-discount_percentage has-success">
-                                <div class="row">
-                                    <div class="col-md-6" style="padding-right:0px;">
-                                        <input type="number" id="salesinvoicedetails-qty-1" value="" class="form-control salesinvoicedetails-qty" name="create[qty][]" placeholder="Qty" min="1" aria-invalid="false" autocomplete="off"  style="display:inline-block;width:75% ! important;">
+                                <div class="row" style="margin:0px;">
+                                    <div class="col-md-6" style="padding:0px;">
+                                        <input type="number" id="salesinvoicedetails-qty-1" value="" class="form-control salesinvoicedetails-qty" name="create[qty][]" placeholder="Qty" min="1" aria-invalid="false" autocomplete="off"  style="display:inline-block;">
                                     </div>
-                                    <div class="col-md-6" style="padding-left:0px;">
+                                    <div class="col-md-6" style="padding:0px;">
                                         <select id="salesinvoicedetails-type-1" class="form-control salesinvoicedetails-type" name="create[type][]">
                                             <option value="1">Carton</option>
                                             <option value="2">Kg</option>
@@ -169,11 +174,11 @@ if (isset($estimate)) {
                         </td>
                         <td>
                             <div class="form-group field-salesinvoicedetails-discount_percentage has-success">
-                                <div class="row">
-                                    <div class="col-md-6" style="padding-right:0px;">
-                                        <input type="number" id="salesinvoicedetails-discount_value-1" value="" class="form-control salesinvoicedetails-discount_value" name="create[discount_value][]" placeholder="Discount" min="1" aria-invalid="false" autocomplete="off"  style="display:inline-block;width:75% ! important;">
+                                <div class="row" style="margin:0px;">
+                                    <div class="col-md-6" style="padding:0px;">
+                                        <input type="number" id="salesinvoicedetails-discount_value-1" value="" class="form-control salesinvoicedetails-discount_value" name="create[discount_value][]" placeholder="Discount" min="1" aria-invalid="false" autocomplete="off"  style="display:inline-block;">
                                     </div>
-                                    <div class="col-md-6" style="padding-left:0px;">
+                                    <div class="col-md-6" style="padding:0px;">
                                         <select id="salesinvoicedetails-discount_type-1" class="form-control salesinvoicedetails-discount_type" name="create[discount_type][]">
                                             <option value="1">Rs.</option>
                                             <option value="2">%</option>
@@ -212,6 +217,11 @@ if (isset($estimate)) {
                             </div>
                         </td>
                         <td>
+                            <div class="form-group field-salesinvoicedetails-line_total has-success" style="text-align: center;margin-top: 6px;">
+                                <input type="checkbox" id="salesinvoicedetails-inventory-1" name="check" value="1" checked="checked" uncheckValue="0">
+                            </div>
+                        </td>
+                        <td>
                             <a id="del" class="" ><i class="fa fa-times sales-invoice-delete"></i></a>
                         </td>
                     </tr>
@@ -226,7 +236,8 @@ if (isset($estimate)) {
                             <th data-priority="6" style="width: 14%;"><input type="text" id="discount_sub_total" class="amount-receipt-1"  name="discount_sub_total" style="width: 100%;" readonly/></th>
                             <th data-priority="6" style="width: 14%;"><input type="text" id="tax_sub_total" class="amount-receipt-1"  name="tax_sub_total" style="width: 100%;" readonly/></th>
                             <th data-priority="6" style="width: 8%;"><input type="text" id="order_sub_total" class="amount-receipt-1"  name="order_sub_total" style="width: 100%;" readonly/></th>
-                            <th data-priority="1" style="width: 4%;"></th>
+                            <th data-priority="1" style="width: 8%;"></th>
+                            <th data-priority="1" style="width: 50px;   "></th>
                         </tr>
                     <input type="hidden" id="amount_without_tax" class="amount-receipt-1" name="amount_without_tax" style="width: 100%;" readonly/>
                     </thead>
@@ -279,6 +290,38 @@ if (isset($estimate)) {
             var item_id = $(this).val();
             itemChange(item_id, current_row_id, next_row_id);
         });
+        $('#add-invoicee').on('click', '#del', function () {
+            var bid = this.id; // button ID
+            var trid = $(this).closest('tr').attr('id'); // table row ID
+            $(this).closest('tr').remove();
+//        calculateSubtotal();
+        });
+        $(document).on('click', '#add_another_line', function (e) {
+            var rowCount = $('#add-invoicee >tbody >tr').length;
+            var next_row_id = $('#next_item_id').val();
+            var next = parseInt(next_row_id) + 1;
+            $.ajax({
+                type: 'POST',
+                cache: false,
+                async: false,
+                data: {next_row_id: next_row_id},
+                url: homeUrl + 'sales/sales-invoice-details/add-another-row',
+                success: function (data) {
+                    var res = $.parseJSON(data);
+                    console.log(res);
+                    $('#add-invoicee tr:last').after(res.result['next_row_html']);
+                    $("#next_item_id").val(next);
+                    $('#salesinvoicedetails-item_id-' + rowCount).removeClass("add-next");
+                    $('#salesinvoicedetails-item_id-' + next).select2({
+                        allowClear: true
+                    }).on('select2-open', function ()
+                    {
+                        $(this).data('select2').results.addClass('overflow-hidden').perfectScrollbar();
+                    });
+                    e.preventDefault();
+                }
+            });
+        });
 
     });
     function itemChange(item_id, current_row_id, next_row_id) {
@@ -293,6 +336,7 @@ if (isset($estimate)) {
                 var res = $.parseJSON(data);
                 if (data != 0) {
                     if ($('#salesinvoicedetails-item_id-' + current_row_id).hasClass('add-next')) {
+                        $('#salesinvoicedetails-item-comment-' + current_row_id).css('display', 'block');
                         $('#add-invoicee tr:last').after(res.result['next_row_html']);
                         $("#next_item_id").val(next);
                         $('.salesinvoicedetails-qty').attr('type', 'number');

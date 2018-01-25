@@ -9,20 +9,24 @@
             <?php }
             ?>
         </select>
+        <input type="text" value="" placeholder="Description" class="form-control salesinvoicedetails-item_comment bill-comment" id="salesinvoicedetails-item-comment-<?= $next ?>" name="create[comment][]" autocomplete="off" style="display: none;">
     </td>
     <td>
         <div class="form-group field-salesinvoicedetails-discount_percentage has-success">
-            <div class="row">
-                <div class="col-md-6" style="padding-right:0px;">
-                    <input type="number" id="salesinvoicedetails-qty-<?= $next ?>" value="" class="form-control salesinvoicedetails-qty" name="create[qty][]" placeholder="Qty" min="1" aria-invalid="false" autocomplete="off"  style="display:inline-block;width:75% ! important;">
+            <div class="row" style="margin:0px;">
+                <div class="col-md-6" style="padding:0px;">
+                    <input type="number" id="salesinvoicedetails-qty-<?= $next ?>" value="" class="form-control salesinvoicedetails-qty" name="create[qty][]" placeholder="Qty" min="1" aria-invalid="false" autocomplete="off"  style="display:inline-block;">
                 </div>
-                <div class="col-md-6" style="padding-left:0px;">
+                <div class="col-md-6" style="padding:0px;">
                     <select id="salesinvoicedetails-type-<?= $next ?>" class="form-control salesinvoicedetails-type" name="create[type][]">
                         <option value="1">Carton</option>
                         <option value="2">Kg</option>
                         <option value="1">Pieces</option>
                     </select>
                 </div>
+            </div>
+            <div id="stock-table-1">
+
             </div>
         </div>
     </td>
@@ -33,11 +37,11 @@
     </td>
     <td>
         <div class="form-group field-salesinvoicedetails-discount_percentage has-success">
-            <div class="row">
-                <div class="col-md-6" style="padding-right:0px;">
-                    <input type="number" id="salesinvoicedetails-discount_value-<?= $next ?>" value="" class="form-control salesinvoicedetails-discount_value" name="create[discount_value][]" placeholder="Discount" min="1" aria-invalid="false" autocomplete="off"  style="display:inline-block;width:75% ! important;">
+            <div class="row" style="margin:0px;">
+                <div class="col-md-6" style="padding:0px;">
+                    <input type="number" id="salesinvoicedetails-discount_value-<?= $next ?>" value="" class="form-control salesinvoicedetails-discount_value" name="create[discount_value][]" placeholder="Discount" min="1" aria-invalid="false" autocomplete="off"  style="display:inline-block;">
                 </div>
-                <div class="col-md-6" style="padding-left:0px;">
+                <div class="col-md-6" style="padding:0px;">
                     <select id="salesinvoicedetails-discount_type-<?= $next ?>" class="form-control salesinvoicedetails-discount_type" name="create[discount_type][]">
                         <option value="1">Rs.</option>
                         <option value="2">%</option>
@@ -73,6 +77,11 @@
     <td>
         <div class="form-group field-salesinvoicedetails-line_total has-success">
             <input type="text" id="salesinvoicedetails-line_total-<?= $next ?>" value="" class="form-control salesinvoicedetails-line_total" name="create[line_total][]" placeholder="Amount" aria-invalid="false" autocomplete="off">
+        </div>
+    </td>
+    <td>
+        <div class="form-group field-salesinvoicedetails-line_total has-success" style="text-align: center;margin-top: 6px;">
+            <input type="checkbox" id="salesinvoicedetails-inventory-1" name="check" value="1" checked="checked" uncheckValue="0">
         </div>
     </td>
     <td>
