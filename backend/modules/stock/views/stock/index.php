@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             'filterModel' => $searchModel,
                                             'columns' => [
                                                     ['class' => 'yii\grid\SerialColumn'],
-                                              //  'id',
+                                                //  'id',
 //                                                'item_id',
                                                 'item_name',
                                                 'item_code',
@@ -47,10 +47,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 // 'warehouse',
                                                 // 'supplier',
                                                 // 'origin',
-                                                 'cost',
-                                                 'cartons',
-                                                 'total_weight',
-                                                 'pieces',
+                                                'cost',
+                                                'cartons',
+                                                'total_weight',
+                                                'pieces',
                                                 // 'stock',
                                                 // 'available_stock',
                                                 // 'closing_stock',
@@ -60,7 +60,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 // 'UB',
                                                 // 'DOC',
                                                 // 'DOU',
-                                                ['class' => 'yii\grid\ActionColumn'],
+                                                ['class' => 'yii\grid\ActionColumn',
+                                                    'template' => '{view}'],
                                             ],
                                         ]);
                                         ?>

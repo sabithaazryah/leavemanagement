@@ -104,21 +104,21 @@ use yii\widgets\LinkPager;
                                 url: homeUrl + 'stock/stock-adjustment/selected-item',
                                 success: function (data) {
                                         var res = $.parseJSON(data);
-                                        $("#stockadjustment-item_name").val(res['item_name']);
-                                        $('#stockadjustment-item_code').val(res['item_code']);
-                                        $('#stockadjustment-price').val(res['price']);
-                                        $('#stockadjustment-uom').val(res['uom']);
-                                        $('#stockadjustment-batch_no').val(res['batch_no']);
-                                        $('#stockadjustment-slaughter_date_from').val(res['slaughter_date_from']);
-                                        $('#stockadjustment-slaughter_date_to').val(res['slaughter_date_to']);
-                                        $('#stockadjustment-production_date').val(res['production_date']);
-                                        $('#stockadjustment-due_date').val(res['due_date']);
-                                        $('#stockadjustment-location').val(res['location']);
-                                        $('#stockadjustment-cost').val(res['cost']);
-                                        $('#stockadjustment-cartons').val(res['cartons']);
-                                        $('#stockadjustment-total_weight').val(res['total_weight']);
-                                        $('#stockadjustment-pieces').val(res['pieces']);
-                                        $('#stockadjustment-stock_view_id').val(selected);
+                                        $("#stock-item_name").val(res['item_name']);
+                                        $('#stock-item_code').val(res['item_code']);
+                                        $('#stock-price').val(res['price']);
+                                        $('#stock-uom').val(res['uom']);
+                                        $('#stock-batch_no').val(res['batch_no']);
+                                        $('#stock-slaughter_date_from').val(res['slaughter_date_from']);
+                                        $('#stock-slaughter_date_to').val(res['slaughter_date_to']);
+                                        $('#stock-production_date').val(res['production_date']);
+                                        $('#stock-due_date').val(res['due_date']);
+                                        $('#stock-location').val(res['location']);
+                                        $('#stock-cost').val(res['cost']);
+                                        $('#stock-cartons').val(res['cartons']);
+                                        $('#stock-total_weight').val(res['total_weight']);
+                                        $('#stock-pieces').val(res['pieces']);
+                                        $('#stock-stock_view_id').val(selected);
                                         $('#modal-6').hide();
                                 }
                         });

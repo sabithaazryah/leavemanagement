@@ -10,6 +10,7 @@ use common\models\ItemMaster;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use common\models\StockRegister;
 
 /**
  * StockController implements the CRUD actions for Stock model.
@@ -63,6 +64,8 @@ class StockController extends Controller {
         public function actionCreate() {
                 $model = new Stock();
                 $stock_view = new StockView();
+                $stock_register = new StockRegister();
+
 
                 if ($model->load(Yii::$app->request->post())) {
                         $item_deatils = ItemMaster::findOne($model->item_id);
@@ -74,6 +77,7 @@ class StockController extends Controller {
                         Yii::$app->SetValues->Attributes($model);
                         $model->save();
                         $this->StockView($stock_view, $model);
+                        $this->StockRegister($stock_register, $model);
 
 //                        $transaction = Yii::$app->db->beginTransaction();
 //                        if (Yii::$app->SetValues->Attributes($model) && $model->save() && $this->StockView($stock_view, $model)) {
@@ -101,14 +105,38 @@ class StockController extends Controller {
                 $stock_view->available_carton = $model->cartons;
                 $stock_view->available_weight = $model->total_weight;
                 $stock_view->available_pieces = $model->pieces;
+                $stock_view->opening_carton = $model->cartons;
+                $stock_view->opening_weight = $model->total_weight;
+                $stock_view->opening_piece = $model->pieces;
+                $stock_view->weight_per_carton = $model->total_weight / $model->cartons;
+                $stock_view->piece_per_carton = $model->pieces / $model->cartons;
                 $stock_view->average_cost = $model->cost;
                 $stock_view->due_date = $model->due_date;
                 if ($stock_view->save()) {
 
                 } else {
-                        print_r($stock_view->getErrors());
-                        exit;
+
                 }
+        }
+
+        public function StockRegister($stock_register, $model) {
+                $stock_register->transaction = 1;
+                $stock_register->document_line_id = $model->id;
+                $stock_register->document_no = '';
+                $stock_register->document_date = date('Y-m-d');
+                $stock_register->item_id = $model->item_id;
+                $stock_register->item_code = $model->item_code;
+                $stock_register->item_name = $model->item_name;
+                $stock_register->batch_no = $model->batch_no;
+                $stock_register->item_cost = '';
+                $stock_register->cartoon_in = $model->cartons;
+                $stock_register->weight_in = $model->total_weight;
+                $stock_register->piece_in = $model->pieces;
+                $stock_register->status = 1;
+                $stock_register->CB = Yii::$app->user->identity->id;
+                $stock_register->UB = Yii::$app->user->identity->id;
+                $stock_register->DOC = date('Y-m-d');
+                $stock_register->save();
         }
 
         /**
@@ -158,10 +186,20 @@ class StockController extends Controller {
 
         public function actionItemDetails() {
                 if (Yii::$app->request->isAjax) {
+                        $avilable_label = '';
                         $item = $_POST['item'];
                         $item_details = \common\models\ItemMaster::findOne($item);
+                        if ($item_details->product_category == 1) {
+                                $available_stock = StockView::find()->where(['item_id' => $item])->sum('available_weight');
+                                $avilable_label = 'Kilogram';
+                        } else {
+                                $available_stock = StockView::find()->where(['item_id' => $item])->sum('available_pieces');
+                                $avilable_label = 'Pieces';
+                        }
+                        if (empty($available_stock))
+                                $available_stock = 0;
                         $unit = \common\models\BaseUnit::findOne($item_details->base_unit_id);
-                        $data = ['item_code' => $item_details->item_code, 'price' => $item_details->purchase_price, 'UOM' => $unit->name];
+                        $data = ['item_code' => $item_details->item_code, 'price' => $item_details->purchase_price, 'UOM' => $unit->name, 'available_stock' => $available_stock, 'unit_label' => $avilable_label];
                         echo json_encode($data);
                 }
         }

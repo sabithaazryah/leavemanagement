@@ -30,15 +30,20 @@ $(function () {
                                 $("#stock-item_code").val(res['item_code']);
                                 $("#stock-price").val(res['price']);
                                 $("#stock-uom").val(res['UOM']);
+                                $("#stock-available_stock").val(res['available_stock']);
+                                $(".available-stock").html(res['unit_label']);
+                                $(".closing-stock").html(res['unit_label']);
+                                $(".stock").html(res['unit_label']);
                         }
                 });
         });
 
         $(document).on('keyup', '#stock-total_weight', function () {
                 var total_weight = $(this).val();
+                var available_stock = $("#stock-available_stock").val();
+                var closing = parseFloat(total_weight) + parseFloat(available_stock);
                 $("#stock-stock").val(total_weight);
-                $("#stock-available_stock").val(total_weight);
-                $("#stock-closing_stock").val(total_weight);
+                $("#stock-closing_stock").val(closing.toFixed(2));
         });
 
         $(document).on('click', '.select-stock-item', function () {

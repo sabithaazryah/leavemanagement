@@ -8,11 +8,12 @@ use Yii;
  * This is the model class for table "stock".
  *
  * @property int $id
+ * @property int $type 1=Opening Stock,2=Stock Adjustment
  * @property int $item_id
  * @property string $item_name
  * @property string $item_code
  * @property string $price
- * @property int $uom
+ * @property string $uom
  * @property string $batch_no
  * @property string $slaughter_date_from
  * @property string $slaughter_date_to
@@ -30,6 +31,11 @@ use Yii;
  * @property string $stock
  * @property string $available_stock
  * @property string $closing_stock
+ * @property string $adjust_cartons
+ * @property string $adjust_weight
+ * @property string $adjust_pieces
+ * @property int $stock_type
+ * @property int $stock_view_id
  * @property string $remarks
  * @property int $status
  * @property int $CB
@@ -51,11 +57,12 @@ class Stock extends \yii\db\ActiveRecord {
          */
         public function rules() {
                 return [
-                        [['item_id', 'location', 'supplier', 'origin', 'cartons', 'pieces', 'status', 'CB', 'UB'], 'integer'],
-                        [['price', 'cost', 'total_weight', 'stock', 'available_stock', 'closing_stock'], 'number'],
+                        [['type', 'item_id', 'location', 'supplier', 'origin', 'cartons', 'pieces', 'stock_type', 'stock_view_id', 'status', 'CB', 'UB'], 'integer'],
+                        [['price', 'cost', 'total_weight', 'stock', 'available_stock', 'closing_stock', 'adjust_cartons', 'adjust_weight', 'adjust_pieces'], 'number'],
                         [['slaughter_date_from', 'slaughter_date_to', 'production_date', 'due_date', 'DOC', 'DOU'], 'safe'],
                         [['remarks'], 'string'],
-                        [['item_name', 'item_code', 'uom',], 'string', 'max' => 30],
+                        [['item_name', 'item_code'], 'string', 'max' => 30],
+                        [['uom'], 'string', 'max' => 50],
                         [['batch_no', 'plant', 'warehouse'], 'string', 'max' => 100],
                 ];
         }
@@ -66,11 +73,12 @@ class Stock extends \yii\db\ActiveRecord {
         public function attributeLabels() {
                 return [
                     'id' => 'ID',
+                    'type' => 'Type',
                     'item_id' => 'Item Name',
                     'item_name' => 'Item Name',
                     'item_code' => 'Item Code',
                     'price' => 'Price',
-                    'uom' => 'UOM',
+                    'uom' => 'Uom',
                     'batch_no' => 'Batch No',
                     'slaughter_date_from' => 'Slaughter Date From',
                     'slaughter_date_to' => 'Slaughter Date To',
@@ -88,6 +96,11 @@ class Stock extends \yii\db\ActiveRecord {
                     'stock' => 'Stock',
                     'available_stock' => 'Available Stock',
                     'closing_stock' => 'Closing Stock',
+                    'adjust_cartons' => 'Adjust Cartons',
+                    'adjust_weight' => 'Adjust Weight',
+                    'adjust_pieces' => 'Adjust Pieces',
+                    'stock_type' => 'Stock Type',
+                    'stock_view_id' => 'Stock View ID',
                     'remarks' => 'Remarks',
                     'status' => 'Status',
                     'CB' => 'Cb',
