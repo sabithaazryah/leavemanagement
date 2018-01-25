@@ -28,59 +28,57 @@ use Yii;
  * @property string $DOC
  * @property string $DOU
  */
-class StockView extends \yii\db\ActiveRecord
-{
-    /**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
-        return 'stock_view';
-    }
+class StockView extends \yii\db\ActiveRecord {
 
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [['item_id', 'status', 'CB', 'UB'], 'integer'],
-            [['mrp', 'retail_price', 'ws_price', 'available_carton', 'available_weight', 'available_pieces', 'average_cost'], 'number'],
-            [['due_date', 'DOC', 'DOU'], 'safe'],
-            [['DOC'], 'required'],
-            [['item_code'], 'string', 'max' => 250],
-            [['item_name', 'batch_no'], 'string', 'max' => 100],
-            [['location_code'], 'string', 'max' => 15],
-            [['error_msg'], 'string', 'max' => 50],
-        ];
-    }
+        /**
+         * @inheritdoc
+         */
+        public static function tableName() {
+                return 'stock_view';
+        }
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'item_id' => 'Item ID',
-            'item_code' => 'Item Code',
-            'item_name' => 'Item Name',
-            'mrp' => 'Mrp',
-            'retail_price' => 'Retail Price',
-            'ws_price' => 'Ws Price',
-            'location_code' => 'Location Code',
-            'batch_no' => 'Batch No',
-            'available_carton' => 'Available Carton',
-            'available_weight' => 'Available Weight',
-            'available_pieces' => 'Available Pieces',
-            'average_cost' => 'Average Cost',
-            'due_date' => 'Due Date',
-            'error_msg' => 'Error Msg',
-            'status' => 'Status',
-            'CB' => 'Cb',
-            'UB' => 'Ub',
-            'DOC' => 'Doc',
-            'DOU' => 'Dou',
-        ];
-    }
+        /**
+         * @inheritdoc
+         */
+        public function rules() {
+                return [
+                        [['item_id', 'status', 'CB', 'UB'], 'integer'],
+                        [['mrp', 'retail_price', 'ws_price', 'available_carton', 'available_weight', 'available_pieces', 'average_cost'], 'number'],
+                        [['due_date', 'DOC', 'DOU'], 'safe'],
+                    //   [['DOC'], 'required'],
+                    [['item_code'], 'string', 'max' => 250],
+                        [['item_name', 'batch_no'], 'string', 'max' => 100],
+                        [['location_code'], 'string', 'max' => 15],
+                        [['error_msg'], 'string', 'max' => 50],
+                ];
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function attributeLabels() {
+                return [
+                    'id' => 'ID',
+                    'item_id' => 'Item ID',
+                    'item_code' => 'Item Code',
+                    'item_name' => 'Item Name',
+                    'mrp' => 'Mrp',
+                    'retail_price' => 'Retail Price',
+                    'ws_price' => 'Ws Price',
+                    'location_code' => 'Location Code',
+                    'batch_no' => 'Batch No',
+                    'available_carton' => 'Available Carton',
+                    'available_weight' => 'Available Weight',
+                    'available_pieces' => 'Available Pieces',
+                    'average_cost' => 'Average Cost',
+                    'due_date' => 'Due Date',
+                    'error_msg' => 'Error Msg',
+                    'status' => 'Status',
+                    'CB' => 'Cb',
+                    'UB' => 'Ub',
+                    'DOC' => 'Doc',
+                    'DOU' => 'Dou',
+                ];
+        }
+
 }

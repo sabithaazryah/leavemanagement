@@ -39,69 +39,67 @@ use Yii;
  * @property string $DOC
  * @property string $DOU
  */
-class StockAdjustment extends \yii\db\ActiveRecord
-{
-    /**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
-        return 'stock_adjustment';
-    }
+class StockAdjustment extends \yii\db\ActiveRecord {
 
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [['item_id', 'location', 'supplier', 'origin', 'pieces', 'stock_view_id', 'status', 'CB', 'UB'], 'integer'],
-            [['price', 'cost', 'cartons', 'total_weight', 'adjust_cartons', 'adjust_weight', 'adjust_pieces'], 'number'],
-            [['slaughter_date_from', 'slaughter_date_to', 'production_date', 'due_date', 'DOC', 'DOU'], 'safe'],
-            [['remarks'], 'string'],
-            [['item_name', 'item_code', 'stock_type'], 'string', 'max' => 30],
-            [['uom'], 'string', 'max' => 50],
-            [['batch_no', 'plant', 'warehouse'], 'string', 'max' => 100],
-        ];
-    }
+        /**
+         * @inheritdoc
+         */
+        public static function tableName() {
+                return 'stock_adjustment';
+        }
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'item_id' => 'Item ID',
-            'item_name' => 'Item Name',
-            'item_code' => 'Item Code',
-            'price' => 'Price',
-            'uom' => 'Uom',
-            'batch_no' => 'Batch No',
-            'slaughter_date_from' => 'Slaughter Date From',
-            'slaughter_date_to' => 'Slaughter Date To',
-            'production_date' => 'Production Date',
-            'due_date' => 'Due Date',
-            'plant' => 'Plant',
-            'location' => 'Location',
-            'warehouse' => 'Warehouse',
-            'supplier' => 'Supplier',
-            'origin' => 'Origin',
-            'cost' => 'Cost',
-            'cartons' => 'Cartons',
-            'total_weight' => 'Total Weight',
-            'pieces' => 'Pieces',
-            'adjust_cartons' => 'Adjust Cartons',
-            'adjust_weight' => 'Adjust Weight',
-            'adjust_pieces' => 'Adjust Pieces',
-            'stock_type' => 'Stock Type',
-            'remarks' => 'Remarks',
-            'stock_view_id' => 'Stock View ID',
-            'status' => 'Status',
-            'CB' => 'Cb',
-            'UB' => 'Ub',
-            'DOC' => 'Doc',
-            'DOU' => 'Dou',
-        ];
-    }
+        /**
+         * @inheritdoc
+         */
+        public function rules() {
+                return [
+                        [['item_id', 'location', 'supplier', 'origin', 'pieces', 'stock_view_id', 'status', 'CB', 'UB'], 'integer'],
+                        [['price', 'cost', 'cartons', 'total_weight', 'adjust_cartons', 'adjust_weight', 'adjust_pieces'], 'number'],
+                        [['slaughter_date_from', 'slaughter_date_to', 'production_date', 'due_date', 'DOC', 'DOU'], 'safe'],
+                        [['remarks'], 'string'],
+                        [['item_name', 'item_code', 'stock_type'], 'string', 'max' => 30],
+                        [['uom'], 'string', 'max' => 50],
+                        [['batch_no', 'plant', 'warehouse'], 'string', 'max' => 100],
+                ];
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function attributeLabels() {
+                return [
+                    'id' => 'ID',
+                    'item_id' => 'Item ID',
+                    'item_name' => 'Item Name',
+                    'item_code' => 'Item Code',
+                    'price' => 'Price',
+                    'uom' => 'Uom',
+                    'batch_no' => 'Batch No',
+                    'slaughter_date_from' => 'Slaughter Date From',
+                    'slaughter_date_to' => 'Slaughter Date To',
+                    'production_date' => 'Production Date',
+                    'due_date' => 'Due Date',
+                    'plant' => 'Plant',
+                    'location' => 'Location',
+                    'warehouse' => 'Warehouse',
+                    'supplier' => 'Supplier',
+                    'origin' => 'Origin',
+                    'cost' => 'Cost',
+                    'cartons' => 'Cartons',
+                    'total_weight' => 'Total Weight',
+                    'pieces' => 'Pieces',
+                    'adjust_cartons' => 'Adjust Cartons',
+                    'adjust_weight' => 'Adjust Weight',
+                    'adjust_pieces' => 'Adjust Pieces',
+                    'stock_type' => 'Stock',
+                    'remarks' => 'Remarks',
+                    'stock_view_id' => 'Stock View ID',
+                    'status' => 'Status',
+                    'CB' => 'Cb',
+                    'UB' => 'Ub',
+                    'DOC' => 'Doc',
+                    'DOU' => 'Dou',
+                ];
+        }
+
 }

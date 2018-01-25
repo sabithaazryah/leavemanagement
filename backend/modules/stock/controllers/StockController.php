@@ -62,46 +62,53 @@ class StockController extends Controller {
          */
         public function actionCreate() {
                 $model = new Stock();
-                $stock_view=new StockView();
+                $stock_view = new StockView();
 
                 if ($model->load(Yii::$app->request->post())) {
-                    $item_deatils=ItemMaster::findOne($model->item_id);
-                    $model->item_name=$item_deatils->item_name;
-                    $model->slaughter_date_from=date('Y-m-d',strtotime($model->slaughter_date_from));
-                    $model->slaughter_date_to=date('Y-m-d',strtotime($model->slaughter_date_to));
-                    $model->production_date=date('Y-m-d',strtotime($model->production_date));
-                    $model->due_date=date('Y-m-d',strtotime($model->due_date));
-                    $model->save();
-                    $this->StockView($stock_view,$model);
-                    $transaction = Yii::$app->db->beginTransaction();
-               
+                        $item_deatils = ItemMaster::findOne($model->item_id);
+                        $model->item_name = $item_deatils->item_name;
+                        $model->slaughter_date_from = date('Y-m-d', strtotime($model->slaughter_date_from));
+                        $model->slaughter_date_to = date('Y-m-d', strtotime($model->slaughter_date_to));
+                        $model->production_date = date('Y-m-d', strtotime($model->production_date));
+                        $model->due_date = date('Y-m-d', strtotime($model->due_date));
+                        Yii::$app->SetValues->Attributes($model);
+                        $model->save();
+                        $this->StockView($stock_view, $model);
+
+//                        $transaction = Yii::$app->db->beginTransaction();
+//                        if (Yii::$app->SetValues->Attributes($model) && $model->save() && $this->StockView($stock_view, $model)) {
+//                                $transaction->commit();
+//                        } else {
+//                                $transaction->rollBack();
+//                        }
+
+
+
                         return $this->redirect(['index']);
-                } 
-                        return $this->render('create', [
-                                    'model' => $model,
-                        ]);
-                
+                }
+                return $this->render('create', [
+                            'model' => $model,
+                ]);
         }
-        
-        public function StockView($stock_view,$model){
-            
-            $stock_view->item_id=$model->item_id;
-            $stock_view->item_code=$model->item_code;
-            $stock_view->item_name=$model->item_name;
-            $stock_view->batch_no=$model->batch_no;
-            $stock_view->location_code=$model->location;
-            $stock_view->available_carton=$model->cartons;
-            $stock_view->available_weight=$model->total_weight;
-            $stock_view->available_pieces=$model->pieces;
-            $stock_view->average_cost=$model->cost;
-            $stock_view->due_date=$model->due_date;
-            if($stock_view->save()){
-            }
-               
-            else{
-                print_r($stock_view->getErrors());exit;
-            }
-            
+
+        public function StockView($stock_view, $model) {
+
+                $stock_view->item_id = $model->item_id;
+                $stock_view->item_code = $model->item_code;
+                $stock_view->item_name = $model->item_name;
+                $stock_view->batch_no = $model->batch_no;
+                $stock_view->location_code = $model->location;
+                $stock_view->available_carton = $model->cartons;
+                $stock_view->available_weight = $model->total_weight;
+                $stock_view->available_pieces = $model->pieces;
+                $stock_view->average_cost = $model->cost;
+                $stock_view->due_date = $model->due_date;
+                if ($stock_view->save()) {
+
+                } else {
+                        print_r($stock_view->getErrors());
+                        exit;
+                }
         }
 
         /**
