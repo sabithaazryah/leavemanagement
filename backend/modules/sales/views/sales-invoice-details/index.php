@@ -79,44 +79,44 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'order_amount',
                                 'amount_payed',
                                 'due_amount',
-                                // 'status',
-                                // 'CB',
-                                // 'UB',
-                                // 'DOC',
-                                // 'DOU',
+                            // 'status',
+                            // 'CB',
+                            // 'UB',
+                            // 'DOC',
+                            // 'DOU',
 //                            ['class' => 'yii\grid\ActionColumn'],
-                                [
-                                    'class' => 'yii\grid\ActionColumn',
-                                    'contentOptions' => [],
-                                    'header' => 'Actions',
-                                    'template' => '{view}{print}',
-                                    'buttons' => [
-                                        //view button
-                                        'print' => function ($url, $model) {
-                                            return Html::a('<span class="fa fa-print" style="padding-top: 0px;font-size: 18px;"></span>', $url, [
-                                                        'title' => Yii::t('app', 'print'),
-                                                        'class' => 'actions',
-                                                        'target' => '_blank',
-                                            ]);
-                                        },
-                                        'view' => function ($url, $model) {
-                                            return Html::a('<span class="fa fa-eye" style="padding-top: 0px;font-size: 20px;"></span>', $url, [
-                                                        'title' => Yii::t('app', 'view'),
-                                                        'class' => 'actions',
-                                            ]);
-                                        },
-                                    ],
-                                    'urlCreator' => function ($action, $model) {
-                                        if ($action === 'print') {
-                                            $url = Url::to(['sales-invoice-details/report', 'id' => $model->id]);
-                                            return $url;
-                                        }
-                                        if ($action === 'view') {
-                                            $url = Url::to(['sales-invoice-details/view', 'id' => $model->id]);
-                                            return $url;
-                                        }
-                                    }
-                                ],
+//                                [
+//                                    'class' => 'yii\grid\ActionColumn',
+//                                    'contentOptions' => [],
+//                                    'header' => 'Actions',
+//                                    'template' => '{view}{print}',
+//                                    'buttons' => [
+//                                        //view button
+//                                        'print' => function ($url, $model) {
+//                                            return Html::a('<span class="fa fa-print" style="padding-top: 0px;font-size: 18px;"></span>', $url, [
+//                                                        'title' => Yii::t('app', 'print'),
+//                                                        'class' => 'actions',
+//                                                        'target' => '_blank',
+//                                            ]);
+//                                        },
+//                                        'view' => function ($url, $model) {
+//                                            return Html::a('<span class="fa fa-eye" style="padding-top: 0px;font-size: 20px;"></span>', $url, [
+//                                                        'title' => Yii::t('app', 'view'),
+//                                                        'class' => 'actions',
+//                                            ]);
+//                                        },
+//                                    ],
+//                                    'urlCreator' => function ($action, $model) {
+//                                        if ($action === 'print') {
+//                                            $url = Url::to(['sales-invoice-details/report', 'id' => $model->id]);
+//                                            return $url;
+//                                        }
+//                                        if ($action === 'view') {
+//                                            $url = Url::to(['sales-invoice-details/view', 'id' => $model->id]);
+//                                            return $url;
+//                                        }
+//                                    }
+//                                ],
                             ],
                         ]);
                         ?>

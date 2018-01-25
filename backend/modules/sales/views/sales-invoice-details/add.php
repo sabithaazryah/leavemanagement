@@ -48,14 +48,6 @@ if (isset($estimate)) {
     }
 
 </style>
-<script>
-    $(document).ready(function () {
-        var report_id = '<?php echo $report_id ?>';
-        if (report_id != '') {
-            window.open('<?= Yii::$app->homeUrl ?>sales/sales-estimate-details/report?id=' + report_id, 'print_popup', 'width=1200,height=500');
-        }
-    });
-</script>
 
 <div class="row">
     <div class="col-md-12">
@@ -181,7 +173,7 @@ if (isset($estimate)) {
                         </td>
                         <td>
                             <div class="form-group field-salesinvoicedetails-rate has-success">
-                                <input type="number" id="salesinvoicedetails-rate-1" class="form-control salesinvoicedetails-rate" name="create[rate][]" placeholder="RATE" step="0.01" aria-invalid="false" autocomplete="off" value="<?= $estimate_detail->rate ?>" >
+                                <input type="number" id="salesinvoicedetails-rate-1" class="form-control salesinvoicedetails-rate" name="create[rate][]" placeholder="RATE" step="0.01" aria-invalid="false" autocomplete="off" value="" >
                             </div>
                         </td>
                         <td>
@@ -215,7 +207,7 @@ if (isset($estimate)) {
                                             $type = 'Rs';
                                         }
                                         ?>
-                                        <option value="<?= $tax->id ?>" <?= $estimate_detail->tax_id == $tax->id ? "selected" : "" ?> ><?= $tax->name . ' - ' . $tax->value . ' ' . $type ?></option>
+                                        <option value="<?= $tax->id ?>" ><?= $tax->name . ' - ' . $tax->value . ' ' . $type ?></option>
                                     <?php }
                                     ?>
                                 </select>

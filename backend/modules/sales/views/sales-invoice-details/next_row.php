@@ -35,7 +35,7 @@
     </td>
     <td>
         <div class="form-group field-salesinvoicedetails-rate has-success">
-            <input type="number" id="salesinvoicedetails-rate-<?= $next ?>" class="form-control salesinvoicedetails-rate" name="create[rate][]" placeholder="RATE" step="0.01" aria-invalid="false" autocomplete="off" value="<?= $estimate_detail->rate ?>" >
+            <input type="number" id="salesinvoicedetails-rate-<?= $next ?>" class="form-control salesinvoicedetails-rate" name="create[rate][]" placeholder="RATE" step="0.01" aria-invalid="false" autocomplete="off" value="" >
         </div>
     </td>
     <td>
@@ -69,7 +69,7 @@
                         $type = 'Rs';
                     }
                     ?>
-                    <option value="<?= $tax->id ?>" <?= $estimate_detail->tax_id == $tax->id ? "selected" : "" ?> ><?= $tax->name . ' - ' . $tax->value . ' ' . $type ?></option>
+                    <option value="<?= $tax->id ?>" ><?= $tax->name . ' - ' . $tax->value . ' ' . $type ?></option>
                 <?php }
                 ?>
             </select>

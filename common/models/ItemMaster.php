@@ -40,7 +40,7 @@ class ItemMaster extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['MRP', 'item_type', 'tax_id', 'base_unit_id', 'location', 'item_cost', 'item_name', 'purchase_price'], 'required'],
+            [['MRP', 'item_type', 'tax_id', 'base_unit_id', 'location', 'item_name', 'purchase_price'], 'required'],
             [['item_type', 'tax_id', 'base_unit_id', 'hsn', 'location', 'status', 'CB', 'UB'], 'integer'],
             [['MRP', 'retail_price', 'purchase_price', 'item_cost', 'whole_sale_price'], 'number'],
             [['DOC', 'DOU'], 'safe'],
@@ -73,9 +73,9 @@ class ItemMaster extends \yii\db\ActiveRecord {
             'DOU' => 'Dou',
         ];
     }
-    
-     public function getName() {
-                return $this->item_name . " (" . $this->item_code . ") ";
-        }
+
+    public function getName() {
+        return $this->item_name . " (" . $this->item_code . ") ";
+    }
 
 }
