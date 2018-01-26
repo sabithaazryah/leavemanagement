@@ -625,3 +625,14 @@ a {
     padding: 4px !important;
     font-size: 12px !important;
 }
+.sit-title-ul{
+    width: 47%;
+}
+.sit-title-li{
+    float: right !important;
+}
+.sit-title{
+    font-size: 25px;
+    font-weight: 600;
+    color: #1f5ba3;
+}
