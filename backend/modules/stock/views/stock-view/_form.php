@@ -26,6 +26,18 @@ use yii\widgets\ActiveForm;
 
 </div><div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'location_code')->textInput(['maxlength' => true]) ?>
 
+</div><div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'batch_no')->textInput(['maxlength' => true]) ?>
+
+</div><div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'opening_carton')->textInput(['maxlength' => true]) ?>
+
+</div><div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'opening_weight')->textInput(['maxlength' => true]) ?>
+
+</div><div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'opening_piece')->textInput(['maxlength' => true]) ?>
+
+</div><div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'weight_per_carton')->textInput(['maxlength' => true]) ?>
+
+</div><div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'piece_per_carton')->textInput(['maxlength' => true]) ?>
+
 </div><div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'available_carton')->textInput(['maxlength' => true]) ?>
 
 </div><div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'available_weight')->textInput(['maxlength' => true]) ?>

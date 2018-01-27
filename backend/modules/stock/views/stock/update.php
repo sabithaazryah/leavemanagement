@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\Stock */
 
-$this->title = 'Update Stock: ' . $model->id;
+$this->title = 'Stock Adjustment';
 $this->params['breadcrumbs'][] = ['label' => 'Stocks', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Stock Adjustment';
 ?>
 <div class="row">
         <div class="col-md-12">
@@ -22,8 +22,9 @@ $this->params['breadcrumbs'][] = 'Update';
                         <div class="panel-body">
 				<?=  Html::a('<i class="fa-th-list"></i><span> Manage Stock</span>', ['index'], ['class' => 'btn btn-warning  btn-icon btn-icon-standalone']) ?>
                                 <div class="panel-body"><div class="stock-create">
-						<?= $this->render('_form', [
+						<?= $this->render('stock_adjustment', [
                                                 'model' => $model,
+                                                'id' => $id,
                                                 ]) ?>
                                         </div>
                                 </div>

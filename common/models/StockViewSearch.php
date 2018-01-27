@@ -19,8 +19,8 @@ class StockViewSearch extends StockView
     {
         return [
             [['id', 'item_id', 'status', 'CB', 'UB'], 'integer'],
-            [['item_code', 'item_name', 'location_code', 'due_date', 'error_msg', 'DOC', 'DOU'], 'safe'],
-            [['mrp', 'retail_price', 'ws_price', 'available_carton', 'available_weight', 'available_pieces', 'average_cost'], 'number'],
+            [['item_code', 'item_name', 'location_code', 'batch_no', 'due_date', 'error_msg', 'DOC', 'DOU'], 'safe'],
+            [['mrp', 'retail_price', 'ws_price', 'opening_carton', 'opening_weight', 'opening_piece', 'weight_per_carton', 'piece_per_carton', 'available_carton', 'available_weight', 'available_pieces', 'average_cost'], 'number'],
         ];
     }
 
@@ -65,6 +65,11 @@ class StockViewSearch extends StockView
             'mrp' => $this->mrp,
             'retail_price' => $this->retail_price,
             'ws_price' => $this->ws_price,
+            'opening_carton' => $this->opening_carton,
+            'opening_weight' => $this->opening_weight,
+            'opening_piece' => $this->opening_piece,
+            'weight_per_carton' => $this->weight_per_carton,
+            'piece_per_carton' => $this->piece_per_carton,
             'available_carton' => $this->available_carton,
             'available_weight' => $this->available_weight,
             'available_pieces' => $this->available_pieces,
@@ -80,6 +85,7 @@ class StockViewSearch extends StockView
         $query->andFilterWhere(['like', 'item_code', $this->item_code])
             ->andFilterWhere(['like', 'item_name', $this->item_name])
             ->andFilterWhere(['like', 'location_code', $this->location_code])
+            ->andFilterWhere(['like', 'batch_no', $this->batch_no])
             ->andFilterWhere(['like', 'error_msg', $this->error_msg]);
 
         return $dataProvider;

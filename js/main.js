@@ -38,38 +38,65 @@ $(function () {
                 });
         });
 
-        $(document).on('keyup', '#stock-total_weight', function () {
-                var total_weight = $(this).val();
-                var available_stock = $("#stock-available_stock").val();
-                var closing = parseFloat(total_weight) + parseFloat(available_stock);
-                $("#stock-stock").val(total_weight);
-                $("#stock-closing_stock").val(closing.toFixed(2));
-        });
+     
 
-        $(document).on('click', '.select-stock-item', function () {
-                var id = 1;
-                $.ajax({
+//        $(document).on('click', '.select-stock-item', function () {
+//                var id = 1;
+//                $.ajax({
+//                        type: 'POST',
+//                        cache: false,
+//                        data: {id: id},
+//                        url: homeUrl + 'stock/stock-adjustment/item-details',
+//                        success: function (data) {
+//                                $("#modal-pop-up").html(data);
+//                                $('#modal-6').modal('show', {backdrop: 'static'});
+//                        }
+//                });
+//        });
+
+//        $(document).on('keyup', '#stockadjustment-adjust_weight', function () {
+//                var adjust_weight = $(this).val();
+//                var stock_weight = $('#stockadjustment-total_weight').val();
+//
+//                if (parseFloat(adjust_weight) > parseFloat(stock_weight)) {
+//                        $('#stockadjustment-stock_type').val('Stock In');
+//                } else {
+//                        $('#stockadjustment-stock_type').val('Stock Out');
+//                }
+//        });
+        
+        
+        $(document).on('keyup', '.add-open-stock', function () {
+               var item=$('#stock-item_id').val();
+                var total_weight = $('#stock-total_weight').val();
+                var available_stock = $("#stock-available_stock").val();
+                var total_pieces= $('#stock-pieces').val();
+               
+               $.ajax({
                         type: 'POST',
                         cache: false,
-                        data: {id: id},
-                        url: homeUrl + 'stock/stock-adjustment/item-details',
+                        data: {item: item},
+                        url: homeUrl + 'stock/stock/item-category',
                         success: function (data) {
-                                $("#modal-pop-up").html(data);
-                                $('#modal-6').modal('show', {backdrop: 'static'});
+                               if(data==1){
+                                    $("#stock-stock").val(total_weight);
+                                    var closing = parseFloat(total_weight) + parseFloat(available_stock);
+                               } else if(data==2){
+                                    $("#stock-stock").val(total_pieces);
+                                    var closing = parseFloat(total_pieces) + parseFloat(available_stock);
+                               }
+                               $("#stock-closing_stock").val(closing.toFixed(2));
                         }
                 });
         });
-
-        $(document).on('keyup', '#stockadjustment-adjust_weight', function () {
-                var adjust_weight = $(this).val();
-                var stock_weight = $('#stockadjustment-total_weight').val();
-
-                if (parseFloat(adjust_weight) > parseFloat(stock_weight)) {
-                        $('#stockadjustment-stock_type').val('Stock In');
-                } else {
-                        $('#stockadjustment-stock_type').val('Stock Out');
-                }
-        });
+        
+        $("#stock-cartons, #stock-total_weight,#stock-pieces").keypress(
+                function (e) {
+                        if (e.which != 8 && e.which != 0 && (e.which < 46 || e.which > 57)) {
+                                alert('Digits Only');
+                                return false;
+                        }
+                });
 
 
 

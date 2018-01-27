@@ -31,6 +31,18 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'location_code') ?>
 
+    <?php // echo $form->field($model, 'batch_no') ?>
+
+    <?php // echo $form->field($model, 'opening_carton') ?>
+
+    <?php // echo $form->field($model, 'opening_weight') ?>
+
+    <?php // echo $form->field($model, 'opening_piece') ?>
+
+    <?php // echo $form->field($model, 'weight_per_carton') ?>
+
+    <?php // echo $form->field($model, 'piece_per_carton') ?>
+
     <?php // echo $form->field($model, 'available_carton') ?>
 
     <?php // echo $form->field($model, 'available_weight') ?>
