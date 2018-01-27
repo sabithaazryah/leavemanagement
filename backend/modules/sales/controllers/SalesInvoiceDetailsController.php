@@ -132,11 +132,14 @@ class SalesInvoiceDetailsController extends Controller {
         }
     }
 
-    public function actionAdd($id = NULL) {
+    public function actionAdd($estimate = NULL) {
         $model = new SalesInvoiceDetails();
         $model_sales_master = new SalesInvoiceMaster();
+
         if ($model_sales_master->load(Yii::$app->request->post())) {
             $data = Yii::$app->request->post();
+            var_dump($data);
+            exit;
             $model_sales_master = $this->SaveSalesMaster($model_sales_master, $data);
             $transaction = Yii::$app->db->beginTransaction();
 
@@ -156,6 +159,7 @@ class SalesInvoiceDetailsController extends Controller {
         return $this->render('add', [
                     'model' => $model,
                     'model_sales_master' => $model_sales_master,
+                    'estimate' => $estimate,
         ]);
     }
 
@@ -637,7 +641,7 @@ class SalesInvoiceDetailsController extends Controller {
                     exit;
                 } else {
                     if (!empty($stock_details)) {
-                        $options = '<table><tr><th rowspan="2">Batch</th><th colspan="3">Available</th></tr><tr><th>Carton</th><th>Weight</th><th>Pieces</th></tr>';
+                        $options = '<table id="stock-list-' . $next_row_id . '" class="stock-list stock-list-disp"><tr><th rowspan="2">Batch</th><th colspan="3">Available</th></tr><tr><th>Carton</th><th>Weight</th><th>Pieces</th></tr>';
                         foreach ($stock_details as $stock_detail) {
                             $options .= "<tr><td>" . $stock_detail->batch_no . "</td><td>" . $stock_detail->available_carton . "</td><td>" . $stock_detail->available_weight . "</td><td>" . $stock_detail->available_pieces . "</td></tr>";
                             $avail_carton += $stock_detail->available_carton;
@@ -646,9 +650,11 @@ class SalesInvoiceDetailsController extends Controller {
                         }
                         $options .= '</table>';
                     }
+                    $taxes = \common\models\Tax::findAll(['status' => 1]);
                     $next_row = $this->renderPartial('next_row', [
                         'next' => $next,
                         'items' => $items,
+                        'taxes' => $taxes,
                     ]);
                     $tax = \common\models\Tax::findOne($item_datas->tax_id);
                     $arr_variable1 = array('next_row_html' => $next_row, 'next' => $next, 'item_rate' => $item_datas->MRP, 'tax_id' => $item_datas->tax_id, 'tax_type' => $tax->type, 'tax_value' => $tax->value, 'stock-table' => $options, 'avail-carton' => $avail_carton, 'avail-weight' => $avail_weight, 'avail-pieces' => $avail_pieces);

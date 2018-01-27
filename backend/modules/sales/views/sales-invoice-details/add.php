@@ -119,7 +119,7 @@ if (isset($estimate)) {
             </div>
 
             <hr class="billing-hr">
-
+            <?php $item_datas = ItemMaster::findAll(['status' => 1]); ?>
             <div class="table-responsive form-control-new" data-pattern="priority-columns" data-focus-btn-icon="fa-asterisk" data-sticky-table-header="true" data-add-display-all-btn="true" data-add-focus-btn="true" style="overflow: visible;">
                 <table cellspacing="0" class="table table-small-font table-bordered table-striped" id="add-invoicee">
                     <thead>
@@ -140,7 +140,7 @@ if (isset($estimate)) {
                     <tr class="filter" id="item-row-1">
                         <td>
                             <?php $item_datas = ItemMaster::findAll(['status' => 1]); ?>
-                            <select id="salesinvoicedetails-item_id-1" class="form-control salesinvoicedetails-item_id add-next" name="create[item_id][]">
+                            <select id="salesinvoicedetails-item_id-1" class="form-control salesinvoicedetails-item_id add-next" name="create[item_id][1]">
                                 <option value="">-Choose a Item-</option>
                                 <?php foreach ($item_datas as $item_data) {
                                     ?>
@@ -148,16 +148,16 @@ if (isset($estimate)) {
                                 <?php }
                                 ?>
                             </select>
-                            <input type="text" value="" placeholder="Description" class="form-control salesinvoicedetails-item_comment bill-comment" id="salesinvoicedetails-item-comment-1" name="create[comment][]" autocomplete="off" style="display: none;">
+                            <input type="text" value="" placeholder="Description" class="form-control salesinvoicedetails-item_comment bill-comment" id="salesinvoicedetails-item-comment-1" name="create[comment][1]" autocomplete="off" style="display: none;">
                         </td>
                         <td>
                             <div class="form-group field-salesinvoicedetails-discount_percentage has-success">
                                 <div class="row" style="margin:0px;">
                                     <div class="col-md-6" style="padding:0px;">
-                                        <input type="number" id="salesinvoicedetails-qty-1" value="" class="form-control salesinvoicedetails-qty" name="create[qty][]" placeholder="Qty" min="1" aria-invalid="false" autocomplete="off"  style="display:inline-block;">
+                                        <input type="number" id="salesinvoicedetails-qty-1" value="" class="form-control salesinvoicedetails-qty" name="create[qty][1]" placeholder="Qty" min="1" aria-invalid="false" autocomplete="off"  style="display:inline-block;">
                                     </div>
                                     <div class="col-md-6" style="padding:0px;">
-                                        <select id="salesinvoicedetails-type-1" class="form-control salesinvoicedetails-type" name="create[type][]">
+                                        <select id="salesinvoicedetails-type-1" class="form-control salesinvoicedetails-type" name="create[type][1]">
                                             <option value="1">Carton</option>
                                             <option value="2">Kg</option>
                                             <option value="3">Pieces</option>
@@ -167,9 +167,9 @@ if (isset($estimate)) {
                             </div>
                             <div id="stock-table-1" class="stock-dtl-tble">
                             </div>
-                            <input type="hidden" id="salesinvoicedetails-avail_carton-1" value="" class="form-control salesinvoicedetails-avail_carton" name="create[avail_carton][]" >
-                            <input type="hidden" id="salesinvoicedetails-avail_weight-1" value="" class="form-control salesinvoicedetails-avail_weight" name="create[avail_weight][]" >
-                            <input type="hidden" id="salesinvoicedetails-avail_pieces-1" value="" class="form-control salesinvoicedetails-avail_pieces" name="create[avail_pieces][]" >
+                            <input type="hidden" id="salesinvoicedetails-avail_carton-1" value="" class="form-control salesinvoicedetails-avail_carton" name="create[avail_carton][1]" >
+                            <input type="hidden" id="salesinvoicedetails-avail_weight-1" value="" class="form-control salesinvoicedetails-avail_weight" name="create[avail_weight][1]" >
+                            <input type="hidden" id="salesinvoicedetails-avail_pieces-1" value="" class="form-control salesinvoicedetails-avail_pieces" name="create[avail_pieces][1]" >
                         </td>
                         <td>
                             <div class="form-group field-salesinvoicedetails-rate has-success">
@@ -180,10 +180,10 @@ if (isset($estimate)) {
                             <div class="form-group field-salesinvoicedetails-discount_percentage has-success">
                                 <div class="row" style="margin:0px;">
                                     <div class="col-md-6" style="padding:0px;">
-                                        <input type="number" id="salesinvoicedetails-discount_value-1" value="" class="form-control salesinvoicedetails-discount_value" name="create[discount_value][]" placeholder="Discount" min="1" aria-invalid="false" autocomplete="off"  style="display:inline-block;">
+                                        <input type="number" id="salesinvoicedetails-discount_value-1" value="" class="form-control salesinvoicedetails-discount_value" name="create[discount_value][1]" placeholder="Discount" min="1" aria-invalid="false" autocomplete="off"  style="display:inline-block;">
                                     </div>
                                     <div class="col-md-6" style="padding:0px;">
-                                        <select id="salesinvoicedetails-discount_type-1" class="form-control salesinvoicedetails-discount_type" name="create[discount_type][]">
+                                        <select id="salesinvoicedetails-discount_type-1" class="form-control salesinvoicedetails-discount_type" name="create[discount_type][1]">
                                             <option value="1">Rs.</option>
                                             <option value="2">%</option>
                                         </select>
@@ -197,7 +197,7 @@ if (isset($estimate)) {
                         <td>
                             <div class="form-group field-salesinvoicedetails-tax has-success">
 
-                                <select id="salesinvoicedetails-tax-1" class="form-control salesinvoicedetails-tax" name="create[tax_id][]" aria-invalid="false">
+                                <select id="salesinvoicedetails-tax-1" class="form-control salesinvoicedetails-tax" name="create[tax_id][1]" aria-invalid="false">
                                     <option value="">Slelect a Tax</option>
                                     <?php
                                     foreach ($taxes as $tax) {
@@ -211,18 +211,18 @@ if (isset($estimate)) {
                                     <?php }
                                     ?>
                                 </select>
-                                <input type="hidden" id="salesinvoicedetails-tax_value-1" value="" class="form-control salesinvoicedetails-tax_value" name="create[tax_value][]" >
-                                <input type="hidden" id="salesinvoicedetails-tax_type-1" value="" class="form-control salesinvoicedetails-tax_type" name="create[tax_type][]" >
+                                <input type="hidden" id="salesinvoicedetails-tax_value-1" value="" class="form-control salesinvoicedetails-tax_value" name="create[tax_value][1]" >
+                                <input type="hidden" id="salesinvoicedetails-tax_type-1" value="" class="form-control salesinvoicedetails-tax_type" name="create[tax_type][1]" >
                             </div>
                         </td>
                         <td>
                             <div class="form-group field-salesinvoicedetails-line_total has-success">
-                                <input type="text" id="salesinvoicedetails-line_total-1" value="" class="form-control salesinvoicedetails-line_total" name="create[line_total][]" placeholder="Amount" aria-invalid="false" autocomplete="off">
+                                <input type="text" id="salesinvoicedetails-line_total-1" value="" class="form-control salesinvoicedetails-line_total" name="create[line_total][1]" placeholder="Amount" aria-invalid="false" autocomplete="off">
                             </div>
                         </td>
                         <td>
                             <div class="form-group field-salesinvoicedetails-line_total has-success" style="text-align: center;margin-top: 6px;">
-                                <input type="checkbox" id="salesinvoicedetails-inventory-1" name="check" value="1" checked="checked" uncheckValue="0">
+                                <input type="checkbox" id="salesinvoicedetails-inventory-1" name="create[inventory][1]" value="1" checked="checked" uncheckValue="0">
                             </div>
                         </td>
                         <td>
@@ -248,6 +248,64 @@ if (isset($estimate)) {
                 </table>
             </div>
             <a href="" id="add_another_line"><i class="fa fa-plus" aria-hidden="true"></i> Add Another Line</a>
+            <hr class="billing-hr">
+            <div class="panel-body">
+                <div class="sales-invoice-master-create">
+                    <div class="sales-invoice-master-form form-inline">
+
+                        <div class='col-md-4 col-sm-6 col-xs-12'>
+                            <?= $form->field($model_sales_master, 'general_terms')->textarea(['rows' => '6']) ?>
+                        </div>
+
+
+                        <div class='col-md-4 col-sm-6 col-xs-12' style="float:right;padding-right: 0px;">
+                            <table cellspacing="0" class="table table-small-font table-bordered table-striped" style="float:right;text-align: left;">
+                            <!--<table style="float:right;text-align: left;">-->
+                                <tr>
+                                    <td>Round off</td>
+                                    <td><input type="text" id="round_of" class="amount-receipt"  name="round_of" style="width: 100%;" autocomplete="off" value="<?= sprintf('%0.2f', 0); ?>"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Cash</td>
+                                    <td><input type="text" id="cash_amount" class="amount-receipt"  name="cash_amount" style="width: 100%;" autocomplete="off" value="<?= sprintf('%0.2f', 0); ?>"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Card</td>
+                                    <td><input type="text" id="card_amount" class="amount-receipt"  name="card_amount" style="width: 100%;" autocomplete="off" value="<?= sprintf('%0.2f', 0); ?>"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Amount Paid</td>
+                                    <td><input type="text" id="payed_amount" class="amount-receipt"  name="payed_amount" style="width: 100%;" readonly/></td></td>
+                                </tr>
+                                <tr>
+                                    <td>Balance</td>
+                                    <td><input type="text" id="balance" class="amount-receipt"  name="balance" style="width: 100%;" readonly/></td>
+                                    <!--<td><span id="balance"></span></td>-->
+                                </tr>
+                                <tr class="due-date-row">
+                                    <td>Due Date</td>
+                                    <td>
+                                        <?php
+                                        echo DatePicker::widget([
+                                            'name' => 'due_date',
+                                            'id' => 'due-date',
+                                            'type' => DatePicker::TYPE_INPUT,
+                                            'value' => date('d-m-Y'),
+                                            'pluginOptions' => [
+                                                'autoclose' => true,
+                                                'format' => 'dd-M-yyyy'
+                                            ]
+                                        ]);
+                                        ?>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-12">
                     <?php // Html::submitButton('Save & Print', ['class' => 'btn btn-secondary', 'name' => 'save-print', 'value' => 'save-print'])  ?>
@@ -329,6 +387,8 @@ if (isset($estimate)) {
         $(document).on('change', '.salesinvoicedetails-qty', function (e) {
             var current_row_id = $(this).attr('id').match(/\d+/); // 123456
             var qty = $(this).val();
+            var inventory = $('#salesinvoicedetails-inventory-' + current_row_id).val();
+            alert(inventory);
             var rate = $('#salesinvoicedetails-rate-' + current_row_id).val();
             var type = $('#salesinvoicedetails-type-' + current_row_id).val();
             var avail_carton_tot = $('#salesinvoicedetails-avail_carton-' + current_row_id).val();
@@ -439,6 +499,11 @@ if (isset($estimate)) {
                 if (data != 0) {
                     if ($('#salesinvoicedetails-item_id-' + current_row_id).hasClass('add-next')) {
                         $('#salesinvoicedetails-item-comment-' + current_row_id).css('display', 'block');
+                        if ($('.stock-list')[0]) {
+                            $('.stock-list').hide();
+                        } else {
+                            $("#stock-list-" + current_row_id + " table").show();
+                        }
                         $('#add-invoicee tr:last').after(res.result['next_row_html']);
                         $("#next_item_id").val(next);
                         $('.salesinvoicedetails-qty').attr('type', 'number');
@@ -459,10 +524,26 @@ if (isset($estimate)) {
                         {
                             $(this).data('select2').results.addClass('overflow-hidden').perfectScrollbar();
                         });
-                        if ($('#salesinvoicedetails-qty-' + current_row_id).val() != "" && $("#salesinvoicedetails-rate-" + current_row_id).val() != "") {
-                            lineTotalAmount(current_row_id);
+                    } else {
+                        $('#salesinvoicedetails-item-comment-' + current_row_id).css('display', 'block');
+                        if ($('.stock-list')[0]) {
+                            $('.stock-list').hide();
+                        } else {
+                            $("#stock-list-" + current_row_id + " table").show();
                         }
+                        $("#stock-table-" + current_row_id).html(res.result['stock-table']);
+                        $("#salesinvoicedetails-rate-" + current_row_id).val(res.result['item_rate']);
+                        $("#salesinvoicedetails-avail_pieces-" + current_row_id).val(res.result['avail-pieces']);
+                        $("#salesinvoicedetails-avail_weight-" + current_row_id).val(res.result['avail-weight']);
+                        $("#salesinvoicedetails-avail_carton-" + current_row_id).val(res.result['avail-carton']);
+                        $("#salesinvoicedetails-tax_type-" + current_row_id).val(res.result['tax_type']);
+                        $("#salesinvoicedetails-tax_value-" + current_row_id).val(res.result['tax_value']);
+                        var iddd = '#salesinvoicedetails-tax-' + current_row_id;
+                        $("" + iddd + " option[value='" + res.result['tax_id'] + "']").prop('selected', true);
                     }
+                }
+                if ($('#salesinvoicedetails-qty-' + current_row_id).val() != "" && $("#salesinvoicedetails-rate-" + current_row_id).val() != "") {
+                    lineTotalAmount(current_row_id);
                 }
 //                calculateSubtotal();
             }
