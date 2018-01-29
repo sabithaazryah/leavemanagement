@@ -11,6 +11,8 @@ use yii\filters\VerbFilter;
 use common\models\SalesInvoiceMaster;
 use common\models\SalesInvoiceMasterSearch;
 use common\models\BusinessPartner;
+use yii\helpers\Json;
+use common\models\StockView;
 
 /**
  * SalesInvoiceDetailsController implements the CRUD actions for SalesInvoiceDetails model.
@@ -138,21 +140,12 @@ class SalesInvoiceDetailsController extends Controller {
 
         if ($model_sales_master->load(Yii::$app->request->post())) {
             $data = Yii::$app->request->post();
-            var_dump($data);
-            exit;
             $model_sales_master = $this->SaveSalesMaster($model_sales_master, $data);
-            $transaction = Yii::$app->db->beginTransaction();
-
-            try {
-                if ($model_sales_master->save()) {
-                    $transaction->commit();
-                    Yii::$app->session->setFlash('success', "New Invoice created successfully.");
-                } else {
-                    $transaction->rollBack();
+            if ($model_sales_master->save()) {
+                if (isset($_POST['create']) && $_POST['create'] != '') {
+                    $this->SalesCreate($_POST['create'], $model_sales_master);
                 }
-            } catch (Exception $e) {
-                $transaction->rollBack();
-                Yii::$app->session->setFlash('error', "There was a problem creating new invoice. Please try again.");
+                Yii::$app->session->setFlash('success', "New Invoice created successfully.");
             }
             return $this->redirect(['add']);
         }
@@ -166,175 +159,104 @@ class SalesInvoiceDetailsController extends Controller {
     public function SaveSalesMaster($model_sales_master, $data) {
         $model_sales_master->sales_invoice_date = date("Y-m-d H:i:s");
         $model_sales_master->po_date = date("Y-m-d", strtotime(str_replace('/', '-', $model_sales_master->po_date)));
-        $model_sales_master->salesman = $data['SalesInvoiceMaster']['salesman'];
-        $model_sales_master->reference = $data['SalesInvoiceMaster']['reference'];
-        $model_sales_master->general_terms = $data['SalesInvoiceMaster']['general_terms'];
+        $model_sales_master->salesman = Yii::$app->user->identity->id;
         if ($data['order_sub_total'] > 0) {
             $model_sales_master->amount = $data['amount_without_tax'];
             $model_sales_master->tax_amount = $data['tax_sub_total'];
             $model_sales_master->order_amount = $data['order_sub_total'];
             $model_sales_master->cash_amount = $data['cash_amount'];
-            $model_sales_master->card_amount = $data['card_amount'];
             $model_sales_master->round_of_amount = $data['round_of'];
             $model_sales_master->discount_amount = $data['discount_sub_total'];
             $model_sales_master->amount_payed = $data['payed_amount'];
             $model_sales_master->due_amount = $data['balance'];
-            $model_sales_master->due_date = date("Y-m-d", strtotime($data['due_date']));
+            if ($data['balance'] > 0) {
+                $model_sales_master->due_date = date("Y-m-d", strtotime($data['due_date']));
+            }
         }
         $model_sales_master->status = 1;
         Yii::$app->SetValues->Attributes($model_sales_master);
         return $model_sales_master;
     }
 
-    public function GetGoodsServiceTotal($arr) {
-        $goods_total = 0;
-        foreach ($arr as $val) {
-            $item_datas = \common\models\ItemMaster::find()->where(['id' => $val['SalesInvoiceDetailsItem']])->one();
-            if (!empty($item_datas)) {
-                $qty = $val['SalesInvoiceDetailsQty'];
-                if ($item_datas->item_type == 0) {
-                    $goods_total += $qty * $item_datas->item_cost;
-                }
-            }
-        }
-        $datas = array('goods-total' => $goods_total);
-        return $datas;
-    }
-
-    public function SaveSaleGld($model_sales_master) {
+    public function SalesCreate($create, $model_sales_master) {
         $flag = 0;
-        $gld_master = new \common\models\GldMst();
-        $gld_master->journal_type = 1;
-        $gld_master->voucher_type = 8;
-        $gld_master->document_no = $model_sales_master->sales_invoice_number;
-        $gld_master->document_date = $model_sales_master->sales_invoice_date;
-        $financial_year_data = $this->GetFinancialYear($model_sales_master->sales_invoice_date);
-        $gld_master->financial_year = $financial_year_data->financial_year;
-        $gld_master->financial_year_id = $financial_year_data->id;
-        $gld_master->debit_amount = $model_sales_master->discount_amount + $model_sales_master->order_amount + $model_sales_master->goods_total;
-        $gld_master->credit_amount = $model_sales_master->amount + $model_sales_master->tax_amount + $model_sales_master->goods_total;
-        $gld_master->balance_amount = $model_sales_master->due_amount;
-        $gld_master->status = 0;
-        Yii::$app->SetValues->Attributes($gld_master);
-        if ($gld_master->save()) {
-            if ($this->SaveSaleGldDetails($model_sales_master, $gld_master)) {
-                $flag = 1;
-            } else {
-                $flag = 0;
-            }
+        $arr = [];
+        $i = 0;
+        foreach ($create['item_id'] as $val) {
+            $arr[$i]['item_id'] = $val;
+            $i++;
         }
-        if ($flag == 1) {
-            return TRUE;
-        } else {
-            return FALSE;
+        $i = 0;
+        foreach ($create['comment'] as $val) {
+            $arr[$i]['comment'] = $val;
+            $i++;
         }
-    }
-
-    public function SaveSaleGldDetails($model_sales_master, $gld_master) {
-        $flag = 0;
-        $j = 0;
-        $arr = array(Yii::$app->params['accounts_receivables'], Yii::$app->params['tax_payables'], Yii::$app->params['sales'], Yii::$app->params['sales_discount'], Yii::$app->params['inventory_assets'], Yii::$app->params['cost_of_goods_sold']);
-        foreach ($arr as $x) {
-            $j++;
-            $gld_details = new \common\models\GldDtl();
-            $gld_details->GLDMstID = $gld_master->id;
-            $gld_details->voucher_type = $gld_master->voucher_type;
-            $gld_details->document_no = $gld_master->document_no;
-            $gld_details->document_date = $gld_master->document_date;
-            $gld_details->pos = $j;
-            $gld_details->account_id = $x;
-            $chart_of_account = \common\models\ChartofAccounts::findOne(['id' => $x]);
-            $gld_details->account_number = $chart_of_account->account_number;
-            $gld_details->account_name = $chart_of_account->account_name;
-            $gld_details->description = '';
-            if ($x == Yii::$app->params['accounts_receivables']) {
-                $gld_details->bp_code = $model_sales_master->busines_partner_code;
-                $bp_name = \common\models\BusinessPartner::findOne(['id' => $model_sales_master->busines_partner_code])->name;
-                $gld_details->bp_name = $bp_name;
-                $gld_details->debit_amount = $model_sales_master->order_amount;
-            } elseif ($x == Yii::$app->params['sales']) {
-                $gld_details->credit_amount = $model_sales_master->amount;
-            } elseif ($x == Yii::$app->params['sales_discount']) {
-                $gld_details->debit_amount = $model_sales_master->discount_amount;
-            } elseif ($x == Yii::$app->params['tax_payables']) {
-                $gld_details->credit_amount = $model_sales_master->tax_amount;
-            } elseif ($x == Yii::$app->params['inventory_assets']) {
-                $gld_details->credit_amount = $model_sales_master->goods_total;
-            } elseif ($x == Yii::$app->params['cost_of_goods_sold']) {
-                $gld_details->debit_amount = $model_sales_master->goods_total;
-            }
-            $gld_details->status = 0;
-            $gld_details->CB = Yii::$app->user->identity->id;
-            $gld_details->UB = Yii::$app->user->identity->id;
-            $gld_details->DOC = date('Y-m-d');
-            if ($gld_details->save()) {
-                $flag = 1;
-            } else {
-                $flag = 0;
-            }
+        $i = 0;
+        foreach ($create['qty'] as $val) {
+            $arr[$i]['qty'] = $val;
+            $i++;
         }
-        if ($flag == 1) {
-            return TRUE;
-        } else {
-            return FALSE;
+        $i = 0;
+        foreach ($create['type'] as $val) {
+            $arr[$i]['type'] = $val;
+            $i++;
         }
-    }
-
-    public function GetFinancialYear($invoice_date) {
-        $sale_date = date('Y-m-d', strtotime($invoice_date));
-        $financial_datas = \common\models\FinancialYears::find()->all();
-        foreach ($financial_datas as $value) {
-            $contractDateBegin = date('Y-m-d', strtotime($value->start_period));
-            $contractDateEnd = date('Y-m-d', strtotime($value->end_period));
-            if (($sale_date > $contractDateBegin) && ($sale_date < $contractDateEnd)) {
-                return $value;
-            }
+        $i = 0;
+        foreach ($create['avail_carton'] as $val) {
+            $arr[$i]['avail_carton'] = $val;
+            $i++;
         }
-    }
-
-    public function SaveNotification($model_sales_master, $data) {
-        $notification = new Notifications();
-        $notification->notification_type = 1; //Due Amount Notification
-        $notification->notification_subtype = 1; //Due Amount Notification for sale invoice
-        $notification->master_id = $model_sales_master->id; //Due Amount Notification sale invoice ID
-        $notification->due_amount = $model_sales_master->due_amount; //Due Amount for sale invoice
-        $notification->due_date = date("Y-m-d", strtotime($data['due_date'])); //Due date for sale invoice
-        $notification->status = 1;
-        $notification->save();
-        return;
-    }
-
-    public function SaveSaleReceipt($model_sales_master, $payment_type) {
-        $flag = 0;
-        if ($model_sales_master->amount_payed > 0) {
-            $payment_details = new PaymentMst();
-            $payment_details->transaction_type = $payment_type;
-            $payment_details->voucher_type = 6;
-            $payment_details->document_date = $model_sales_master->sales_invoice_date;
-            $data = $this->generateDocumentNo($model_sales_master->sales_invoice_date, 6);
-            $payment_details->document_no = $data['document-no'];
-            $payment_details->bp_code = $model_sales_master->busines_partner_code;
-            $payment_details->due_amount = $model_sales_master->due_amount;
-            $payment_details->payment_mode = 4;
-            $payment_details->tds_amount = $model_sales_master->tax_amount;
-            $payment_details->amount = $model_sales_master->amount;
-            $payment_details->net_amount = $model_sales_master->amount + $model_sales_master->tax_amount;
-            $payment_details->total_amount = $model_sales_master->order_amount;
-            Yii::$app->SetValues->Attributes($payment_details);
-            if ($payment_details->save()) {
-                $aditional = new PaymentDtl();
-                $this->SaveReceiptDetails($model_sales_master, $payment_details, $aditional);
-                if ($aditional->save()) {
-                    $voucher_series = \common\models\VoucherSeries::findOne(['voucher_type' => $payment_details->voucher_type, 'financial_year_id' => $data['financial-year-id'], 'financial_year' => $data['financial-year']]);
-                    $this->UpdateSerialNo($payment_details, $voucher_series);
-                    if ($this->SaveReceiptGld($payment_details, $model_sales_master)) {
-                        if ($voucher_series->save()) {
-                            $flag = 1;
-                        }
-                    }
-                }
-            }
-        } else {
+        $i = 0;
+        foreach ($create['avail_weight'] as $val) {
+            $arr[$i]['avail_weight'] = $val;
+            $i++;
+        }
+        $i = 0;
+        foreach ($create['avail_pieces'] as $val) {
+            $arr[$i]['avail_pieces'] = $val;
+            $i++;
+        }
+        $i = 0;
+        foreach ($create['rate'] as $val) {
+            $arr[$i]['rate'] = $val;
+            $i++;
+        }
+        $i = 0;
+        foreach ($create['discount_value'] as $val) {
+            $arr[$i]['discount_value'] = $val;
+            $i++;
+        }
+        $i = 0;
+        foreach ($create['discount_type'] as $val) {
+            $arr[$i]['discount_type'] = $val;
+            $i++;
+        }
+        $i = 0;
+        foreach ($create['tax_id'] as $val) {
+            $arr[$i]['tax_id'] = $val;
+            $i++;
+        }
+        $i = 0;
+        foreach ($create['tax_value'] as $val) {
+            $arr[$i]['tax_value'] = $val;
+            $i++;
+        }
+        $i = 0;
+        foreach ($create['tax_type'] as $val) {
+            $arr[$i]['tax_type'] = $val;
+            $i++;
+        }
+        $i = 0;
+        foreach ($create['line_total'] as $val) {
+            $arr[$i]['line_total'] = $val;
+            $i++;
+        }
+        $i = 0;
+        foreach ($create['inventory'] as $val) {
+            $arr[$i]['inventory'] = $val;
+            $i++;
+        }
+        if ($this->AddSalesDetails($arr, $model_sales_master)) {
             $flag = 1;
         }
         if ($flag == 1) {
@@ -344,204 +266,38 @@ class SalesInvoiceDetailsController extends Controller {
         }
     }
 
-    public function SaveReceiptGld($payment_details, $model_sales_master) {
-        $flag = 0;
-        $gld_master = new \common\models\GldMst();
-        $gld_master->journal_type = 1;
-        $gld_master->voucher_type = 6;
-        $gld_master->document_no = $payment_details->document_no;
-        $gld_master->document_date = $payment_details->document_date;
-        $financial_year_data = $this->GetFinancialYear($model_sales_master->sales_invoice_date);
-        $gld_master->financial_year = $financial_year_data->financial_year;
-        $gld_master->financial_year_id = $financial_year_data->id;
-        $gld_master->debit_amount = $model_sales_master->cash_amount + $model_sales_master->card_amount + $model_sales_master->tax_amount + $model_sales_master->round_of_amount;
-        $gld_master->credit_amount = $model_sales_master->amount + $model_sales_master->tax_amount;
-        $gld_master->balance_amount = $model_sales_master->due_amount;
-        $gld_master->status = 0;
-        Yii::$app->SetValues->Attributes($gld_master);
-        if ($gld_master->save()) {
-            if ($this->SaveReceiptGldDetails($model_sales_master, $gld_master)) {
-                $flag = 1;
-            } else {
-                $flag = 0;
-            }
-        }
-        if ($flag == 1) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
-
-    public function SaveReceiptGldDetails($model_sales_master, $gld_master) {
-        $flag = 0;
-        $j = 0;
-        $inv_parameter = \common\models\InvoiceParameter::findOne(['id' => 1]);
-        $arr = array($inv_parameter->cash_account, Yii::$app->params['accounts_receivables'], Yii::$app->params['tax_receivables'], Yii::$app->params['cash_discount'], $inv_parameter->card_account);
-        foreach ($arr as $x) {
-            $j++;
-            $gld_details = new \common\models\GldDtl();
-            $gld_details->GLDMstID = $gld_master->id;
-            $gld_details->voucher_type = $gld_master->voucher_type;
-            $gld_details->document_no = $gld_master->document_no;
-            $gld_details->document_date = $gld_master->document_date;
-            $gld_details->pos = $j;
-            $gld_details->account_id = $x;
-            $chart_of_account = \common\models\ChartofAccounts::findOne(['id' => $x]);
-            $gld_details->account_number = $chart_of_account->account_number;
-            $gld_details->account_name = $chart_of_account->account_name;
-            $gld_details->description = '';
-            if ($x == Yii::$app->params['accounts_receivables']) {
-                $gld_details->bp_code = $model_sales_master->busines_partner_code;
-                $bp_name = \common\models\BusinessPartner::findOne(['id' => $model_sales_master->busines_partner_code])->name;
-                $gld_details->bp_name = $bp_name;
-                $gld_details->credit_amount = $model_sales_master->amount + $model_sales_master->tax_amount;
-            } elseif ($x == Yii::$app->params['cash_in_hand']) {
-                $gld_details->debit_amount = $model_sales_master->cash_amount;
-            } elseif ($x == Yii::$app->params['tax_receivables']) {
-                $gld_details->debit_amount = $model_sales_master->tax_amount;
-            } elseif ($x == Yii::$app->params['cash_discount']) {
-                $gld_details->debit_amount = $model_sales_master->round_of_amount;
-            } elseif ($x == Yii::$app->params['federal_bank_ekm']) {
-                $gld_details->debit_amount = $model_sales_master->card_amount;
-            }
-            $gld_details->status = 0;
-            $gld_details->CB = Yii::$app->user->identity->id;
-            $gld_details->UB = Yii::$app->user->identity->id;
-            $gld_details->DOC = date('Y-m-d');
-            if ($gld_details->save()) {
-                $flag = 1;
-            } else {
-                $flag = 0;
-            }
-        }
-        if ($flag == 1) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
-
-    public function SaveReceiptDetails($model_sales_master, $payment_details, $aditional) {
-        $aditional->payment_mst_id = $payment_details->id;
-        $aditional->invoice_no = $model_sales_master->sales_invoice_number;
-        $aditional->invoice_date = $model_sales_master->sales_invoice_date;
-        $aditional->invoice_amount = $model_sales_master->order_amount;
-        $aditional->due_amount = $model_sales_master->due_amount;
-        $aditional->paid_amount = $model_sales_master->amount_payed;
-        $aditional->status = 0;
-        $aditional->CB = Yii::$app->user->identity->id;
-        $aditional->UB = Yii::$app->user->identity->id;
-        $aditional->DOC = date('Y-m-d');
-        return $aditional;
-    }
-
-    public function UpdateSerialNo($payment_details, $voucher_series) {
-        $document_no = explode('/', $payment_details->document_no);
-        $num = $document_no[2] + 1;
-        $voucher_series->sequence_no = $num;
-        return $voucher_series;
-    }
-
-    public function generateDocumentNo($purchase_date, $voucher_type) {
-        $year = date("Y", strtotime(str_replace('/', '-', $purchase_date)));
-        $series = \common\models\VoucherSeries::find()->where(['voucher_type' => $voucher_type, 'financial_year' => $year])->one();
-        if (empty($series)) {
-            $document_no = '';
-        } else {
-            $digit = '%0' . $series->digits . 'd';
-            $document_no = $series->prefix . (sprintf($digit, $series->sequence_no));
-        }
-        $document_data = array('document-no' => $document_no, 'financial-year-id' => $series->financial_year_id, 'financial-year' => $series->financial_year);
-        return $document_data;
-    }
-
-    public function SaveSalesDetails($model_sales_master, $data) {
-        $arr = [];
-        $i = 0;
-        foreach ($data['SalesInvoiceDetailsItem'] as $val) {
-            $arr[$i]['SalesInvoiceDetailsItem'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($data['SalesInvoiceDetailsQty'] as $val) {
-            $arr[$i]['SalesInvoiceDetailsQty'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($data['sales-uom'] as $val) {
-            $arr[$i]['sales-uom'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($data['SalesInvoiceDetailsRate'] as $val) {
-            $arr[$i]['SalesInvoiceDetailsRate'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($data['SalesInvoiceDetailsDiscountType'] as $val) {
-            $arr[$i]['SalesInvoiceDetailsDiscountType'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($data['SalesInvoiceDetailsDiscountValue'] as $val) {
-            $arr[$i]['SalesInvoiceDetailsDiscountValue'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($data['SalesInvoiceDetailsTax'] as $val) {
-            $arr[$i]['SalesInvoiceDetailsTax'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($data['SalesInvoiceDetailsLineTotal'] as $val) {
-            $arr[$i]['SalesInvoiceDetailsLineTotal'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($data['SalesInvoiceDetailsItemComment'] as $val) {
-            $arr[$i]['SalesInvoiceDetailsItemComment'] = $val;
-            $i++;
-        }
-        return $arr;
-//        $this->AddSalesDetails($arr, $model_sales_master);
-    }
-
     public function AddSalesDetails($arr, $model_sales_master) {
-        $j = 0;
         $flag = 0;
         foreach ($arr as $val) {
-            $j++;
             $aditional = new SalesInvoiceDetails();
-            $item_datas = \common\models\ItemMaster::find()->where(['id' => $val['SalesInvoiceDetailsItem']])->one();
+            $item_datas = \common\models\ItemMaster::find()->where(['id' => $val['item_id']])->one();
             if (!empty($item_datas)) {
                 $aditional->sales_invoice_master_id = $model_sales_master->id;
                 $aditional->sales_invoice_number = $model_sales_master->sales_invoice_number;
                 $aditional->sales_invoice_date = $model_sales_master->sales_invoice_date;
                 $aditional->busines_partner_code = $model_sales_master->busines_partner_code;
                 $aditional->salesman = $model_sales_master->salesman;
-                $aditional->item_id = $val['SalesInvoiceDetailsItem'];
-                $aditional->item_code = $item_datas->SKU;
+                $aditional->item_id = $val['item_id'];
+                $aditional->item_code = $item_datas->item_code;
                 $aditional->item_name = $item_datas->item_name;
                 $aditional->base_unit = $item_datas->base_unit_id;
-                $aditional->qty = $val['SalesInvoiceDetailsQty'];
-                if (isset($item_datas->hsn)) {
-                    $aditional->hsn = $item_datas->hsn;
-                }
-                $aditional->rate = $val['SalesInvoiceDetailsRate'];
+                $aditional->type = $val['type'];
+                $quantity = $this->SaleQuantity($aditional->item_id, $aditional->type, $val['qty']);
+                $aditional->qty = $quantity['tot-weight'];
+                $aditional->rate = $val['rate'];
                 $aditional->amount = $aditional->qty * $aditional->rate;
-                $aditional->discount_type = $val['SalesInvoiceDetailsDiscountType'];
-                $aditional->discount_value = $val['SalesInvoiceDetailsDiscountValue'];
-                if ($aditional->discount_type == 0) {
-                    $aditional->discount_amount = $val['SalesInvoiceDetailsDiscountValue'];
+                $aditional->discount_type = $val['discount_type'];
+                $aditional->discount_value = $val['discount_value'];
+                if ($aditional->discount_type == 1) {
+                    $aditional->discount_amount = $val['discount_value'];
                 } else {
-                    $aditional->discount_amount = ($aditional->amount * $val['SalesInvoiceDetailsDiscountValue']) / 100;
+                    $aditional->discount_amount = ($aditional->amount * $val['discount_value']) / 100;
                 }
                 $aditional->net_amount = $aditional->amount - $aditional->discount_amount;
-                $aditional->line_total = $val['SalesInvoiceDetailsLineTotal'];
-                $aditional->tax_id = $val['SalesInvoiceDetailsTax'];
+                $aditional->line_total = $val['line_total'];
+                $aditional->tax_id = $val['tax_id'];
                 $tax = \common\models\Tax::findOne(['id' => $aditional->tax_id]);
-                if ($tax->type == 1) {
+                if ($tax->type == 2) {
                     $tax_amount = $tax->value;
                 } else {
                     $tax_amount = ($aditional->net_amount * $tax->value) / 100;
@@ -549,30 +305,16 @@ class SalesInvoiceDetailsController extends Controller {
                 $aditional->tax_amount = $tax_amount;
                 $aditional->tax_type = $tax->type;
                 $aditional->tax_percentage = $tax->value;
-                $aditional->line_total = $val['SalesInvoiceDetailsLineTotal'];
-                $aditional->comments = $val['SalesInvoiceDetailsItemComment'];
+                $aditional->comments = $val['comment'];
+                $aditional->qty_description = Json::encode($quantity['arr']);
                 $aditional->status = 1;
                 $aditional->CB = Yii::$app->user->identity->id;
                 $aditional->UB = Yii::$app->user->identity->id;
                 $aditional->DOC = date('Y-m-d');
                 if ($aditional->save()) {
-                    if ($item_datas->item_type == 0) {
-                        $stock = new StockRegister();
-                        $stock = $this->AddStockRegister($aditional, $j, $stock);
-                        if ($stock->save()) {
-                            if ($this->AddStockView($stock)) {
-                                $flag = 1;
-                            } else {
-                                $flag = 0;
-                            }
-                        } else {
-                            $flag = 0;
-                        }
-                    } else {
+                    if ($this->AddStockRegister($aditional)) {
                         $flag = 1;
                     }
-                } else {
-                    $flag = 0;
                 }
             }
         }
@@ -581,6 +323,140 @@ class SalesInvoiceDetailsController extends Controller {
         } else {
             return FALSE;
         }
+    }
+
+    public function AddStockRegister($aditional) {
+        $flag = 0;
+        $datas = Json::decode($aditional->qty_description);
+        foreach ($datas as $value) {
+            $stock = new \common\models\StockRegister();
+            $stock->transaction = 0;
+            $stock->document_no = $aditional->sales_invoice_number;
+            $stock->document_date = $aditional->sales_invoice_date;
+            $stock->item_id = $aditional->item_id;
+            $stock->item_code = $aditional->item_code;
+            $stock->item_name = $aditional->item_name;
+            $stock->batch_no = $value->batch_name;
+            $stock->cartoon_out = $value['no_of_carton'];
+            $stock->piece_out = 0;
+            $stock->weight_out = $value['no_of_weight'];
+            $stock->location_code = 'HOFF';
+            $stock->item_cost = $aditional->rate;
+            $stock->balance_qty = 0;
+            $stock->total_cost = $aditional->line_total;
+            $stock->status = 1;
+            $stock->CB = Yii::$app->user->identity->id;
+            $stock->UB = Yii::$app->user->identity->id;
+            $stock->DOC = date('Y-m-d');
+            if ($stock->save()) {
+                if ($this->AddStockView($stock)) {
+                    $flag = 1;
+                }
+            }
+        }
+        if ($flag == 1) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function AddStockView($stock) {
+        $stock_view = StockView::find()->where(['item_id' => $stock->batch_no])->one();
+        $stock_view->available_carton -= $stock->cartoon_out;
+        $stock_view->available_weight -= $stock->weight_out;
+        if ($stock_view->save()) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function SaleQuantity($item_id, $type, $qty) {
+        $items = \common\models\StockView::find()->where(['item_id' => $item_id])->all();
+        $arr = array();
+        $total_wgt = 0;
+        if ($type == 1) {
+            $q = $qty;
+            $i = 0;
+            foreach ($items as $item) {
+                $weight = 0;
+                if ($q == $item->available_carton) {
+                    $weight = $item->available_weight;
+                    $arr[$i]['no_of_carton'] = $q;
+                    $arr[$i]['no_of_weight'] = $weight;
+                    $arr[$i]['batch_name'] = $item->batch_no;
+                    $total_wgt += $weight;
+                    break;
+                } elseif ($q < $item->available_carton) {
+                    $weight = $q * $item->weight_per_carton;
+                    $arr[$i]['no_of_carton'] = $q;
+                    $arr[$i]['no_of_weight'] = $weight;
+                    $arr[$i]['batch_name'] = $item->batch_no;
+                    $total_wgt += $weight;
+                    break;
+                } elseif ($q > $item->available_carton) {
+                    $weight = $item->weight_per_carton * $item->weight_per_carton;
+                    $arr[$i]['no_of_carton'] = $item->weight_per_carton;
+                    $arr[$i]['no_of_weight'] = $weight;
+                    $arr[$i]['batch_name'] = $item->batch_no;
+                    $q = $q - $item->available_carton;
+                    $total_wgt += $weight;
+                }
+                $i++;
+            }
+        } elseif ($type == 2) {
+            $q = $qty;
+            $i = 0;
+            foreach ($items as $item) {
+                $weight = 0;
+                if ($q == $item->available_weight) {
+                    $weight = $item->available_weight;
+                    if ($item->available_carton > 0 && $item->available_carton != '') {
+                        $arr[$i]['no_of_carton'] = $item->available_carton;
+                    }
+                    $arr[$i]['no_of_weight'] = $weight;
+                    $arr[$i]['batch_name'] = $item->batch_no;
+                    $total_wgt += $weight;
+                    break;
+                } elseif ($q < $item->available_weight) {
+                    $weight = $q;
+                    if ($item->available_carton > 0 && $item->available_carton != '') {
+                        $rem = $q / $item->weight_per_carton;
+                        $arr[$i]['no_of_carton'] = (int) ($rem);
+                    }
+                    $arr[$i]['no_of_weight'] = $q;
+                    $arr[$i]['batch_name'] = $item->batch_no;
+                    $total_wgt += $weight;
+                    break;
+                } elseif ($q > $item->available_weight) {
+                    $weight = $item->available_weight;
+                    if ($item->available_carton > 0 && $item->available_carton != '') {
+                        $arr[$i]['no_of_carton'] = $item->available_carton;
+                    }
+                    $arr[$i]['no_of_weight'] = $weight;
+                    $arr[$i]['batch_name'] = $item->batch_no;
+                    $q = $q - $item->available_weight;
+                    $total_wgt += $weight;
+                }
+                $i++;
+            }
+        } elseif ($type == 3) {
+            foreach ($items as $item) {
+                $weight_kg += $item->piece_per_carton / $item->weight_per_carton;
+                if ($qty == $item->available_pieces) {
+                    $weight += $qty * $weight_kg;
+                    break;
+                } elseif ($qty < $item->available_pieces) {
+                    $weight += $qty * $weight_kg;
+                    break;
+                } elseif ($qty > $item->available_pieces) {
+                    $weight += $qty * $weight_kg;
+                }
+            }
+        }
+        $document_data = array('arr' => $arr, 'tot-weight' => $total_wgt);
+        return $document_data;
     }
 
     /**
@@ -677,6 +553,45 @@ class SalesInvoiceDetailsController extends Controller {
             $new_row = array('next_row_html' => $next_row);
             $data['result'] = $new_row;
             return json_encode($data);
+        }
+    }
+
+    public function actionGetSalesQuantity() {
+        if (Yii::$app->request->isAjax) {
+            $item_id = $_POST['item_id'];
+            $qty = $_POST['qty'];
+            $type = $_POST['type'];
+            $weight = 0;
+            $items = \common\models\StockView::find()->where(['item_id' => $item_id])->all();
+            if ($type == 1) {
+                $q = $qty;
+                foreach ($items as $item) {
+                    if ($q == $item->available_carton) {
+                        $weight += $item->available_weight;
+                        break;
+                    } elseif ($q < $item->available_carton) {
+                        $weight += $q * $item->weight_per_carton;
+                        break;
+                    } elseif ($q > $item->available_carton) {
+                        $weight += $item->weight_per_carton * $item->weight_per_carton;
+                        $q = $q - $item->available_carton;
+                    }
+                }
+            } elseif ($type == 3) {
+                foreach ($items as $item) {
+                    $weight_kg += $item->piece_per_carton / $item->weight_per_carton;
+                    if ($qty == $item->available_pieces) {
+                        $weight += $qty * $weight_kg;
+                        break;
+                    } elseif ($qty < $item->available_pieces) {
+                        $weight += $qty * $weight_kg;
+                        break;
+                    } elseif ($qty > $item->available_pieces) {
+                        $weight += $qty * $weight_kg;
+                    }
+                }
+            }
+            return ($weight);
         }
     }
 

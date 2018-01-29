@@ -14,15 +14,21 @@
     <td>
         <div class="form-group field-salesinvoicedetails-discount_percentage has-success">
             <div class="row" style="margin:0px;">
-                <div class="col-md-6" style="padding:0px;">
+                <div class="col-md-4" style="padding:0px;">
                     <input type="number" id="salesinvoicedetails-qty-<?= $next ?>" value="" class="form-control salesinvoicedetails-qty" name="create[qty][<?= $next ?>]" placeholder="Qty" min="1" aria-invalid="false" autocomplete="off"  style="display:inline-block;">
                 </div>
-                <div class="col-md-6" style="padding:0px;">
+                <div class="col-md-4" style="padding:0px;">
                     <select id="salesinvoicedetails-type-<?= $next ?>" class="form-control salesinvoicedetails-type" name="create[type][<?= $next ?>]">
                         <option value="1">Carton</option>
                         <option value="2">Kg</option>
                         <option value="3">Pieces</option>
                     </select>
+                </div>
+                <div class="col-md-3" style="padding:0px;">
+                    <input type="text" id="salesinvoicedetails-qty_val-<?= $next ?>" value="" class="form-control salesinvoicedetails-qty_val" name="create[qty_val][<?= $next ?>]" readonly>
+                </div>
+                <div class="col-md-1" style="padding:0px;">
+                    <p style="padding: 7px 0px 0px 3px;color: #585656;">Kg</p>
                 </div>
             </div>
             <div id="stock-table-<?= $next ?>" class="stock-dtl-tble">
@@ -60,7 +66,7 @@
                 <option value="">Slelect a Tax</option>
                 <?php
                 foreach ($taxes as $tax) {
-                    if ($tax->type == 0) {
+                    if ($tax->type == 1) {
                         $type = '%';
                     } else {
                         $type = 'Rs';
@@ -80,11 +86,8 @@
         </div>
     </td>
     <td>
-        <div class="form-group field-salesinvoicedetails-line_total has-success" style="text-align: center;margin-top: 6px;">
-            <input type="checkbox" id="salesinvoicedetails-inventory-<?= $next ?>" name="create[inventory][<?= $next ?>]" value="1" checked="checked" uncheckValue="0">
-        </div>
-    </td>
-    <td>
-        <a id="del" class="" ><i class="fa fa-times sales-invoice-delete"></i></a>
+        <input type="hidden" id="sales-inventory-<?= $next ?>" class="sales-inventory" name="create[inventory][<?= $next ?>]" value="1" checked="checked"/>
+        <input type="checkbox" id="salesinvoicedetails-inventory-<?= $next ?>" class="salesinvoicedetails-inventory" name="" value="" checked="checked" title="Checked for Inventory"/>
+        <a id="del" class="" ><i class="fa fa-times sales-invoice-delete" title="Remove Row"></i></a>
     </td>
 </tr>
