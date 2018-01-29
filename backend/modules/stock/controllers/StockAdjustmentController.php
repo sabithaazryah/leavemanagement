@@ -35,7 +35,7 @@ class StockAdjustmentController extends Controller {
          * @return mixed
          */
         public function actionIndex() {
-                $searchModel = new StockAdjustmentSearch();
+                $searchModel = new \common\models\StockSearch();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
                 return $this->render('index', [
@@ -75,6 +75,7 @@ class StockAdjustmentController extends Controller {
                         $model->item_id = $stock_view->item_id;
                         $stock_view->save();
                         $model->save();
+
                         return $this->redirect(['index']);
                 }
                 return $this->render('create', [

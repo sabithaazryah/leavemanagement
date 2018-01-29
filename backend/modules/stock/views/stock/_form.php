@@ -154,28 +154,24 @@ use kartik\date\DatePicker;
 
                         </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels">No's</label></div>
 
-                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'> <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'total_weight')->textInput(['maxlength' => true,'class'=>'form-control add-open-stock']) ?>
+                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'> <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'total_weight')->textInput(['maxlength' => true, 'class' => 'form-control add-open-stock']) ?>
 
-                        </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels">Kilogram</label></div>
+                        </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels">Kg</label></div>
 
-                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>   <div class='col-md-9 col-sm-6 col-xs-12 left_padd'> <?= $form->field($model, 'pieces')->textInput(['class'=>'form-control add-open-stock']) ?>
+                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>   <div class='col-md-9 col-sm-6 col-xs-12 left_padd'> <?= $form->field($model, 'pieces')->textInput(['class' => 'form-control add-open-stock']) ?>
 
                         </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels">Pieces</label></div>
 
-                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>  <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'stock')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>   <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'available_stock')->textInput(['maxlength' => true, 'readonly' => true]) ?>
 
-                        </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels stock"></label></div>
+                        </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels available-stock"></label></div>
 
                 </div>
 
         </div>
 
         <div class="row">
-                <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>   <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'available_stock')->textInput(['maxlength' => true, 'readonly' => true]) ?>
-
-                        </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels available-stock"></label></div>
-
-                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>  <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'closing_stock')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+                <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>  <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'closing_stock')->textInput(['maxlength' => true, 'readonly' => true]) ?>
 
                         </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels closing-stock"></label></div>
 
