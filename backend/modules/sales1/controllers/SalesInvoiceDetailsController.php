@@ -336,7 +336,7 @@ class SalesInvoiceDetailsController extends Controller {
             $stock->item_id = $aditional->item_id;
             $stock->item_code = $aditional->item_code;
             $stock->item_name = $aditional->item_name;
-            $stock->batch_no = $value['batch_name'];
+            $stock->batch_no = $value->batch_name;
             $stock->cartoon_out = $value['no_of_carton'];
             $stock->piece_out = 0;
             $stock->weight_out = $value['no_of_weight'];
@@ -362,7 +362,7 @@ class SalesInvoiceDetailsController extends Controller {
     }
 
     public function AddStockView($stock) {
-        $stock_view = StockView::find()->where(['batch_no' => $stock->batch_no])->one();
+        $stock_view = StockView::find()->where(['item_id' => $stock->batch_no])->one();
         $stock_view->available_carton -= $stock->cartoon_out;
         $stock_view->available_weight -= $stock->weight_out;
         if ($stock_view->save()) {
@@ -593,21 +593,6 @@ class SalesInvoiceDetailsController extends Controller {
             }
             return ($weight);
         }
-    }
-
-    /*
-     * Generate report based on service
-     */
-
-    public function actionReport($id) {
-
-        echo $this->renderPartial('report', [
-//            'appointment' => $appointment,
-//            'appointment_details' => $appointment_details,
-            'print' => true,
-        ]);
-
-        exit;
     }
 
 }

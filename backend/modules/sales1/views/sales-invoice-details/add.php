@@ -244,7 +244,7 @@ if (isset($estimate)) {
                         </td>-->
                         <td>
                             <input type="hidden" id="sales-inventory-1" class="sales-inventory" name="create[inventory][1]" value="1" checked="checked"/>
-                            <input type="checkbox" id="salesinvoicedetails-inventory-1" class="salesinvoicedetails-inventory" name="" value="1" checked="checked" title="Checked for Inventory"/>
+                            <input type="checkbox" id="salesinvoicedetails-inventory-1" class="salesinvoicedetails-inventory" name="" value="" checked="checked" title="Checked for Inventory"/>
                             <a id="del" class="" ><i class="fa fa-times sales-invoice-delete" title="Remove Row"></i></a>
                         </td>
                     </tr>

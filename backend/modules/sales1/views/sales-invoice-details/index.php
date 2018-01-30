@@ -38,8 +38,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             'dataProvider' => $dataProvider,
                             'filterModel' => $searchModel,
                             'columns' => [
-                                    ['class' => 'yii\grid\SerialColumn'],
-                                    [
+                                ['class' => 'yii\grid\SerialColumn'],
+                                [
                                     'attribute' => 'sales_invoice_number',
                                     'label' => 'Invoice Number',
                                     'value' => function($data) {
@@ -48,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'filter' => ArrayHelper::map(common\models\SalesInvoiceMaster::find()->asArray()->all(), 'sales_invoice_number', 'sales_invoice_number'),
                                     'filterOptions' => array('id' => "sales_invoice_number_search"),
                                 ],
-                                    [
+                                [
                                     'attribute' => 'sales_invoice_date',
                                     'label' => 'Invoice Date',
                                     'value' => function ($data) {
@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     },
                                     'filter' => DateRangePicker::widget(['model' => $searchModel, 'attribute' => 'sales_invoice_date', 'pluginOptions' => ['format' => 'd-m-Y', 'autoUpdateInput' => false]]),
                                 ],
-                                    [
+                                [
                                     'attribute' => 'busines_partner_code',
                                     'value' => function($data) {
                                         if (isset($data->busines_partner_code)) {
@@ -79,45 +79,44 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'order_amount',
                                 'amount_payed',
                                 'due_amount',
-                                // 'status',
-                                // 'CB',
-                                // 'UB',
-                                // 'DOC',
-                                // 'DOU',
-//                                ['class' => 'yii\grid\ActionColumn'],
-                                [
-                                    'class' => 'yii\grid\ActionColumn',
-                                    'contentOptions' => [],
-                                    'header' => 'Actions',
+                            // 'status',
+                            // 'CB',
+                            // 'UB',
+                            // 'DOC',
+                            // 'DOU',
+//                            ['class' => 'yii\grid\ActionColumn'],
+//                                [
+//                                    'class' => 'yii\grid\ActionColumn',
+//                                    'contentOptions' => [],
+//                                    'header' => 'Actions',
 //                                    'template' => '{view}{print}',
-                                    'template' => '{print}',
-                                    'buttons' => [
-                                        //view button
-                                        'print' => function ($url, $model) {
-                                            return Html::a('<span class="fa fa-print" style="padding-top: 0px;font-size: 18px;"></span>', $url, [
-                                                        'title' => Yii::t('app', 'print'),
-                                                        'class' => 'actions',
-                                                        'target' => '_blank',
-                                            ]);
-                                        },
+//                                    'buttons' => [
+//                                        //view button
+//                                        'print' => function ($url, $model) {
+//                                            return Html::a('<span class="fa fa-print" style="padding-top: 0px;font-size: 18px;"></span>', $url, [
+//                                                        'title' => Yii::t('app', 'print'),
+//                                                        'class' => 'actions',
+//                                                        'target' => '_blank',
+//                                            ]);
+//                                        },
 //                                        'view' => function ($url, $model) {
 //                                            return Html::a('<span class="fa fa-eye" style="padding-top: 0px;font-size: 20px;"></span>', $url, [
 //                                                        'title' => Yii::t('app', 'view'),
 //                                                        'class' => 'actions',
 //                                            ]);
 //                                        },
-                                    ],
-                                    'urlCreator' => function ($action, $model) {
-                                        if ($action === 'print') {
-                                            $url = Url::to(['sales-invoice-details/report', 'id' => $model->id]);
-                                            return $url;
-                                        }
+//                                    ],
+//                                    'urlCreator' => function ($action, $model) {
+//                                        if ($action === 'print') {
+//                                            $url = Url::to(['sales-invoice-details/report', 'id' => $model->id]);
+//                                            return $url;
+//                                        }
 //                                        if ($action === 'view') {
 //                                            $url = Url::to(['sales-invoice-details/view', 'id' => $model->id]);
 //                                            return $url;
 //                                        }
-                                    }
-                                ],
+//                                    }
+//                                ],
                             ],
                         ]);
                         ?>
