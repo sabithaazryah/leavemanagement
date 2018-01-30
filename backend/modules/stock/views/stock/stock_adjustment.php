@@ -8,18 +8,22 @@ use common\models\BusinessPartner;
 use common\models\Country;
 use yii\helpers\ArrayHelper;
 use kartik\date\DatePicker;
+use common\models\Warehouse;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Stock */
 /* @var $form yii\widgets\ActiveForm */
 $uom = '';
-
+$show = 1;
 if (isset($id) && $id != '') {
         $item = ItemMaster::findOne($model->item_id);
-        if ($item->product_category == 1)
+        if ($item->product_category == 1) {
                 $uom = 'Kg';
-        else if ($item->product_category == 2)
+                $show = 1;
+        } else if ($item->product_category == 2) {
                 $uom = 'Pieces';
+                $show = 0;
+        }
 }
 ?>
 
@@ -38,52 +42,57 @@ if (isset($id) && $id != '') {
                 </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'uom')->textInput(['readonly' => true]) ?>
 
                 </div>
-        </div>
 
-        <div class="row">
                 <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'batch_no')->textInput(['maxlength' => true]) ?>
 
-                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
-                        <?php
-                        if (!$model->isNewRecord) {
-                                $model->slaughter_date_from = date('d-m-Y', strtotime($model->slaughter_date_from));
-                        } else {
-                                $model->slaughter_date_from = date('d-m-Y');
-                        }
-                        echo DatePicker::widget([
-                            'model' => $model,
-                            'form' => $form,
-                            'type' => DatePicker::TYPE_INPUT,
-                            'attribute' => 'slaughter_date_from',
-                            'pluginOptions' => [
-                                'autoclose' => true,
-                                'format' => 'dd-mm-yyyy',
-                            ]
-                        ]);
-                        ?>
+                </div>
+
+                <?php if ($show == 1) { ?>
+                        <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
+                                <?php
+                                if (!$model->isNewRecord) {
+                                        $model->slaughter_date_from = date('d-m-Y', strtotime($model->slaughter_date_from));
+                                } else {
+                                        $model->slaughter_date_from = date('d-m-Y');
+                                }
+                                echo DatePicker::widget([
+                                    'model' => $model,
+                                    'form' => $form,
+                                    'type' => DatePicker::TYPE_INPUT,
+                                    'attribute' => 'slaughter_date_from',
+                                    'pluginOptions' => [
+                                        'autoclose' => true,
+                                        'format' => 'dd-mm-yyyy',
+                                    ]
+                                ]);
+                                ?>
 
 
-                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
-                        <?php
-                        if (!$model->isNewRecord) {
-                                $model->slaughter_date_to = date('d-m-Y', strtotime($model->slaughter_date_to));
-                        } else {
-                                $model->slaughter_date_to = date('d-m-Y');
-                        }
-                        echo DatePicker::widget([
-                            'model' => $model,
-                            'form' => $form,
-                            'type' => DatePicker::TYPE_INPUT,
-                            'attribute' => 'slaughter_date_to',
-                            'pluginOptions' => [
-                                'autoclose' => true,
-                                'format' => 'dd-mm-yyyy',
-                            ]
-                        ]);
-                        ?>
+                        </div>
+
+                        <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
+                                <?php
+                                if (!$model->isNewRecord) {
+                                        $model->slaughter_date_to = date('d-m-Y', strtotime($model->slaughter_date_to));
+                                } else {
+                                        $model->slaughter_date_to = date('d-m-Y');
+                                }
+                                echo DatePicker::widget([
+                                    'model' => $model,
+                                    'form' => $form,
+                                    'type' => DatePicker::TYPE_INPUT,
+                                    'attribute' => 'slaughter_date_to',
+                                    'pluginOptions' => [
+                                        'autoclose' => true,
+                                        'format' => 'dd-mm-yyyy',
+                                    ]
+                                ]);
+                                ?>
 
 
-                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
+                        </div>
+                <?php } ?>
+                <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
                         <?php
                         if (!$model->isNewRecord) {
                                 $model->production_date = date('d-m-Y', strtotime($model->production_date));
@@ -104,9 +113,7 @@ if (isset($id) && $id != '') {
 
 
                 </div>
-        </div>
 
-        <div class="row">
                 <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
                         <?php
                         if (!$model->isNewRecord) {
@@ -132,12 +139,12 @@ if (isset($id) && $id != '') {
                         <?php $loactions = Locations::find()->where(['status' => 1])->all() ?>
                         <?= $form->field($model, 'location')->dropDownList(ArrayHelper::map($loactions, 'id', 'location_name'), ['prompt' => '--Select--']) ?>
 
-                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'warehouse')->textInput(['maxlength' => true]) ?>
+                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
+                        <?php $warehouse = Warehouse::find()->where(['status' => 1])->all() ?>
+                        <?= $form->field($model, 'warehouse')->dropDownList(ArrayHelper::map($warehouse, 'id', 'name'), ['prompt' => '--Select--']) ?>
 
                 </div>
-        </div>
 
-        <div class="row">
                 <?php $supplier = BusinessPartner::find()->where(['status' => 1, 'type' => 2])->all() ?>
                 <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'supplier')->dropDownList(ArrayHelper::map($supplier, 'id', 'company_name'), ['prompt' => '--Select--']) ?>
 
@@ -237,5 +244,8 @@ if (isset($id) && $id != '') {
                 margin-top: 30px;
                 font-weight: bold;
                 color: #000;
+        }
+        .left_padd {
+                height: 100px;
         }
 </style>

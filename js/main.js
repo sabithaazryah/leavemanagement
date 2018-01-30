@@ -34,11 +34,15 @@ $(function () {
                                 $(".available-stock").html(res['unit_label']);
                                 $(".closing-stock").html(res['unit_label']);
                                 $(".stock").html(res['unit_label']);
+                                if (res['category'] != 1) {
+                                        $('.slaughter_date_from').hide();
+                                        $('.slaughter_date_to').hide();
+                                }
                         }
                 });
         });
 
-     
+
 
 //        $(document).on('click', '.select-stock-item', function () {
 //                var id = 1;
@@ -64,32 +68,32 @@ $(function () {
 //                        $('#stockadjustment-stock_type').val('Stock Out');
 //                }
 //        });
-        
-        
+
+
         $(document).on('keyup', '.add-open-stock', function () {
-               var item=$('#stock-item_id').val();
+                var item = $('#stock-item_id').val();
                 var total_weight = $('#stock-total_weight').val();
                 var available_stock = $("#stock-available_stock").val();
-                var total_pieces= $('#stock-pieces').val();
-               
-               $.ajax({
+                var total_pieces = $('#stock-pieces').val();
+
+                $.ajax({
                         type: 'POST',
                         cache: false,
                         data: {item: item},
                         url: homeUrl + 'stock/stock/item-category',
                         success: function (data) {
-                               if(data==1){
-                                    $("#stock-stock").val(total_weight);
-                                    var closing = parseFloat(total_weight) + parseFloat(available_stock);
-                               } else if(data==2){
-                                    $("#stock-stock").val(total_pieces);
-                                    var closing = parseFloat(total_pieces) + parseFloat(available_stock);
-                               }
-                               $("#stock-closing_stock").val(closing.toFixed(2));
+                                if (data == 1) {
+                                        $("#stock-stock").val(total_weight);
+                                        var closing = parseFloat(total_weight) + parseFloat(available_stock);
+                                } else if (data == 2) {
+                                        $("#stock-stock").val(total_pieces);
+                                        var closing = parseFloat(total_pieces) + parseFloat(available_stock);
+                                }
+                                $("#stock-closing_stock").val(closing.toFixed(2));
                         }
                 });
         });
-        
+
         $("#stock-cartons, #stock-total_weight,#stock-pieces").keypress(
                 function (e) {
                         if (e.which != 8 && e.which != 0 && (e.which < 46 || e.which > 57)) {

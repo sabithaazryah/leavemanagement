@@ -247,8 +247,11 @@ class StockController extends Controller {
         public function actionItemDetails() {
                 if (Yii::$app->request->isAjax) {
                         $avilable_label = '';
+                        $category = '';
                         $item = $_POST['item'];
                         $item_details = \common\models\ItemMaster::findOne($item);
+                        if (isset($item_details->product_category) && $item_details->product_category != '')
+                                $category = $item_details->product_category;
                         if ($item_details->product_category == 1) {
                                 $available_stock = StockView::find()->where(['item_id' => $item])->sum('available_weight');
                                 $avilable_label = 'Kg';
@@ -259,7 +262,7 @@ class StockController extends Controller {
                         if (empty($available_stock))
                                 $available_stock = 0;
                         $unit = \common\models\BaseUnit::findOne($item_details->base_unit_id);
-                        $data = ['item_code' => $item_details->item_code, 'price' => $item_details->purchase_price, 'UOM' => $unit->name, 'available_stock' => $available_stock, 'unit_label' => $avilable_label];
+                        $data = ['item_code' => $item_details->item_code, 'price' => $item_details->purchase_price, 'UOM' => $unit->name, 'available_stock' => $available_stock, 'unit_label' => $avilable_label, 'category' => $category];
                         echo json_encode($data);
                 }
         }

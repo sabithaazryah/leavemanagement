@@ -8,6 +8,7 @@ use common\models\BusinessPartner;
 use common\models\Country;
 use yii\helpers\ArrayHelper;
 use kartik\date\DatePicker;
+use common\models\Warehouse;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Stock */
@@ -29,12 +30,10 @@ use kartik\date\DatePicker;
                 </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'uom')->textInput(['readonly' => true]) ?>
 
                 </div>
-        </div>
 
-        <div class="row">
                 <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'batch_no')->textInput(['maxlength' => true]) ?>
 
-                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
+                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd slaughter_date_from'>
                         <?php
                         if (!$model->isNewRecord) {
                                 $model->slaughter_date_from = date('d-m-Y', strtotime($model->slaughter_date_from));
@@ -54,7 +53,7 @@ use kartik\date\DatePicker;
                         ?>
 
 
-                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
+                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd slaughter_date_to'>
                         <?php
                         if (!$model->isNewRecord) {
                                 $model->slaughter_date_to = date('d-m-Y', strtotime($model->slaughter_date_to));
@@ -95,9 +94,7 @@ use kartik\date\DatePicker;
 
 
                 </div>
-        </div>
 
-        <div class="row">
                 <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
                         <?php
                         if (!$model->isNewRecord) {
@@ -123,12 +120,12 @@ use kartik\date\DatePicker;
                         <?php $loactions = Locations::find()->where(['status' => 1])->all() ?>
                         <?= $form->field($model, 'location')->dropDownList(ArrayHelper::map($loactions, 'id', 'location_name'), ['prompt' => '--Select--']) ?>
 
-                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'warehouse')->textInput(['maxlength' => true]) ?>
+                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
+                        <?php $warehouse = Warehouse::find()->where(['status' => 1])->all() ?>
+                        <?= $form->field($model, 'warehouse')->dropDownList(ArrayHelper::map($warehouse, 'id', 'name'), ['prompt' => '--Select--']) ?>
 
                 </div>
-        </div>
 
-        <div class="row">
                 <?php $supplier = BusinessPartner::find()->where(['status' => 1, 'type' => 2])->all() ?>
                 <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'supplier')->dropDownList(ArrayHelper::map($supplier, 'id', 'company_name'), ['prompt' => '--Select--']) ?>
 
@@ -202,12 +199,17 @@ use kartik\date\DatePicker;
                         $(this).data('select2').results.addClass('overflow-hidden').perfectScrollbar();
                 });
         });
+
 </script>
+
 
 <style>
         .labels{
                 margin-top: 30px;
                 font-weight: bold;
                 color: #000;
+        }
+        .left_padd {
+                height: 100px;
         }
 </style>

@@ -64,6 +64,7 @@ class Stock extends \yii\db\ActiveRecord {
                         [['item_name', 'item_code'], 'string', 'max' => 30],
                         [['uom'], 'string', 'max' => 50],
                         [['batch_no', 'plant', 'warehouse'], 'string', 'max' => 100],
+                        [['batch_no'], 'required']
                 ];
         }
 
@@ -83,7 +84,7 @@ class Stock extends \yii\db\ActiveRecord {
                     'slaughter_date_from' => 'Slaughter Date From',
                     'slaughter_date_to' => 'Slaughter Date To',
                     'production_date' => 'Production Date',
-                    'due_date' => 'Due Date',
+                    'due_date' => 'Due Date (Expiry Date)',
                     'plant' => 'Plant',
                     'location' => 'Location',
                     'warehouse' => 'Warehouse',
