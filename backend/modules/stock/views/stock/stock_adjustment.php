@@ -34,7 +34,7 @@ if (isset($id) && $id != '') {
                 <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
                         <?php $items = ItemMaster::find()->where(['status' => 1])->all() ?>
                         <?= $form->field($model, 'item_id')->dropDownList(ArrayHelper::map($items, 'id', 'name'), ['prompt' => '--Select--', 'id' => 'stock-adjusted-item_id']) ?>
-
+                        <input type="hidden" id="stock-adjustment-item-type" value="<?= $show ?>">
                 </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'item_code')->textInput(['maxlength' => true, 'readonly' => true]) ?>
 
                 </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'price')->textInput(['maxlength' => true, 'readonly' => true]) ?>
@@ -43,7 +43,7 @@ if (isset($id) && $id != '') {
 
                 </div>
 
-                <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'batch_no')->textInput(['maxlength' => true]) ?>
+                <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'batch_no')->textInput(['maxlength' => true, 'readonly' => true]) ?>
 
                 </div>
 
@@ -165,33 +165,43 @@ if (isset($id) && $id != '') {
 
         <div class="row">
 
+                <?php if ($show == 1) { ?>
+                        <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'cartons')->textInput(['readonly' => true]) ?>
 
-                <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'cartons')->textInput(['readonly' => true]) ?>
+                                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels">No's</label></div>
 
-                        </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels">No's</label></div>
+                        </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'> <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'total_weight')->textInput(['maxlength' => true, 'class' => 'form-control', 'readonly' => true]) ?>
 
-                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'> <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'total_weight')->textInput(['maxlength' => true, 'class' => 'form-control', 'readonly' => true]) ?>
+                                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels">Kg</label></div>
 
-                        </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels">Kg</label></div>
+                        </div>
 
-                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>   <div class='col-md-9 col-sm-6 col-xs-12 left_padd'> <?= $form->field($model, 'pieces')->textInput(['class' => 'form-control', 'readonly' => true]) ?>
+                <?php } ?>
+
+                <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>   <div class='col-md-9 col-sm-6 col-xs-12 left_padd'> <?= $form->field($model, 'pieces')->textInput(['class' => 'form-control', 'readonly' => true]) ?>
 
                         </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels">Pieces</label></div>
 
-                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>  <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'adjust_cartons')->textInput(['maxlength' => true]) ?>
-
-                        </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels stock">No's</label></div>
-
                 </div>
 
-        </div>
+                <?php if ($show == 1) { ?>
 
-        <div class="row">
-                <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>   <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'adjust_weight')->textInput(['maxlength' => true]) ?>
+                        <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>  <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'adjust_cartons')->textInput(['maxlength' => true]) ?>
 
-                        </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels available-stock"><?= $uom ?></label></div>
+                                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels stock">No's</label></div>
 
-                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>  <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'adjust_pieces')->textInput(['maxlength' => true]) ?>
+                        </div>
+
+
+                        <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>   <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'adjust_weight')->textInput(['maxlength' => true]) ?>
+
+                                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels available-stock"><?= $uom ?></label></div>
+
+                        </div>
+
+                <?php } ?>
+
+                <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>  <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'adjust_pieces')->textInput(['maxlength' => true]) ?>
 
                         </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels closing-stock"><?= $uom ?></label></div>
 

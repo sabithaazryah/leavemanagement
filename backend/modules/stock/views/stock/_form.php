@@ -22,7 +22,7 @@ use common\models\Warehouse;
                 <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
                         <?php $items = ItemMaster::find()->where(['status' => 1])->all() ?>
                         <?= $form->field($model, 'item_id')->dropDownList(ArrayHelper::map($items, 'id', 'name'), ['prompt' => '--Select--']) ?>
-
+                        <input type="hidden" value="" id="stock-item-type">
                 </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'item_code')->textInput(['maxlength' => true, 'readonly' => true]) ?>
 
                 </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'price')->textInput(['maxlength' => true, 'readonly' => true]) ?>
@@ -147,11 +147,11 @@ use common\models\Warehouse;
         <div class="row">
 
 
-                <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'cartons')->textInput() ?>
+                <div class='col-md-3 col-sm-6 col-xs-12 left_padd cartoons'>    <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'cartons')->textInput() ?>
 
                         </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels">No's</label></div>
 
-                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'> <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'total_weight')->textInput(['maxlength' => true, 'class' => 'form-control add-open-stock']) ?>
+                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd weight'> <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'total_weight')->textInput(['maxlength' => true, 'class' => 'form-control add-open-stock']) ?>
 
                         </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels">Kg</label></div>
 
@@ -165,9 +165,7 @@ use common\models\Warehouse;
 
                 </div>
 
-        </div>
 
-        <div class="row">
                 <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>  <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'closing_stock')->textInput(['maxlength' => true, 'readonly' => true]) ?>
 
                         </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels closing-stock"></label></div>

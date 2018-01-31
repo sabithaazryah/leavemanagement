@@ -34,9 +34,12 @@ $(function () {
                                 $(".available-stock").html(res['unit_label']);
                                 $(".closing-stock").html(res['unit_label']);
                                 $(".stock").html(res['unit_label']);
+                                $("#stock-item-type").val(res['category']);
                                 if (res['category'] != 1) {
                                         $('.slaughter_date_from').hide();
                                         $('.slaughter_date_to').hide();
+                                        $('.cartoons').hide();
+                                        $('.weight').hide();
                                 }
                         }
                 });
@@ -89,7 +92,7 @@ $(function () {
                                         $("#stock-stock").val(total_pieces);
                                         var closing = parseFloat(total_pieces) + parseFloat(available_stock);
                                 }
-                                $("#stock-closing_stock").val(closing.toFixed(2));
+                                $("#stock-closing_stock").val(closing);
                         }
                 });
         });

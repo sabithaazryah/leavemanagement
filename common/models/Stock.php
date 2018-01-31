@@ -64,7 +64,22 @@ class Stock extends \yii\db\ActiveRecord {
                         [['item_name', 'item_code'], 'string', 'max' => 30],
                         [['uom'], 'string', 'max' => 50],
                         [['batch_no', 'plant', 'warehouse'], 'string', 'max' => 100],
-                        [['batch_no'], 'required']
+                        [['batch_no', 'item_id'], 'required'],
+                        [['batch_no'], 'unique', 'on' => 'create',],
+                        [['total_weight', 'cartons', 'pieces'], 'required', 'when' => function ($model) {
+
+                        }, 'whenClient' => "function (attribute, value) {
+               return $('#stock-item-type').val() == '1';
+            }"],
+                        [['pieces'], 'required', 'when' => function ($model) {
+
+                        }, 'whenClient' => "function (attribute, value) {
+               return $('#stock-item-type').val() == '2';
+            }"],
+                        [['batch_no'], 'unique', 'on' => 'update', 'when' => function($model) {
+                                return static::getOldUsername($model->id) !== $model->batch_no;
+                        }
+                    ],
                 ];
         }
 
@@ -109,6 +124,16 @@ class Stock extends \yii\db\ActiveRecord {
                     'DOC' => 'Doc',
                     'DOU' => 'Dou',
                 ];
+        }
+
+        public static function getOldUsername($id) {
+
+                return Stock::findOne($id)->batch_no;
+        }
+
+        public static function findIdentity($id) {
+
+                return static::findOne(['id' => $id, 'status' => 1]);
         }
 
 }

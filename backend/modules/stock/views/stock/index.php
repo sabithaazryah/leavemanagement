@@ -79,10 +79,19 @@ $this->params['breadcrumbs'][] = $this->title;
                                                                             'title' => Yii::t('app', 'Stock Adjustment'),
                                                                 ]);
                                                         },
+                                                        'view' => function ($url, $model) {
+                                                                return Html::a('<span class="fa fa-eye" style="padding-top: 0px;font-size: 15px;"></span>', $url, [
+                                                                            'title' => Yii::t('app', 'View'),
+                                                                ]);
+                                                        },
                                                     ],
                                                     'urlCreator' => function ($action, $model) {
                                                             if ($action === 'update') {
                                                                     $url = Url::to(['update', 'id' => $model->id]);
+                                                                    return $url;
+                                                            }
+                                                            if ($action === 'view') {
+                                                                    $url = Url::to(['view', 'id' => $model->id]);
                                                                     return $url;
                                                             }
                                                     }
