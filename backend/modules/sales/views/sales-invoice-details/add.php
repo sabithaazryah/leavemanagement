@@ -75,8 +75,6 @@ if (isset($estimate)) {
 
                     </div>
                 </div>
-                <?= \common\widgets\Alert::widget(); ?>
-
                 <div class="panel-body">
                     <input type="hidden" id="salesreturninvoicemaster-amount" class="form-control" name="SalesReturnInvoiceMaster[amount]" readonly="" aria-invalid="false">
                     <div class="row">
@@ -158,6 +156,7 @@ if (isset($estimate)) {
                                 <?php }
                                 ?>
                             </select>
+                            <input type="hidden" id="sales-item-type-1" class="sales-item-type" name="create[sales_item_type][1]"/>
                             <input type="text" value="" placeholder="Description" class="form-control salesinvoicedetails-item_comment bill-comment" id="salesinvoicedetails-item-comment-1" name="create[comment][1]" autocomplete="off" style="display: none;">
                         </td>
                         <td>
@@ -200,7 +199,7 @@ if (isset($estimate)) {
                                     </div>
                                     <div class="col-md-6" style="padding:0px;">
                                         <select id="salesinvoicedetails-discount_type-1" class="form-control salesinvoicedetails-discount_type" name="create[discount_type][1]">
-                                            <option value="1">Rs.</option>
+                                            <option value="1">S$</option>
                                             <option value="2">%</option>
                                         </select>
                                     </div>
@@ -220,7 +219,7 @@ if (isset($estimate)) {
                                         if ($tax->type == 1) {
                                             $type = '%';
                                         } else {
-                                            $type = 'Rs';
+                                            $type = 'S$';
                                         }
                                         ?>
                                         <option value="<?= $tax->id ?>" ><?= $tax->name . ' - ' . $tax->value . ' ' . $type ?></option>
@@ -358,14 +357,12 @@ if (isset($estimate)) {
                 }
             });
         });
-
         $('#salesinvoicedetails-item_id-1').select2({
             allowClear: true
         }).on('select2-open', function ()
         {
             $(this).data('select2').results.addClass('overflow-hidden').perfectScrollbar();
         });
-
         $(document).on('change', '.salesinvoicedetails-item_id', function (e) {
             var flag = 0;
             var count = 0;
@@ -464,14 +461,16 @@ if (isset($estimate)) {
                             setQuantityValue(item, qty, current_row_id, type);
                         }
                     }
+                } else {
+                    $('#salesinvoicedetails-qty_val-' + current_row_id).val(qty);
                 }
                 lineTotalAmount(current_row_id);
             }
         });
-
         $(document).on('change', '.salesinvoicedetails-type', function (e) {
             var current_row_id = $(this).attr('id').match(/\d+/); // 123456
             var qty = $('#salesinvoicedetails-qty-' + current_row_id).val();
+            var inventory = $('#sales-inventory-' + current_row_id).val();
             var rate = $('#salesinvoicedetails-rate-' + current_row_id).val();
             var type = $('#salesinvoicedetails-type-' + current_row_id).val();
             var avail_carton_tot = $('#salesinvoicedetails-avail_carton-' + current_row_id).val();
@@ -480,33 +479,39 @@ if (isset($estimate)) {
             var type = $('#salesinvoicedetails-type-' + current_row_id).val();
             var item = $('#salesinvoicedetails-item_id-' + current_row_id).val();
             if (qty != "" && item != '' && rate != '') {
-                if (type == 1) {
-                    if (parseInt(qty) > parseInt(avail_carton_tot)) {
-                        $('#salesinvoicedetails-qty-' + current_row_id).val(avail_carton_tot);
-                        alert(' Quantity exeeds the Available Stock.');
-                    } else {
-                        setQuantityValue(item, qty, current_row_id, type);
+                if (inventory == 1) {
+                    if (type == 1) {
+                        if (parseInt(qty) > parseInt(avail_carton_tot)) {
+                            $('#salesinvoicedetails-qty-' + current_row_id).val(avail_carton_tot);
+                            alert(' Quantity exeeds the Available Stock.');
+                        } else {
+                            setQuantityValue(item, qty, current_row_id, type);
+                        }
+                    } else if (type == 2) {
+                        if (parseInt(qty) > parseInt(avail_weight_tot)) {
+                            $('#salesinvoicedetails-qty-' + current_row_id).val(avail_weight_tot);
+                            alert(' Quantity exeeds the Available Stock.');
+                        } else {
+                            var data = qty;
+                            $('#salesinvoicedetails-qty_val-' + current_row_id).val(data);
+                        }
+                    } else if (type == 3) {
+                        if (parseInt(qty) > parseInt(avail_pieces_tot)) {
+                            $('#salesinvoicedetails-qty-' + current_row_id).val(avail_pieces_tot);
+                            alert(' Quantity exeeds the Available Stock.');
+                        } else {
+                            var item_type = $("#sales-item-type-" + current_row_id).val();
+                            if (item_type == 1) {
+                                setQuantityValue(item, qty, current_row_id, type);
+                            } else {
+                                $('#salesinvoicedetails-qty_val-' + current_row_id).val(qty);
+                            }
+                        }
                     }
-                } else if (type == 2) {
-                    if (parseInt(qty) > parseInt(avail_weight_tot)) {
-                        $('#salesinvoicedetails-qty-' + current_row_id).val(avail_weight_tot);
-                        alert(' Quantity exeeds the Available Stock.');
-                    } else {
-                        var data = qty;
-                        $('#salesinvoicedetails-qty_val-' + current_row_id).val(data);
-                    }
-                } else if (type == 2) {
-                    if (parseInt(qty) > parseInt(avail_pieces_tot)) {
-                        $('#salesinvoicedetails-qty-' + current_row_id).val(avail_pieces_tot);
-                        alert(' Quantity exeeds the Available Stock.');
-                    } else {
-                        setQuantityValue(item, qty, current_row_id, type);
-                    }
+                    lineTotalAmount(current_row_id);
                 }
-                lineTotalAmount(current_row_id);
             }
         });
-
         $(document).on('keyup mouseup', '.salesinvoicedetails-rate', function () {
             var current_row_id = $(this).attr('id').match(/\d+/); // 123456
             var item = $('#salesinvoicedetails-item_id-' + current_row_id).val();
@@ -517,7 +522,6 @@ if (isset($estimate)) {
             }
 
         });
-
         $(document).on('change', '.salesinvoicedetails-discount_type', function () {
             var current_row_id = $(this).attr('id').match(/\d+/); // 123456
             var item = $('#salesinvoicedetails-item_id-' + current_row_id).val();
@@ -571,13 +575,15 @@ if (isset($estimate)) {
                             alert(' Quantity exeeds the Available Stock.');
                         }
                     }
-                    lineTotalAmount(current_row_id);
                 }
             } else {
+                var qty = $('#salesinvoicedetails-qty-' + current_row_id).val();
+                $('#salesinvoicedetails-qty_val-' + current_row_id).val(qty);
                 $('#sales-inventory-' + current_row_id).val(0);
             }
-        });
+            lineTotalAmount(current_row_id);
 
+        });
         $(document).on('keyup', '#cash_amount', function () {
             //        balanceCalculation();
             var order_amount = $('#order_sub_total').val();
@@ -588,7 +594,6 @@ if (isset($estimate)) {
         $(document).on('keyup', '#round_of', function () {
             balanceCalculation();
         });
-
     });
     function itemChange(item_id, current_row_id, next_row_id) {
         var next = parseInt(next_row_id) + 1;
@@ -614,6 +619,7 @@ if (isset($estimate)) {
                         $('.salesinvoicedetails-qty').attr('min', 1);
                         $("#stock-table-" + current_row_id).html(res.result['stock-table']);
                         $("#salesinvoicedetails-rate-" + current_row_id).val(res.result['item_rate']);
+                        $("#sales-item-type-" + current_row_id).val(res.result['item_type']);
                         $("#salesinvoicedetails-avail_pieces-" + current_row_id).val(res.result['avail-pieces']);
                         $("#salesinvoicedetails-avail_weight-" + current_row_id).val(res.result['avail-weight']);
                         $("#salesinvoicedetails-avail_carton-" + current_row_id).val(res.result['avail-carton']);
@@ -637,6 +643,7 @@ if (isset($estimate)) {
                         }
                         $("#stock-table-" + current_row_id).html(res.result['stock-table']);
                         $("#salesinvoicedetails-rate-" + current_row_id).val(res.result['item_rate']);
+                        $("#sales-item-type-" + current_row_id).val(res.result['item_type']);
                         $("#salesinvoicedetails-avail_pieces-" + current_row_id).val(res.result['avail-pieces']);
                         $("#salesinvoicedetails-avail_weight-" + current_row_id).val(res.result['avail-weight']);
                         $("#salesinvoicedetails-avail_carton-" + current_row_id).val(res.result['avail-carton']);
@@ -678,9 +685,7 @@ if (isset($estimate)) {
         var discount = $('#salesinvoicedetails-discount_value-' + current_row_id).val();
         var discount_type = $('#salesinvoicedetails-discount_type-' + current_row_id).val();
         var amount = qty * rate;
-
         if (discount != "") {
-
             if (discount_type == 1) {
                 var discount_amount = discount;
             } else if (discount_type == 2) {
@@ -696,7 +701,6 @@ if (isset($estimate)) {
             }
 
         }
-
         var grand_total = (parseFloat(amount) + parseFloat(tax_amount)) - parseFloat(discount_amount);
         $('#salesinvoicedetails-line_total-' + current_row_id).val(grand_total.toFixed(2));
         calculateSubtotal();
@@ -715,9 +719,8 @@ if (isset($estimate)) {
             var qty = $('#salesinvoicedetails-qty_val-' + i).val();
             var tax_type = $('#salesinvoicedetails-tax_type-' + i).val();
             var rate = $('#salesinvoicedetails-rate-' + i).val();
-            var discount = $('#salesinvoicedetails-discount-' + i).val();
+            var discount = $('#salesinvoicedetails-discount_value-' + i).val();
             var discount_type = $('#salesinvoicedetails-tax_type-' + i).val();
-
             var amount = qty * rate;
             if (discount && discount != "") {
                 if (discount_type == 1) {

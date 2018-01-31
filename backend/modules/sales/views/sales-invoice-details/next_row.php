@@ -9,6 +9,7 @@
             <?php }
             ?>
         </select>
+        <input type="hidden" id="sales-item-type-<?= $next ?>" class="sales-item-type" name="create[sales_item_type][<?= $next ?>]"/>
         <input type="text" value="" placeholder="Description" class="form-control salesinvoicedetails-item_comment bill-comment" id="salesinvoicedetails-item-comment-<?= $next ?>" name="create[comment][<?= $next ?>]" autocomplete="off" style="display: none;">
     </td>
     <td>

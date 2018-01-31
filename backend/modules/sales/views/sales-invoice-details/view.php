@@ -58,15 +58,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= Html::a('<i class="fa-print"></i><span> Print Invoice</span>', ['report', 'id' => $model->id], ['class' => 'btn btn-secondary btn-icon btn-icon-standalone', 'target' => '_blank']) ?>
                 <div class="panel-body">
                     <div class="sales-master table-responsive">
-                        <h4>Sales Item Master</h4>
+                        <h4>Sales Invoice : <?= $model->sales_invoice_number; ?></h4>
                         <table class="appoint">
                             <tr>
                                 <td class="labell">Sales Invoice Number </td><td class="colen">:</td><td class="value"> <?= $model->sales_invoice_number; ?></td>
                                 <td class="labell">Sales Invoice Date</td><td class="colen">:</td><td class="value"><?= $model->sales_invoice_date; ?></td>
-                                <td class="labell">Business Partner </td><td class="colen">:</td><td class="value"><?= \common\models\BusinessPartner::findOne(['id' => $model->busines_partner_code])->name; ?> </td>
+                                <td class="labell">Customer </td><td class="colen">:</td><td class="value"><?= \common\models\BusinessPartner::findOne(['id' => $model->busines_partner_code])->name; ?> </td>
                             </tr>
                             <tr>
-                                <td class="labell">Salesman </td><td class="colen">:</td><td class="value"> <?= common\models\Salesman::findOne(['id' => $model->salesman])->name; ?></td>
+                                <td class="labell">Salesman </td><td class="colen">:</td><td class="value"> <?= common\models\Employee::findOne(['id' => $model->salesman])->name; ?></td>
                                 <td class="labell">Total Amount </td><td class="colen">:</td><td class="value"> <?= sprintf('%0.2f', $model->order_amount - $model->round_of_amount); ?></td>
                                 <td class="labell">Amount Paid </td><td class="colen">:</td><td class="value"> <?= $model->amount_payed; ?></td>
                             </tr>
@@ -78,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </table>
                     </div>
                     <div class="sales-details">
-                        <h4>Sales Item Details</h4>
+                        <!--<h4>Sales Item Details</h4>-->
                         <table class="table table-bordered">
                             <tr>
                                 <th>Item Name</th>
@@ -116,31 +116,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <td><?= sprintf('%0.2f', $discount_total); ?></td>
                                 <td><?= sprintf('%0.2f', $tax_total); ?></td>
                                 <td><?= sprintf('%0.2f', $live_total); ?></td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="Payment-details">
-                        <h4>Payment Details</h4>
-                        <table class="table table-bordered" style="width:50%;">
-                            <tr>
-                                <td><b>Round Off</b></td>
-                                <td><b><?= $model->round_of_amount ?></b></td>
-                            </tr>
-                            <tr>
-                                <td><b>Cash</b></td>
-                                <td><b><?= $model->cash_amount ?></b></td>
-                            </tr>
-                            <tr>
-                                <td><b>Card</b></td>
-                                <td><b><?= $model->card_amount ?></b></td>
-                            </tr>
-                            <tr>
-                                <td><b>Amount Paid</b></td>
-                                <td><b><?= $model->amount_payed ?></b></td>
-                            </tr>
-                            <tr>
-                                <td><b>Balance</b></td>
-                                <td><b><?= $model->due_amount ?></b></td>
                             </tr>
                         </table>
                     </div>

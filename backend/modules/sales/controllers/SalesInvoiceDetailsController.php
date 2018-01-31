@@ -134,9 +134,14 @@ class SalesInvoiceDetailsController extends Controller {
         }
     }
 
-    public function actionAdd($estimate = NULL) {
-        $model = new SalesInvoiceDetails();
-        $model_sales_master = new SalesInvoiceMaster();
+    public function actionAdd($id = NULL) {
+        if (isset($id)) {
+            $model = new SalesInvoiceDetails();
+            $model_sales_master = SalesInvoiceMaster::findOne($id);
+        } else {
+            $model = new SalesInvoiceDetails();
+            $model_sales_master = new SalesInvoiceMaster();
+        }
 
         if ($model_sales_master->load(Yii::$app->request->post())) {
             $data = Yii::$app->request->post();
@@ -145,14 +150,14 @@ class SalesInvoiceDetailsController extends Controller {
                 if (isset($_POST['create']) && $_POST['create'] != '') {
                     $this->SalesCreate($_POST['create'], $model_sales_master);
                 }
-                Yii::$app->session->setFlash('success', "New Invoice created successfully.");
+//                Yii::$app->session->setFlash('success', "New Invoice created successfully.");
             }
-            return $this->redirect(['add']);
+            return $this->redirect(['index']);
         }
         return $this->render('add', [
                     'model' => $model,
                     'model_sales_master' => $model_sales_master,
-                    'estimate' => $estimate,
+                    'id' => $id,
         ]);
     }
 
@@ -284,6 +289,7 @@ class SalesInvoiceDetailsController extends Controller {
                 $aditional->type = $val['type'];
                 $quantity = $this->SaleQuantity($aditional->item_id, $aditional->type, $val['qty']);
                 $aditional->qty = $quantity['tot-weight'];
+                $aditional->carton = $quantity['tot-cart'];
                 $aditional->rate = $val['rate'];
                 $aditional->amount = $aditional->qty * $aditional->rate;
                 $aditional->discount_type = $val['discount_type'];
@@ -312,7 +318,13 @@ class SalesInvoiceDetailsController extends Controller {
                 $aditional->UB = Yii::$app->user->identity->id;
                 $aditional->DOC = date('Y-m-d');
                 if ($aditional->save()) {
-                    if ($this->AddStockRegister($aditional)) {
+                    if ($item_datas->item_type == 1) {
+                        if ($this->AddStockRegister($aditional)) {
+                            $flag = 1;
+                        } else {
+                            $flag = 0;
+                        }
+                    } else {
                         $flag = 1;
                     }
                 }
@@ -338,7 +350,7 @@ class SalesInvoiceDetailsController extends Controller {
             $stock->item_name = $aditional->item_name;
             $stock->batch_no = $value['batch_name'];
             $stock->cartoon_out = $value['no_of_carton'];
-            $stock->piece_out = 0;
+            $stock->piece_out = $value['no_of_pieces'];
             $stock->weight_out = $value['no_of_weight'];
             $stock->location_code = 'HOFF';
             $stock->item_cost = $aditional->rate;
@@ -365,6 +377,7 @@ class SalesInvoiceDetailsController extends Controller {
         $stock_view = StockView::find()->where(['batch_no' => $stock->batch_no])->one();
         $stock_view->available_carton -= $stock->cartoon_out;
         $stock_view->available_weight -= $stock->weight_out;
+        $stock_view->available_pieces -= $stock->piece_out;
         if ($stock_view->save()) {
             return TRUE;
         } else {
@@ -376,6 +389,8 @@ class SalesInvoiceDetailsController extends Controller {
         $items = \common\models\StockView::find()->where(['item_id' => $item_id])->all();
         $arr = array();
         $total_wgt = 0;
+        $total_crt = 0;
+        $total_pieces = 0;
         if ($type == 1) {
             $q = $qty;
             $i = 0;
@@ -386,21 +401,36 @@ class SalesInvoiceDetailsController extends Controller {
                     $arr[$i]['no_of_carton'] = $q;
                     $arr[$i]['no_of_weight'] = $weight;
                     $arr[$i]['batch_name'] = $item->batch_no;
+                    if ($item->available_pieces > 0 && $item->available_pieces != '') {
+                        $arr[$i]['no_of_pieces'] = $item->available_pieces;
+                        $total_pieces += $item->available_pieces;
+                    }
                     $total_wgt += $weight;
+                    $total_crt += $q;
                     break;
                 } elseif ($q < $item->available_carton) {
                     $weight = $q * $item->weight_per_carton;
                     $arr[$i]['no_of_carton'] = $q;
                     $arr[$i]['no_of_weight'] = $weight;
                     $arr[$i]['batch_name'] = $item->batch_no;
+                    if ($item->available_pieces > 0 && $item->available_pieces != '') {
+                        $arr[$i]['no_of_pieces'] = $q * $item->weight_per_carton;
+                        $total_pieces += $q * $item->weight_per_carton;
+                    }
                     $total_wgt += $weight;
+                    $total_crt += $q;
                     break;
                 } elseif ($q > $item->available_carton) {
                     $weight = $item->weight_per_carton * $item->weight_per_carton;
                     $arr[$i]['no_of_carton'] = $item->weight_per_carton;
                     $arr[$i]['no_of_weight'] = $weight;
                     $arr[$i]['batch_name'] = $item->batch_no;
+                    if ($item->available_pieces > 0 && $item->available_pieces != '') {
+                        $arr[$i]['no_of_pieces'] = $item->piece_per_carton;
+                        $total_pieces += $item->piece_per_carton;
+                    }
                     $q = $q - $item->available_carton;
+                    $total_crt += $item->weight_per_carton;
                     $total_wgt += $weight;
                 }
                 $i++;
@@ -414,6 +444,11 @@ class SalesInvoiceDetailsController extends Controller {
                     $weight = $item->available_weight;
                     if ($item->available_carton > 0 && $item->available_carton != '') {
                         $arr[$i]['no_of_carton'] = $item->available_carton;
+                        $total_crt += $item->available_carton;
+                    }
+                    if ($item->available_pieces > 0 && $item->available_pieces != '') {
+                        $arr[$i]['no_of_pieces'] = $item->available_pieces;
+                        $total_pieces += $item->available_pieces;
                     }
                     $arr[$i]['no_of_weight'] = $weight;
                     $arr[$i]['batch_name'] = $item->batch_no;
@@ -424,6 +459,13 @@ class SalesInvoiceDetailsController extends Controller {
                     if ($item->available_carton > 0 && $item->available_carton != '') {
                         $rem = $q / $item->weight_per_carton;
                         $arr[$i]['no_of_carton'] = (int) ($rem);
+                        $total_crt += (int) ($rem);
+                    }
+                    if ($item->available_pieces > 0 && $item->available_pieces != '') {
+                        $weight_kg = $item->piece_per_carton / $item->weight_per_carton;
+                        $pieces = $q * $weight_kg;
+                        $arr[$i]['no_of_pieces'] = $pieces;
+                        $total_pieces += $pieces;
                     }
                     $arr[$i]['no_of_weight'] = $q;
                     $arr[$i]['batch_name'] = $item->batch_no;
@@ -433,6 +475,11 @@ class SalesInvoiceDetailsController extends Controller {
                     $weight = $item->available_weight;
                     if ($item->available_carton > 0 && $item->available_carton != '') {
                         $arr[$i]['no_of_carton'] = $item->available_carton;
+                        $total_crt += $item->available_carton;
+                    }
+                    if ($item->available_pieces > 0 && $item->available_pieces != '') {
+                        $arr[$i]['no_of_pieces'] = $item->available_pieces;
+                        $total_pieces += $item->available_pieces;
                     }
                     $arr[$i]['no_of_weight'] = $weight;
                     $arr[$i]['batch_name'] = $item->batch_no;
@@ -442,20 +489,65 @@ class SalesInvoiceDetailsController extends Controller {
                 $i++;
             }
         } elseif ($type == 3) {
+            $q = $qty;
+            $i = 0;
             foreach ($items as $item) {
-                $weight_kg += $item->piece_per_carton / $item->weight_per_carton;
-                if ($qty == $item->available_pieces) {
-                    $weight += $qty * $weight_kg;
+                $item_data = \common\models\ItemMaster::find()->where(['id' => $item->item_id])->one();
+                $arr[$i]['no_of_weight'] = '';
+                $arr[$i]['no_of_carton'] = '';
+                if ($q == $item->available_pieces) {
+                    $arr[$i]['no_of_pieces'] = $item->available_pieces;
+                    if ($item_data->item_type == 1) {
+                        $weight_kg = $item->piece_per_carton / $item->weight_per_carton;
+                        $weight = $q * $weight_kg;
+                        $arr[$i]['no_of_weight'] = $weight;
+                        $carton = $q / $item->piece_per_carton;
+                        if ($item->available_carton > 0 && $item->available_carton != '') {
+                            $arr[$i]['no_of_carton'] = (int) ($carton);
+                            $total_crt += (int) ($carton);
+                        }
+                    }
+                    $arr[$i]['batch_name'] = $item->batch_no;
+                    $total_wgt += $weight;
+                    $total_pieces += $q;
                     break;
-                } elseif ($qty < $item->available_pieces) {
-                    $weight += $qty * $weight_kg;
+                } elseif ($q < $item->available_pieces) {
+                    $weight = $q * $weight_kg;
+                    $arr[$i]['no_of_pieces'] = $q;
+                    if ($item_data->item_type == 1) {
+                        $weight_kg = $item->piece_per_carton / $item->weight_per_carton;
+                        $weight = $q * $weight_kg;
+                        $arr[$i]['no_of_weight'] = $weight;
+                        $carton = $q / $item->piece_per_carton;
+                        if ($item->available_carton > 0 && $item->available_carton != '') {
+                            $arr[$i]['no_of_carton'] = (int) ($carton);
+                            $total_crt += (int) ($carton);
+                        }
+                    }
+                    $arr[$i]['batch_name'] = $item->batch_no;
+                    $total_wgt += $weight;
+                    $total_pieces += $q;
                     break;
-                } elseif ($qty > $item->available_pieces) {
-                    $weight += $qty * $weight_kg;
+                } elseif ($q > $item->available_pieces) {
+                    $weight = $q * $weight_kg;
+                    $arr[$i]['no_of_pieces'] = $item->available_pieces;
+                    if ($item_data->item_type == 1) {
+                        $weight_kg = $item->piece_per_carton / $item->weight_per_carton;
+                        $weight = $q * $weight_kg;
+                        $arr[$i]['no_of_weight'] = $weight;
+                        $carton = $item->available_pieces / $item->piece_per_carton;
+                        if ($item->available_carton > 0 && $item->available_carton != '') {
+                            $arr[$i]['no_of_carton'] = (int) ($carton);
+                            $total_crt += (int) ($carton);
+                        }
+                    }
+                    $arr[$i]['batch_name'] = $item->batch_no;
+                    $total_wgt += $weight;
+                    $total_pieces += $item->available_pieces;
                 }
             }
         }
-        $document_data = array('arr' => $arr, 'tot-weight' => $total_wgt);
+        $document_data = array('arr' => $arr, 'tot-weight' => $total_wgt, 'tot-cart' => $total_crt, 'tot-pieces' => $total_pieces);
         return $document_data;
     }
 
@@ -533,7 +625,7 @@ class SalesInvoiceDetailsController extends Controller {
                         'taxes' => $taxes,
                     ]);
                     $tax = \common\models\Tax::findOne($item_datas->tax_id);
-                    $arr_variable1 = array('next_row_html' => $next_row, 'next' => $next, 'item_rate' => $item_datas->MRP, 'tax_id' => $item_datas->tax_id, 'tax_type' => $tax->type, 'tax_value' => $tax->value, 'stock-table' => $options, 'avail-carton' => $avail_carton, 'avail-weight' => $avail_weight, 'avail-pieces' => $avail_pieces);
+                    $arr_variable1 = array('next_row_html' => $next_row, 'next' => $next, 'item_rate' => $item_datas->MRP, 'item_type' => $item_datas->item_type, 'tax_id' => $item_datas->tax_id, 'tax_type' => $tax->type, 'tax_value' => $tax->value, 'stock-table' => $options, 'avail-carton' => $avail_carton, 'avail-weight' => $avail_weight, 'avail-pieces' => $avail_pieces);
                     $data1['result'] = $arr_variable1;
                     return json_encode($data1);
                 }
@@ -563,6 +655,7 @@ class SalesInvoiceDetailsController extends Controller {
             $type = $_POST['type'];
             $weight = 0;
             $items = \common\models\StockView::find()->where(['item_id' => $item_id])->all();
+            $item_datas = \common\models\ItemMaster::find()->where(['id' => $item_id])->one();
             if ($type == 1) {
                 $q = $qty;
                 foreach ($items as $item) {
@@ -573,21 +666,38 @@ class SalesInvoiceDetailsController extends Controller {
                         $weight += $q * $item->weight_per_carton;
                         break;
                     } elseif ($q > $item->available_carton) {
-                        $weight += $item->weight_per_carton * $item->weight_per_carton;
+                        $weight += $item->available_carton * $item->weight_per_carton;
+                        if ($weight > $item->available_weight) {
+                            $weight = $item->available_weight;
+                        }
                         $q = $q - $item->available_carton;
                     }
                 }
             } elseif ($type == 3) {
+                $q = $qty;
                 foreach ($items as $item) {
-                    $weight_kg += $item->piece_per_carton / $item->weight_per_carton;
-                    if ($qty == $item->available_pieces) {
-                        $weight += $qty * $weight_kg;
+                    $weight_kg = $item->piece_per_carton / $item->weight_per_carton;
+                    if ($q == $item->available_pieces) {
+                        if ($item_datas->item_type == 1) {
+                            $weight += $q * $weight_kg;
+                        } else {
+                            $weight = $q;
+                        }
                         break;
-                    } elseif ($qty < $item->available_pieces) {
-                        $weight += $qty * $weight_kg;
+                    } elseif ($q < $item->available_pieces) {
+                        if ($item_datas->item_type == 1) {
+                            $weight += $q * $weight_kg;
+                        } else {
+                            $weight = $q;
+                        }
                         break;
-                    } elseif ($qty > $item->available_pieces) {
-                        $weight += $qty * $weight_kg;
+                    } elseif ($q > $item->available_pieces) {
+                        if ($item_datas->item_type == 1) {
+                            $weight += $item->available_pieces * $weight_kg;
+                        } else {
+                            $weight = $item->available_pieces;
+                        }
+                        $q = $q - $item->available_pieces;
                     }
                 }
             }
@@ -600,10 +710,11 @@ class SalesInvoiceDetailsController extends Controller {
      */
 
     public function actionReport($id) {
-
+        $model = SalesInvoiceMaster::findOne(['id' => $id]);
+        $sales_details = SalesInvoiceDetails::findAll(['sales_invoice_master_id' => $id]);
         echo $this->renderPartial('report', [
-//            'appointment' => $appointment,
-//            'appointment_details' => $appointment_details,
+            'model' => $model,
+            'sales_details' => $sales_details,
             'print' => true,
         ]);
 

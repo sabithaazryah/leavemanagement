@@ -60,15 +60,15 @@ class SalesInvoiceMaster extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-                [['sales_invoice_number', 'ship_to_adress', 'delivery_address', 'busines_partner_code', 'contact_number', 'email'], 'required'],
-                [['sales_invoice_date', 'po_date', 'due_date', 'DOC', 'DOU'], 'safe'],
-                [['order_type', 'busines_partner_code', 'salesman', 'terms', 'payment_status', 'receipt_id', 'status', 'CB', 'UB'], 'integer'],
-                [['general_terms', 'delivery_address'], 'string'],
-                [['amount', 'tax_amount', 'order_amount', 'discount_amount', 'cash_amount', 'card_amount', 'round_of_amount', 'amount_payed', 'due_amount', 'goods_total', 'service_total'], 'number'],
-                [['sales_invoice_number', 'ship_to_adress', 'reference', 'error_message'], 'string', 'max' => 50],
-                [['payment_terms', 'delivery_terms', 'contact_number'], 'string', 'max' => 30],
-                [['po_no', 'email', 'receipt_no'], 'string', 'max' => 100],
-                [['sales_invoice_number'], 'unique'],
+            [['sales_invoice_number', 'ship_to_adress', 'delivery_address', 'busines_partner_code', 'contact_number', 'email'], 'required'],
+            [['sales_invoice_date', 'po_date', 'due_date', 'DOC', 'DOU'], 'safe'],
+            [['order_type', 'busines_partner_code', 'salesman', 'terms', 'payment_status', 'receipt_id', 'status', 'CB', 'UB'], 'integer'],
+            [['general_terms', 'delivery_address'], 'string'],
+            [['amount', 'tax_amount', 'order_amount', 'discount_amount', 'cash_amount', 'card_amount', 'round_of_amount', 'amount_payed', 'due_amount', 'goods_total', 'service_total'], 'number'],
+            [['sales_invoice_number', 'ship_to_adress', 'reference', 'error_message'], 'string', 'max' => 50],
+            [['payment_terms', 'delivery_terms', 'contact_number'], 'string', 'max' => 30],
+            [['po_no', 'email', 'receipt_no'], 'string', 'max' => 100],
+            [['sales_invoice_number'], 'unique'],
         ];
     }
 

@@ -59,7 +59,7 @@ class SalesInvoiceDetails extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['sales_invoice_master_id'], 'required'],
-            [['sales_invoice_master_id', 'base_unit', 'qty', 'tax_id', 'status', 'CB', 'UB', 'busines_partner_code', 'item_id', 'discount_type', 'tax_type', 'type', 'inventory'], 'integer'],
+            [['sales_invoice_master_id', 'base_unit', 'qty', 'tax_id', 'status', 'CB', 'UB', 'busines_partner_code', 'item_id', 'discount_type', 'tax_type', 'type', 'inventory', 'carton'], 'integer'],
             [['sales_invoice_date', 'DOC', 'DOU', 'hsn', 'CB', 'UB', 'comments'], 'safe'],
             [['rate', 'amount', 'discount_value', 'net_amount', 'tax_amount', 'line_total', 'discount_amount'], 'number'],
             [['sales_invoice_number', 'reference', 'error_message'], 'string', 'max' => 50],
@@ -84,6 +84,7 @@ class SalesInvoiceDetails extends \yii\db\ActiveRecord {
             'base_unit' => 'Base Unit',
             'comments' => 'Comments',
             'qty' => 'Qty',
+            'carton' => 'Carton',
             'rate' => 'Rate',
             'amount' => 'Amount',
             'discount_type' => 'Discount Type',

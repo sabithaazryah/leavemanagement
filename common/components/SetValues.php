@@ -78,7 +78,11 @@ class SetValues extends Component {
     public function NumberFormat($grandtotal) {
         $s = explode('.', $grandtotal);
         $amount = $s[0];
-        $decimal = $s[1];
+        if (isset($s[1])) {
+            $decimal = $s[1];
+        } else {
+            $decimal = 0;
+        }
         if ($amount != '') {
             $total = $english_format_number = number_format($amount);
             if ($decimal != 0) {

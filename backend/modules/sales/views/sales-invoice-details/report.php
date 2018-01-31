@@ -126,22 +126,41 @@
                                                             <td></td>
                                                         </tr>
                                                         <tr style="font-size: 11px;">
-                                                            <td colspan="3"><b>dfhgjdfhgj</b></td>
+                                                            <td colspan="3"><b><?= $model->ship_to_adress ?></b></td>
                                                         </tr>
                                                         <tr style="font-size: 11px;">
                                                             <td>Attn</td>
                                                             <td style="padding: 4px 10px;">:</td>
-                                                            <td>Anu</td>
+                                                            <td>
+                                                                <?php
+                                                                $customer = \common\models\BusinessPartner::find()->where(['id' => $model->busines_partner_code])->one();
+                                                                if (!empty($customer)) {
+                                                                    echo $customer->name;
+                                                                }
+                                                                ?>
+                                                            </td>
                                                         </tr>
                                                         <tr style="font-size: 11px;">
                                                             <td>Tel</td>
                                                             <td style="padding: 4px 10px;">:</td>
-                                                            <td>365647</td>
+                                                            <td>
+                                                                <?php
+                                                                if (!empty($customer)) {
+                                                                    echo $customer->phone_no;
+                                                                }
+                                                                ?>
+                                                            </td>
                                                         </tr>
                                                         <tr style="font-size: 11px;">
                                                             <td>Fax</td>
                                                             <td style="padding: 4px 10px;">:</td>
-                                                            <td>365647</td>
+                                                            <td>
+                                                                <?php
+                                                                if (!empty($customer)) {
+                                                                    echo $customer->fax_no;
+                                                                }
+                                                                ?>
+                                                            </td>
                                                         </tr>
                                                     </table>
                                                 </td>
@@ -161,22 +180,40 @@
                                                             <td></td>
                                                         </tr>
                                                         <tr style="font-size: 11px;">
-                                                            <td colspan="3"><b>dfhgjdfhgj</b></td>
+                                                            <td colspan="3"><b><?= $model->delivery_address ?></b></td>
                                                         </tr>
                                                         <tr style="font-size: 11px;">
                                                             <td>Attn</td>
                                                             <td style="padding: 4px 10px;">:</td>
-                                                            <td>Anu</td>
+                                                            <td>
+                                                                <?php
+                                                                if (!empty($customer)) {
+                                                                    echo $customer->name;
+                                                                }
+                                                                ?>
+                                                            </td>
                                                         </tr>
                                                         <tr style="font-size: 11px;">
                                                             <td>Tel</td>
                                                             <td style="padding: 4px 10px;">:</td>
-                                                            <td>365647</td>
+                                                            <td>
+                                                                <?php
+                                                                if (!empty($customer)) {
+                                                                    echo $customer->phone_no;
+                                                                }
+                                                                ?>
+                                                            </td>
                                                         </tr>
                                                         <tr style="font-size: 11px;">
                                                             <td>Fax</td>
                                                             <td style="padding: 4px 10px;">:</td>
-                                                            <td>365647</td>
+                                                            <td>
+                                                                <?php
+                                                                if (!empty($customer)) {
+                                                                    echo $customer->fax_no;
+                                                                }
+                                                                ?>
+                                                            </td>
                                                         </tr>
                                                     </table>
                                                 </td>
@@ -198,22 +235,22 @@
                                                         <tr style="font-size: 11px;">
                                                             <td>Inv No</td>
                                                             <td style="padding: 4px 10px;">:</td>
-                                                            <td>INV2018-2501-3170</td>
+                                                            <td><?= $model->sales_invoice_number ?></td>
                                                         </tr>
                                                         <tr style="font-size: 11px;">
                                                             <td>Date</td>
                                                             <td style="padding: 4px 10px;">:</td>
-                                                            <td>29-01-2018</td>
+                                                            <td><?= $model->sales_invoice_date ?></td>
                                                         </tr>
                                                         <tr style="font-size: 11px;">
                                                             <td>PO No</td>
                                                             <td style="padding: 4px 10px;">:</td>
-                                                            <td></td>
+                                                            <td><?= $model->po_no ?></td>
                                                         </tr>
                                                         <tr style="font-size: 11px;">
                                                             <td>PO Date</td>
                                                             <td style="padding: 4px 10px;">:</td>
-                                                            <td></td>
+                                                            <td><?= $model->po_date ?></td>
                                                         </tr>
                                                         <tr style="font-size: 11px;">
                                                             <td>Terms</td>
@@ -236,7 +273,7 @@
             <tr>
                 <td>
                     <div class="invoice-details"style="margin-top: 10px;min-height: 300px;">
-                        <table style="width:100%;border-collapse: collapse;text-align: left;">
+                        <table style="width:100%;border-collapse: collapse;text-align: center;">
                             <tr style="background: #4e5254;color: white !important;">
                                 <th style="width: 10%;font-size: 12px;padding: 10px 5px;">SL No.</th>
                                 <th style="width: 21%;font-size: 12px;padding: 10px 2px;">DESCRIPTION</th>
@@ -247,39 +284,29 @@
                                 <th style="width: 15%;font-size: 12px;padding: 10px 2px;">TAX AMOUNT</th>
                             </tr>
                             <?php
-//                            $p = 0;
-//                            $total_amount = 0;
-//                            $total_tax = 0;
-//                            $grand_total = 0;
-//                            $count = count($appointment_details);
-//                            foreach ($appointment_details as $value) {
-//                                $p++;
-//                                $particulars = '';
-//                                $total_amount += $value->total;
-//                                $total_tax += $value->tax_amount;
-//                                $grand_total += $value->sub_total;
-//                                if ($value->service_id == 1) {
-//                                    $particulars = \common\models\Materials::findOne($value->supplier);
-//                                    if (isset($particulars->description) && $particulars->description != '')
-//                                        $particulars = $particulars->description;
-//                                    else
-//                                        $particulars = '';
-//                                }
-//
-//                                if ($particulars == '') {
-//                                    $particulars = common\models\Services::findOne($value->service_id);
-//                                }
-                            ?>
-<!--                            <tr style="<?= $count != $p ? 'border-bottom: 1px solid #a09c9c;' : '' ?>">
-                                <td style="width: 10%;font-size: 11px;padding: 10px 5px;"><?= $p ?></td>
-                                <td style="width: 40%;font-size: 11px;padding: 10px 2px;"><?= $value->description ?></td>
-                                <td style="width: 13%;font-size: 11px;padding: 10px 2px;"><?= $value->quantity ?></td>
-                                <td style="width: 11%;font-size: 11px;padding: 10px 2px;"><?= $value->unit_price ?></td>
-                                <td style="width: 15%;font-size: 11px;padding: 10px 2px;"><?= $value->total ?></td>
-                                <td style="width: 11%;font-size: 11px;padding: 10px 2px;"><?= $value->tax_amount ?></td>
-                            </tr>-->
+                            $p = 0;
+                            $total_amount = 0;
+                            $total_tax = 0;
+                            $grand_total = 0;
+                            $count = count($sales_details);
+                            foreach ($sales_details as $value) {
+                                $p++;
+                                $particulars = '';
+                                $total_amount += $value->amount - $value->discount_amount;
+                                $total_tax += $value->tax_amount;
+                                $grand_total += $value->line_total;
+                                ?>
+                                <tr style="<?= $count != $p ? 'border-bottom: 1px solid #a09c9c;' : '' ?>">
+                                    <td style="width: 10%;font-size: 11px;padding: 10px 5px;"><?= $p ?></td>
+                                    <td style="width: 21%;font-size: 11px;padding: 10px 2px;"><?= $value->item_name ?></td>
+                                    <td style="width: 13%;font-size: 11px;padding: 10px 2px;"><?= $value->rate ?></td>
+                                    <td style="width: 11%;font-size: 11px;padding: 10px 2px;"><?= $value->qty ?></td>
+                                    <td style="width: 15%;font-size: 11px;padding: 10px 2px;"><?= $value->carton ?></td>
+                                    <td style="width: 15%;font-size: 11px;padding: 10px 2px;"><?= Yii::$app->SetValues->NumberFormat(round($value->amount - $value->discount_amount, 2)); ?></td>
+                                    <td style="width: 15%;font-size: 11px;padding: 10px 2px;"><?= $value->tax_amount ?></td>
+                                </tr>
 
-                            <?php //} ?>
+                            <?php } ?>
 
                             <?php
 //                            if (isset($appointment_details) && $appointment_details != '') {
@@ -308,28 +335,30 @@
                         <table style="width:100%;border-collapse: collapse;text-align: left;">
                             <tr style="border-top: 1px solid #a09c9c;">
                                 <th style="width: 10%;font-size: 12px;padding: 10px 2px;"></th>
-                                <th style="width: 40%;font-size: 12px;padding: 10px 2px;"></th>
+                                <th style="width: 21%;font-size: 12px;padding: 10px 2px;"></th>
                                 <th style="width: 13%;font-size: 12px;padding: 10px 2px;"></th>
-                                <th style="width: 11%;font-size: 12px;padding: 10px 2px;text-align: right;">Sub Total</th>
-                                <th style="width: 15%;font-size: 12px;padding: 10px 2px;text-align: right;"><?= Yii::$app->SetValues->NumberFormat(round($total_amount, 2)); ?></th>
-                                <th style="width: 11%;font-size: 12px;padding: 10px 2px;text-align: right;"><?= Yii::$app->SetValues->NumberFormat(round($total_tax, 2)); ?></th>
+                                <th style="width: 11%;font-size: 12px;padding: 10px 2px;"></th>
+                                <th style="width: 15%;font-size: 12px;padding: 10px 2px;text-align: center;">Sub Total</th>
+                                <th style="width: 15%;font-size: 12px;padding: 10px 2px;text-align: center;"><?= Yii::$app->SetValues->NumberFormat(round($total_amount, 2)) . ' (S$)'; ?></th>
+                                <th style="width: 15%;font-size: 12px;padding: 10px 2px;text-align: center;"><?= Yii::$app->SetValues->NumberFormat(round($total_tax, 2)) . ' (S$)'; ?></th>
                             </tr>
                             <tr style="">
                                 <th style="width: 10%;font-size: 12px;padding: 10px 2px;"></th>
-                                <th style="width: 40%;font-size: 12px;padding: 10px 2px;"></th>
+                                <th style="width: 21%;font-size: 12px;padding: 10px 2px;"></th>
                                 <th style="width: 13%;font-size: 12px;padding: 10px 2px;"></th>
-                                <th style="width: 11%;font-size: 12px;padding: 10px 2px;background: #4e5254;color: white;text-align: right;">Total</th>
+                                <th style="width: 11%;font-size: 12px;padding: 10px 2px;"></th>
+                                <th style="width: 15%;font-size: 12px;padding: 10px 2px;background: #4e5254;color: white;text-align: center;">Total</th>
                                 <th style="width: 15%;font-size: 12px;padding: 10px 2px;background: #4e5254;"></th>
-                                <th style="width: 11%;font-size: 12px;padding: 10px 2px;background: #4e5254;color: white;text-align: right;"><?= Yii::$app->SetValues->NumberFormat(round(($total_amount + $total_tax), 2)); ?></th>
+                                <th style="width: 15%;font-size: 12px;padding: 10px 2px;background: #4e5254;color: white;text-align: center;"><?= Yii::$app->SetValues->NumberFormat(round(($total_amount + $total_tax), 2)) . ' (S$)'; ?></th>
                             </tr>
                             <tr style="">
-                                <th colspan="6" style="width: 100%;font-size: 12px;padding: 10px 2px;text-align: right;"><?php echo ucwords(Yii::$app->NumToWord->ConvertNumberToWords(round($grand_total, 2))) . ' Only'; ?></th>
+                                <th colspan="7" style="width: 100%;font-size: 12px;padding: 10px 2px;text-align: right;"><?php echo ucwords(Yii::$app->NumToWord->ConvertNumberToWords(round($grand_total, 2))) . ' Only'; ?></th>
                             </tr>
                             <tr style="">
-                                <th colspan="6" style="width: 100%;font-size: 12px;padding: 10px 2px;text-align: left;">Goods sold are not returnable</th>
+                                <th colspan="7" style="width: 100%;font-size: 12px;padding: 10px 2px;text-align: left;">Goods sold are not returnable</th>
                             </tr>
                             <tr style="">
-                                <th colspan="6" style="width: 100%;font-size: 12px;padding: 10px 2px;text-align: left;">All cheques must be crossed and made payable to "REN & ZHANG WORLDWIDE TRADING (S) PTE LTD" only.</th>
+                                <th colspan="7" style="width: 100%;font-size: 12px;padding: 10px 2px;text-align: left;">All cheques must be crossed and made payable to "REN & ZHANG WORLDWIDE TRADING (S) PTE LTD" only.</th>
                             </tr>
                         </table>
                     </div>
