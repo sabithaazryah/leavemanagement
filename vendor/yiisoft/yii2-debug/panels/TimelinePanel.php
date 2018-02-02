@@ -70,7 +70,7 @@ class TimelinePanel extends Panel
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -81,7 +81,7 @@ class TimelinePanel extends Panel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -89,7 +89,7 @@ class TimelinePanel extends Panel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getDetail()
     {
@@ -104,7 +104,7 @@ class TimelinePanel extends Panel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function load($data)
     {
@@ -135,7 +135,7 @@ class TimelinePanel extends Panel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function save()
     {
@@ -243,5 +243,4 @@ class TimelinePanel extends Panel
         }
         return $this->_models;
     }
-
 }

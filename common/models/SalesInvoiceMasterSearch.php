@@ -10,13 +10,22 @@ use common\models\SalesInvoiceMaster;
 /**
  * SalesInvoiceMasterSearch represents the model behind the search form about `common\models\SalesInvoiceMaster`.
  */
-class SalesInvoiceMasterSearch extends SalesInvoiceMaster
-{
+class SalesInvoiceMasterSearch extends SalesInvoiceMaster {
+
+    /**
+     * @var string
+     */
+    public $createdFrom;
+
+    /**
+     * @var string
+     */
+    public $createdTo;
+
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['id', 'order_type', 'busines_partner_code', 'salesman', 'terms', 'payment_status', 'receipt_id', 'status', 'CB', 'UB'], 'integer'],
             [['sales_invoice_number', 'sales_invoice_date', 'payment_terms', 'delivery_terms', 'general_terms', 'ship_to_adress', 'delivery_address', 'contact_number', 'po_no', 'po_date', 'email', 'due_date', 'reference', 'receipt_no', 'error_message', 'DOC', 'DOU'], 'safe'],
@@ -27,8 +36,7 @@ class SalesInvoiceMasterSearch extends SalesInvoiceMaster
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -40,8 +48,7 @@ class SalesInvoiceMasterSearch extends SalesInvoiceMaster
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
+    public function search($params) {
         $query = SalesInvoiceMaster::find();
 
         // add conditions that should always apply here
@@ -89,18 +96,19 @@ class SalesInvoiceMasterSearch extends SalesInvoiceMaster
         ]);
 
         $query->andFilterWhere(['like', 'sales_invoice_number', $this->sales_invoice_number])
-            ->andFilterWhere(['like', 'payment_terms', $this->payment_terms])
-            ->andFilterWhere(['like', 'delivery_terms', $this->delivery_terms])
-            ->andFilterWhere(['like', 'general_terms', $this->general_terms])
-            ->andFilterWhere(['like', 'ship_to_adress', $this->ship_to_adress])
-            ->andFilterWhere(['like', 'delivery_address', $this->delivery_address])
-            ->andFilterWhere(['like', 'contact_number', $this->contact_number])
-            ->andFilterWhere(['like', 'po_no', $this->po_no])
-            ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'reference', $this->reference])
-            ->andFilterWhere(['like', 'receipt_no', $this->receipt_no])
-            ->andFilterWhere(['like', 'error_message', $this->error_message]);
+                ->andFilterWhere(['like', 'payment_terms', $this->payment_terms])
+                ->andFilterWhere(['like', 'delivery_terms', $this->delivery_terms])
+                ->andFilterWhere(['like', 'general_terms', $this->general_terms])
+                ->andFilterWhere(['like', 'ship_to_adress', $this->ship_to_adress])
+                ->andFilterWhere(['like', 'delivery_address', $this->delivery_address])
+                ->andFilterWhere(['like', 'contact_number', $this->contact_number])
+                ->andFilterWhere(['like', 'po_no', $this->po_no])
+                ->andFilterWhere(['like', 'email', $this->email])
+                ->andFilterWhere(['like', 'reference', $this->reference])
+                ->andFilterWhere(['like', 'receipt_no', $this->receipt_no])
+                ->andFilterWhere(['like', 'error_message', $this->error_message]);
 
         return $dataProvider;
     }
+
 }

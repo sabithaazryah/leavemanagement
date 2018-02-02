@@ -55,7 +55,7 @@ class RouterPanel extends Panel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -63,7 +63,7 @@ class RouterPanel extends Panel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getDetail()
     {
@@ -71,7 +71,7 @@ class RouterPanel extends Panel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function save()
     {
@@ -80,5 +80,4 @@ class RouterPanel extends Panel
             'messages' => $target::filterMessages($target->messages, Logger::LEVEL_TRACE, $this->_categories)
         ];
     }
-
 }

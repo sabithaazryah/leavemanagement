@@ -37,13 +37,13 @@ class MailPanel extends Panel
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
         parent::init();
-        Event::on(BaseMailer::className(), BaseMailer::EVENT_AFTER_SEND, function ($event) {
 
+        Event::on(BaseMailer::className(), BaseMailer::EVENT_AFTER_SEND, function ($event) {
             /* @var $message MessageInterface */
             $message = $event->message;
             $messageData = [
@@ -94,7 +94,7 @@ class MailPanel extends Panel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -102,7 +102,7 @@ class MailPanel extends Panel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getSummary()
     {
@@ -110,7 +110,7 @@ class MailPanel extends Panel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getDetail()
     {
@@ -125,7 +125,7 @@ class MailPanel extends Panel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function save()
     {

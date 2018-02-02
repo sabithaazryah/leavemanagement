@@ -26,7 +26,7 @@ class User extends Model
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -40,7 +40,7 @@ class User extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __get($name)
     {
@@ -48,7 +48,7 @@ class User extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __set($name, $value)
     {
@@ -56,7 +56,7 @@ class User extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -64,7 +64,7 @@ class User extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributes()
     {
@@ -72,12 +72,12 @@ class User extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function search($params)
     {
         if ($this->identityImplement instanceof ActiveRecord) {
-            return $this->serachActiveDataProvider($params);
+            return $this->searchActiveDataProvider($params);
         }
 
         return null;
@@ -88,7 +88,7 @@ class User extends Model
      * @param array $params the data array to load model.
      * @return ActiveDataProvider
      */
-    private function serachActiveDataProvider($params)
+    private function searchActiveDataProvider($params)
     {
         /** @var ActiveRecord $model */
         $model = $this->identityImplement;
@@ -112,5 +112,4 @@ class User extends Model
 
         return $dataProvider;
     }
-
 }

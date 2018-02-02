@@ -114,7 +114,7 @@ class RoboFile extends \Robo\Tasks
             ->test('tests/web/WebDriverTest.php'.$test)
             ->args($args)
             ->run();
-        
+
         $this->taskDockerStop($container)->run();
     }
 
@@ -181,6 +181,10 @@ class RoboFile extends \Robo\Tasks
     {
         $this->installDependenciesForPhp70();
         $this->packPhar('package/codecept.phar');
+        $code = $this->taskExec('php codecept.phar')->dir('package')->run()->getExitCode();
+        if ($code !== 0) {
+            throw new Exception("There was problem compiling phar");
+        }
         $this->revertComposerJsonChanges();
     }
 
@@ -194,7 +198,12 @@ class RoboFile extends \Robo\Tasks
             mkdir('package/php54');
         }
         $this->installDependenciesForPhp54();
-        $this->packPhar('package/php54/codecept.phar');
+        $this->packPhar('package/codecept5.phar');
+        $this->_copy('package/codecept5.phar', 'package/php54/codecept.phar');
+        $code = $this->taskExec('php codecept.phar')->dir('package/php54')->run()->getExitCode();
+        if ($code !== 0) {
+            throw new Exception("There was problem compiling phar");
+        }
         $this->revertComposerJsonChanges();
     }
 
@@ -264,11 +273,7 @@ class RoboFile extends \Robo\Tasks
             ->addFile('shim.php', 'shim.php')
             ->addFile('phpunit5-loggers.php', 'phpunit5-loggers.php')
             ->run();
-        
-        $code = $this->taskExec('php ' . $pharFileName)->run()->getExitCode();
-        if ($code !== 0) {
-            throw new Exception("There was problem compiling phar");
-        }
+
     }
 
     /**
@@ -280,6 +285,7 @@ class RoboFile extends \Robo\Tasks
         $this->buildDocsModules();
         $this->buildDocsUtils();
         $this->buildDocsCommands();
+        $this->buildDocsStub();
         $this->buildDocsApi();
         $this->buildDocsExtensions();
     }
@@ -302,7 +308,7 @@ class RoboFile extends \Robo\Tasks
                 ->append('<p>&nbsp;</p><div class="alert alert-warning">Module reference is taken from the source code. <a href="'.$source.'">Help us to improve documentation. Edit module reference</a></div>')
                 ->processClassSignature(false)
                 ->processClassDocBlock(function (\ReflectionClass $c, $text) {
-                    return "$text\n\n## Actions";
+                    return "$text\n## Actions";
                 })->processProperty(false)
                 ->filterMethods(function (\ReflectionMethod $method) use ($className) {
                     if ($method->isConstructor() or $method->isDestructor()) {
@@ -344,7 +350,8 @@ class RoboFile extends \Robo\Tasks
                     $text = str_replace("@return mixed\n", '', $text);
                     $text = preg_replace('~@return (.*?)~', ' * `return` $1', $text);
                     $text = preg_replace("~^@(.*?)([$\s])~", ' * `$1` $2', $text);
-                    return $title . $text;
+                    $result = $title . $text;
+                    return preg_replace('/\n(\s*\n){2,}/', "\n\n", $result);
                 })->processMethodSignature(false)
                 ->reorderMethods('ksort')
                 ->run();
@@ -354,7 +361,7 @@ class RoboFile extends \Robo\Tasks
     public function buildDocsUtils()
     {
         $this->say("Util Classes");
-        $utils = ['Autoload', 'Fixtures', 'Stub', 'Locator', 'XmlBuilder', 'JsonType', 'HttpCode'];
+        $utils = ['Autoload', 'Fixtures', 'Locator', 'XmlBuilder', 'JsonType', 'HttpCode'];
 
         foreach ($utils as $utilName) {
             $className = '\Codeception\Util\\' . $utilName;
@@ -362,6 +369,50 @@ class RoboFile extends \Robo\Tasks
 
             $this->documentApiClass('docs/reference/' . $utilName . '.md', $className, $source);
         }
+    }
+
+    public function buildDocsStub()
+    {
+        $this->say("Stub Classes");
+
+        $this->taskGenDoc('docs/reference/Stub.md')
+            ->docClass('Codeception\Stub')
+            ->filterMethods(function(\ReflectionMethod $method) {
+                if ($method->isConstructor() or $method->isDestructor()) return false;
+                if (!$method->isPublic()) return false;
+                if (strpos($method->name, '_') === 0) return false;
+                return true;
+            })
+            ->processMethodDocBlock(
+                function (\ReflectionMethod $m, $doc) {
+                    $doc = str_replace(array('@since'), array(' * available since version'), $doc);
+                    $doc = str_replace(array(' @', "\n@"), array("  * ", "\n * "), $doc);
+                    return $doc;
+                })
+            ->processProperty(false)
+            ->run();
+
+        $mocksDocumentation = <<<EOF
+# Mocks
+
+Declare mocks inside `Codeception\Test\Unit` class.
+If you want to use mocks outside it, check the reference for [Codeception/Stub](https://github.com/Codeception/Stub) library.      
+EOF;
+
+        $this->taskGenDoc('docs/reference/Mock.md')
+            ->docClass('Codeception\Test\Feature\Stub')
+            ->docClass('Codeception\Stub\Expected')
+            ->processClassDocBlock(false)
+            ->processClassSignature(false)
+            ->prepend($mocksDocumentation)
+            ->filterMethods(function(\ReflectionMethod $method) {
+                if ($method->isConstructor() or $method->isDestructor()) return false;
+                if (!$method->isPublic()) return false;
+                if (strpos($method->name, '_') === 0) return false;
+                if (strpos($method->name, 'stub') === 0) return false;
+                return true;
+            })
+            ->run();
     }
 
     public function buildDocsApi()
@@ -471,7 +522,7 @@ class RoboFile extends \Robo\Tasks
         foreach ($releases as $release) {
             $releaseName = $release->getBasename();
             $downloadUrl = "http://codeception.com/releases/$releaseName/codecept.phar";
-            
+
             list($major, $minor) = explode('.', $releaseName);
             if ("$major.$minor" != $branch) {
                 $branch = "$major.$minor";
@@ -919,7 +970,7 @@ class RoboFile extends \Robo\Tasks
                 function (ReflectionMethod $r, $text) use ($file) {
                     $file = str_replace(__DIR__, '', $r->getFileName());
                     $source = self::REPO_BLOB_URL."/".self::STABLE_BRANCH. $file;
-                    
+
                     $line = $r->getStartLine();
                     $text = preg_replace("~^\s?@(.*?)\s~m", ' * `$1` $2', $text);
                     $text .= "\n[See source]($source#L$line)";
