@@ -121,12 +121,12 @@ AppAsset::register($this);
                                                                         <li>
                                                                                 <?= Html::a('Opening Stock', ['/stock/stock/index'], ['class' => 'title']) ?>
                                                                         </li>
-                                                                        <!--                                    <li>
-                                                                        <?= Html::a('Stock Adjustment', ['/stock/stock/update'], ['class' => 'title']) ?>
-                                                                                                            </li>-->
+                                                                        <li>
+                                                                                <?= Html::a('Stock Adjustment', ['/stock/stock/update'], ['class' => 'title']) ?>
+                                                                        </li>
 
                                                                         <li>
-                                                                                <?= Html::a('Stock', ['/stock/stock-view/index'], ['class' => 'title']) ?>
+                                                                                <?= Html::a('Avilable Stock', ['/stock/stock-view/index'], ['class' => 'title']) ?>
                                                                         </li>
 
                                                                 </ul>

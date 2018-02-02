@@ -65,8 +65,9 @@ class Stock extends \yii\db\ActiveRecord {
                         [['uom'], 'string', 'max' => 50],
                         [['batch_no', 'plant', 'warehouse'], 'string', 'max' => 100],
                         [['batch_no', 'item_id'], 'required'],
-                        [['batch_no'], 'unique', 'on' => 'create',],
-                        [['total_weight', 'cartons', 'pieces'], 'required', 'when' => function ($model) {
+                        [['batch_no'], 'my_required', 'on' => 'create'],
+                    // [['batch_no'], 'unique', 'on' => 'create',],
+                    [['total_weight', 'cartons', 'pieces'], 'required', 'when' => function ($model) {
 
                         }, 'whenClient' => "function (attribute, value) {
                return $('#stock-item-type').val() == '1';
@@ -76,10 +77,6 @@ class Stock extends \yii\db\ActiveRecord {
                         }, 'whenClient' => "function (attribute, value) {
                return $('#stock-item-type').val() == '2';
             }"],
-                        [['batch_no'], 'unique', 'on' => 'update', 'when' => function($model) {
-                                return static::getOldUsername($model->id) !== $model->batch_no;
-                        }
-                    ],
                 ];
         }
 
@@ -134,6 +131,20 @@ class Stock extends \yii\db\ActiveRecord {
         public static function findIdentity($id) {
 
                 return static::findOne(['id' => $id, 'status' => 1]);
+        }
+
+        public function my_required($attribute_name, $params) {
+
+                if (!empty($this->batch_no)) {
+                        $batch = Stock::find()->where(['item_id' => $this->item_id, 'batch_no' => $this->batch_no])->exists();
+                        if ($batch) {
+                                $this->addError($attribute_name, 'This batch no already taken ! Please try another one.');
+                        }
+
+                        return false;
+                }
+
+                return true;
         }
 
 }

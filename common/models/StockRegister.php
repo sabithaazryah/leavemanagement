@@ -32,60 +32,58 @@ use Yii;
  * @property string $DOC
  * @property string $DOU
  */
-class StockRegister extends \yii\db\ActiveRecord
-{
-    /**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
-        return 'stock_register';
-    }
+class StockRegister extends \yii\db\ActiveRecord {
 
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [['transaction', 'document_line_id', 'item_id', 'balance_qty', 'status', 'CB', 'UB'], 'integer'],
-            [['document_date', 'DOC', 'DOU'], 'safe'],
-            [['item_cost', 'cartoon_in', 'cartoon_out', 'weight_in', 'weight_out', 'piece_in', 'piece_out', 'total_cost'], 'number'],
-            [['document_no', 'item_code', 'item_name', 'location_code'], 'string', 'max' => 50],
-            [['batch_no'], 'string', 'max' => 100],
-        ];
-    }
+        /**
+         * @inheritdoc
+         */
+        public static function tableName() {
+                return 'stock_register';
+        }
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'transaction' => 'Transaction',
-            'document_line_id' => 'Document Line ID',
-            'document_no' => 'Document No',
-            'document_date' => 'Document Date',
-            'item_id' => 'Item ID',
-            'item_code' => 'Item Code',
-            'item_name' => 'Item Name',
-            'batch_no' => 'Batch No',
-            'location_code' => 'Location Code',
-            'item_cost' => 'Item Cost',
-            'cartoon_in' => 'Cartoon In',
-            'cartoon_out' => 'Cartoon Out',
-            'balance_qty' => 'Balance Qty',
-            'weight_in' => 'Weight In',
-            'weight_out' => 'Weight Out',
-            'piece_in' => 'Piece In',
-            'piece_out' => 'Piece Out',
-            'total_cost' => 'Total Cost',
-            'status' => 'Status',
-            'CB' => 'Cb',
-            'UB' => 'Ub',
-            'DOC' => 'Doc',
-            'DOU' => 'Dou',
-        ];
-    }
+        /**
+         * @inheritdoc
+         */
+        public function rules() {
+                return [
+                        [['transaction', 'document_line_id', 'item_id', 'balance_qty', 'status', 'CB', 'UB', 'location_code'], 'integer'],
+                        [['document_date', 'DOC', 'DOU'], 'safe'],
+                        [['item_cost', 'cartoon_in', 'cartoon_out', 'weight_in', 'weight_out', 'piece_in', 'piece_out', 'total_cost'], 'number'],
+                        [['document_no', 'item_code', 'item_name',], 'string', 'max' => 50],
+                        [['batch_no'], 'string', 'max' => 100],
+                ];
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function attributeLabels() {
+                return [
+                    'id' => 'ID',
+                    'transaction' => 'Transaction',
+                    'document_line_id' => 'Document Line ID',
+                    'document_no' => 'Document No',
+                    'document_date' => 'Document Date',
+                    'item_id' => 'Item ID',
+                    'item_code' => 'Item Code',
+                    'item_name' => 'Item Name',
+                    'batch_no' => 'Batch No',
+                    'location_code' => 'Location Code',
+                    'item_cost' => 'Item Cost',
+                    'cartoon_in' => 'Cartoon In',
+                    'cartoon_out' => 'Cartoon Out',
+                    'balance_qty' => 'Balance Qty',
+                    'weight_in' => 'Weight In',
+                    'weight_out' => 'Weight Out',
+                    'piece_in' => 'Piece In',
+                    'piece_out' => 'Piece Out',
+                    'total_cost' => 'Total Cost',
+                    'status' => 'Status',
+                    'CB' => 'Cb',
+                    'UB' => 'Ub',
+                    'DOC' => 'Doc',
+                    'DOU' => 'Dou',
+                ];
+        }
+
 }

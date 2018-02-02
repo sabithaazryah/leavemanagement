@@ -9,7 +9,7 @@ use yii\helpers\Url;
 /* @var $searchModel common\models\StockSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Opening Stocks';
+$this->title = 'Stock Management';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="stock-index">
@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 'item_code',
 //                                                'price',
                                                 // 'uom',
-                                                // 'batch_no',
+                                                'batch_no',
                                                 // 'slaughter_date_from',
                                                 // 'slaughter_date_to',
                                                 // 'production_date',

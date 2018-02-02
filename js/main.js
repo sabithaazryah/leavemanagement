@@ -40,6 +40,11 @@ $(function () {
                                         $('.slaughter_date_to').hide();
                                         $('.cartoons').hide();
                                         $('.weight').hide();
+                                } else {
+                                        $('.slaughter_date_from').show();
+                                        $('.slaughter_date_to').show();
+                                        $('.cartoons').show();
+                                        $('.weight').show();
                                 }
                         }
                 });

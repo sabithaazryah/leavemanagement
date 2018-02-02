@@ -38,6 +38,7 @@ class StockController extends Controller {
         public function actionIndex() {
                 $searchModel = new StockSearch();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+                $dataProvider->query->andWhere(['type' => 1]);
 
                 return $this->render('index', [
                             'searchModel' => $searchModel,
@@ -69,6 +70,7 @@ class StockController extends Controller {
 
 
                 if ($model->load(Yii::$app->request->post())) {
+
                         $item_deatils = ItemMaster::findOne($model->item_id);
                         $model->type = 1;
                         $model->item_name = $item_deatils->item_name;
@@ -77,11 +79,14 @@ class StockController extends Controller {
                         $model->production_date = date('Y-m-d', strtotime($model->production_date));
                         $model->due_date = date('Y-m-d', strtotime($model->due_date));
                         Yii::$app->SetValues->Attributes($model);
-                        if ($model->save()) {
-                                $this->StockView($stock_view, $model);
-                                $this->StockRegister($stock_register, $model);
-                                return $this->redirect(['index']);
+
+                        $transaction = Yii::$app->db->beginTransaction();
+                        if ($model->save() && $this->StockView($stock_view, $model) && $this->StockRegister($stock_register, $model)) {
+                                $transaction->commit();
+                        } else {
+                                $transaction->rollBack();
                         }
+                        return $this->redirect(['index']);
                 }
                 return $this->render('create', [
                             'model' => $model,
@@ -112,9 +117,9 @@ class StockController extends Controller {
                 $stock_view->average_cost = $model->cost;
                 $stock_view->due_date = $model->due_date;
                 if ($stock_view->save()) {
-
+                        return TRUE;
                 } else {
-
+                        return FALSE;
                 }
         }
 
@@ -136,7 +141,11 @@ class StockController extends Controller {
                 $stock_register->CB = Yii::$app->user->identity->id;
                 $stock_register->UB = Yii::$app->user->identity->id;
                 $stock_register->DOC = date('Y-m-d');
-                $stock_register->save();
+                if ($stock_register->save()) {
+                        return TRUE;
+                } else {
+                        return FALSE;
+                }
         }
 
         /**
@@ -150,22 +159,27 @@ class StockController extends Controller {
                         $model = $this->findModel($id);
                 else
                         $model = new Stock();
-                $model->setScenario('update');
+                // $model->setScenario('update');
 
-                if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                        $item_deatils = ItemMaster::findOne($model->item_id);
-                        $model->type = 2;
+                if ($model->load(Yii::$app->request->post())) {
+                        $stock_adjust = new Stock;
+                        $stock_adjust->attributes = $model->attributes;
+                        $stock_adjust->adjust_cartons = Yii::$app->request->post()['Stock']['adjust_cartons'];
+                        $stock_adjust->adjust_weight = Yii::$app->request->post()['Stock']['adjust_weight'];
+                        $stock_adjust->adjust_pieces = Yii::$app->request->post()['Stock']['adjust_pieces'];
+                        $item_deatils = ItemMaster::findOne($stock_adjust->item_id);
+                        $stock_adjust->type = 2;
                         $model->item_name = $item_deatils->item_name;
-                        $model->slaughter_date_from = date('Y-m-d', strtotime($model->slaughter_date_from));
-                        $model->slaughter_date_to = date('Y-m-d', strtotime($model->slaughter_date_to));
-                        $model->production_date = date('Y-m-d', strtotime($model->production_date));
-                        $model->due_date = date('Y-m-d', strtotime($model->due_date));
-                        $this->StockRegisterAdjustment($model);
-                        $stockview = StockView::find()->where(['item_id' => $model->item_id, 'batch_no' => $model->batch_no])->one();
+                        $stock_adjust->slaughter_date_from = date('Y-m-d', strtotime($stock_adjust->slaughter_date_from));
+                        $stock_adjust->slaughter_date_to = date('Y-m-d', strtotime($stock_adjust->slaughter_date_to));
+                        $stock_adjust->production_date = date('Y-m-d', strtotime($stock_adjust->production_date));
+                        $stock_adjust->due_date = date('Y-m-d', strtotime($stock_adjust->due_date));
+                        //  $this->StockRegisterAdjustment($stock_adjust);
+                        $stockview = StockView::find()->where(['item_id' => $stock_adjust->item_id, 'batch_no' => $stock_adjust->batch_no])->one();
                         if (!empty($stockview)) {
-                                $stockview->available_carton = $model->adjust_cartons;
-                                $stockview->available_weight = $model->adjust_weight;
-                                $stockview->available_pieces = $model->adjust_pieces;
+                                $stockview->available_carton = $stock_adjust->adjust_cartons;
+                                $stockview->available_weight = $stock_adjust->adjust_weight;
+                                $stockview->available_pieces = $stock_adjust->adjust_pieces;
                                 if ($item_deatils->item_type == 1) {
                                         if (isset($stockview->available_weight) && $stockview->available_weight != '') {
                                                 $stockview->weight_per_carton = $stockview->available_weight / $stockview->available_carton;
@@ -173,12 +187,22 @@ class StockController extends Controller {
                                                 $stockview->piece_per_carton = $stockview->available_pieces / $stockview->available_carton;
                                         }
                                 }
-                                $stockview->save();
+                                //  $stockview->save();
                         } else {
                                 $stockview = new StockView;
-                                $this->StockView($stockview, $model);
+                                $this->StockView($stockview, $stock_adjust);
                         }
-                        $model->save();
+
+                        //$stock_adjust->save();
+
+                        $transaction = Yii::$app->db->beginTransaction();
+                        if ($stock_adjust->save() && $this->StockRegisterAdjustment($stock_adjust) && $stockview->save()) {
+                                $transaction->commit();
+                        } else {
+                                $transaction->rollBack();
+                        }
+
+
                         return $this->redirect(['index']);
                 }
                 return $this->render('update', [
@@ -199,29 +223,34 @@ class StockController extends Controller {
                 $stock_register->batch_no = $model->batch_no;
                 $stock_register->location_code = $model->location;
                 $stock_register->item_cost = '';
-                if ($model->adjust_cartons > $model->cartons) {
-                        $stock_register->cartoon_in = $model->adjust_cartons - $model->cartons;
+                $stockview = StockView::find()->where(['item_id' => $model->item_id, 'batch_no' => $model->batch_no])->one();
+                if ($model->adjust_cartons > $stockview->available_carton) {
+                        $stock_register->cartoon_in = $model->adjust_cartons - $stockview->available_carton;
                 } else {
-                        $stock_register->cartoon_out = $model->cartons - $model->adjust_cartons;
+                        $stock_register->cartoon_out = $stockview->available_carton - $model->adjust_cartons;
                 }
 
-                if ($model->adjust_weight > $model->total_weight) {
-                        $stock_register->weight_in = $model->adjust_weight - $model->total_weight;
+                if ($model->adjust_weight > $stockview->available_weight) {
+                        $stock_register->weight_in = $model->adjust_weight - $stockview->available_weight;
                 } else {
-                        $stock_register->weight_out = $model->total_weight - $model->adjust_weight;
+                        $stock_register->weight_out = $stockview->available_weight - $model->adjust_weight;
                 }
 
-                if ($model->adjust_pieces > $model->pieces) {
-                        $stock_register->piece_in = $model->adjust_pieces - $model->pieces;
+                if ($model->adjust_pieces > $stockview->available_pieces) {
+                        $stock_register->piece_in = $model->adjust_pieces - $stockview->available_pieces;
                 } else {
-                        $stock_register->piece_out = $model->pieces - $model->adjust_pieces;
+                        $stock_register->piece_out = $stockview->available_pieces - $model->adjust_pieces;
                 }
 
                 $stock_register->status = 1;
                 $stock_register->CB = Yii::$app->user->identity->id;
                 $stock_register->UB = Yii::$app->user->identity->id;
                 $stock_register->DOC = date('Y-m-d');
-                $stock_register->save();
+                if ($stock_register->save()) {
+                        return TRUE;
+                } else {
+                        return FALSE;
+                }
         }
 
         /**
@@ -286,8 +315,48 @@ class StockController extends Controller {
 
         public function actionBatches() {
                 if (Yii::$app->request->isAjax) {
-                        $list = $this->renderPartial('batches');
+                        $item = $_POST['selected'];
+                        $stockview = StockView::find()->where(['item_id' => $item])->groupBy(['batch_no'])->all();
+                        $list = $this->renderPartial('batches', ['batches' => $stockview]);
                         return $list;
+                }
+        }
+
+        public function actionStockViewDetails() {
+                if (Yii::$app->request->isAjax) {
+                        $category = '';
+                        $avilable_label = '';
+                        $slaughter_date_from = '';
+                        $slaughter_date_to = '';
+                        $production_date = '';
+                        $due_date = '';
+                        $stock_view_id = $_POST['stock_view_id'];
+                        $stock_view_details = StockView::findOne($stock_view_id);
+                        $stock = Stock::find()->where(['batch_no' => $stock_view_details->batch_no, 'item_id' => $stock_view_details->item_id])->one();
+                        $item_details = ItemMaster::findOne($stock_view_details->item_id);
+                        $unit = \common\models\BaseUnit::findOne($item_details->base_unit_id);
+                        if (isset($item_details->item_type) && $item_details->item_type != '')
+                                $category = $item_details->item_type;
+                        if ($item_details->item_type == 1) {
+                                $avilable_label = 'Kg';
+                        } else {
+                                $avilable_label = 'Pieces';
+                        }
+                        if (isset($stock->slaughter_date_from) && $stock->slaughter_date_from != '')
+                                $slaughter_date_from = date('d-m-Y', strtotime($stock->slaughter_date_from));
+                        if (isset($stock->slaughter_date_to) && $stock->slaughter_date_to != '')
+                                $slaughter_date_to = date('d-m-Y', strtotime($stock->slaughter_date_to));
+                        if (isset($stock->production_date) && $stock->production_date != '')
+                                $production_date = date('d-m-Y', strtotime($stock->production_date));
+                        if (isset($stock_view_details->due_date) && $stock_view_details->due_date != '')
+                                $due_date = date('d-m-Y', strtotime($stock_view_details->due_date));
+                        $data = ['item_code' => $item_details->item_code, 'price' => $item_details->purchase_price, 'UOM' => $unit->name,
+                            'unit_label' => $avilable_label, 'category' => $category, 'batch' => $stock_view_details->batch_no,
+                            'slaughter_date_from' => $slaughter_date_from, 'slaughter_date_to' => $slaughter_date_to, 'production_date' => $production_date,
+                            'due_date' => $due_date, 'plant' => $stock->plant, 'location' => $stock->location, 'warehouse' => $stock->warehouse, 'supplier' => $stock->supplier,
+                            'origin' => $stock->origin, 'cartoons' => $stock_view_details->available_carton, 'weight' => $stock_view_details->available_weight, 'piecse' => $stock_view_details->available_pieces
+                        ];
+                        echo json_encode($data);
                 }
         }
 

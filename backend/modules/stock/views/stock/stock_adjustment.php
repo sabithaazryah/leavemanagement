@@ -15,25 +15,45 @@ use common\models\Warehouse;
 /* @var $form yii\widgets\ActiveForm */
 $uom = '';
 $show = 1;
+$available_carton = 0;
+$availabel_weight = 0;
+$available_piece = 0;
 if (isset($id) && $id != '') {
         $item = ItemMaster::findOne($model->item_id);
-        if ($item->product_category == 1) {
+        if ($item->item_type == 1) {
                 $uom = 'Kg';
                 $show = 1;
-        } else if ($item->product_category == 2) {
+        } else if ($item->item_type == 2) {
                 $uom = 'Pieces';
                 $show = 0;
         }
+        $stock_view = common\models\StockView::find()->where(['batch_no' => $model->batch_no, 'item_id' => $model->item_id])->one();
+        if (!empty($stock_view)) {
+                $available_carton = $stock_view->available_carton;
+                $availabel_weight = $stock_view->available_weight;
+                $available_piece = $stock_view->available_pieces;
+        }
 }
 ?>
+
+
+
 
 <div class="stock-form form-inline">
 
         <?php $form = ActiveForm::begin(); ?>
         <div class="row">
                 <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
-                        <?php $items = ItemMaster::find()->where(['status' => 1])->all() ?>
-                        <?= $form->field($model, 'item_id')->dropDownList(ArrayHelper::map($items, 'id', 'name'), ['prompt' => '--Select--', 'id' => 'stock-adjusted-item_id']) ?>
+                        <?php if (isset($id) && $id != '') { ?>
+
+                                <?= $form->field($model, 'item_name')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+                                <?= $form->field($model, 'item_id')->hiddenInput()->label(FALSE) ?>
+
+                        <?php } else { ?>
+                                <?php $items = ItemMaster::find()->where(['status' => 1])->all() ?>
+                                <?= $form->field($model, 'item_id')->dropDownList(ArrayHelper::map($items, 'id', 'name'), ['prompt' => '--Select--', 'id' => 'stock-adjusted-item_id']) ?>
+
+                        <?php } ?>
                         <input type="hidden" id="stock-adjustment-item-type" value="<?= $show ?>">
                 </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'item_code')->textInput(['maxlength' => true, 'readonly' => true]) ?>
 
@@ -48,7 +68,7 @@ if (isset($id) && $id != '') {
                 </div>
 
                 <?php if ($show == 1) { ?>
-                        <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
+                        <div class='col-md-3 col-sm-6 col-xs-12 left_padd slaughter_date_from'>
                                 <?php
                                 if (!$model->isNewRecord) {
                                         $model->slaughter_date_from = date('d-m-Y', strtotime($model->slaughter_date_from));
@@ -60,6 +80,7 @@ if (isset($id) && $id != '') {
                                     'form' => $form,
                                     'type' => DatePicker::TYPE_INPUT,
                                     'attribute' => 'slaughter_date_from',
+                                    'readonly' => TRUE,
                                     'pluginOptions' => [
                                         'autoclose' => true,
                                         'format' => 'dd-mm-yyyy',
@@ -70,7 +91,7 @@ if (isset($id) && $id != '') {
 
                         </div>
 
-                        <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
+                        <div class='col-md-3 col-sm-6 col-xs-12 left_padd slaughter_date_to'>
                                 <?php
                                 if (!$model->isNewRecord) {
                                         $model->slaughter_date_to = date('d-m-Y', strtotime($model->slaughter_date_to));
@@ -81,6 +102,7 @@ if (isset($id) && $id != '') {
                                     'model' => $model,
                                     'form' => $form,
                                     'type' => DatePicker::TYPE_INPUT,
+                                    'readonly' => TRUE,
                                     'attribute' => 'slaughter_date_to',
                                     'pluginOptions' => [
                                         'autoclose' => true,
@@ -92,7 +114,7 @@ if (isset($id) && $id != '') {
 
                         </div>
                 <?php } ?>
-                <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
+                <div class='col-md-3 col-sm-6 col-xs-12 left_padd '>
                         <?php
                         if (!$model->isNewRecord) {
                                 $model->production_date = date('d-m-Y', strtotime($model->production_date));
@@ -104,6 +126,7 @@ if (isset($id) && $id != '') {
                             'form' => $form,
                             'type' => DatePicker::TYPE_INPUT,
                             'attribute' => 'production_date',
+                            'readonly' => TRUE,
                             'pluginOptions' => [
                                 'autoclose' => true,
                                 'format' => 'dd-mm-yyyy',
@@ -133,24 +156,24 @@ if (isset($id) && $id != '') {
                         ]);
                         ?>
 
-                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'plant')->textInput(['maxlength' => true]) ?>
+                </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'plant')->textInput(['maxlength' => true, 'readonly' => TRUE,]) ?>
 
                 </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
                         <?php $loactions = Locations::find()->where(['status' => 1])->all() ?>
-                        <?= $form->field($model, 'location')->dropDownList(ArrayHelper::map($loactions, 'id', 'location_name'), ['prompt' => '--Select--']) ?>
+                        <?= $form->field($model, 'location')->dropDownList(ArrayHelper::map($loactions, 'id', 'location_name'), ['prompt' => '--Select--', 'readonly' => TRUE,]) ?>
 
                 </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
                         <?php $warehouse = Warehouse::find()->where(['status' => 1])->all() ?>
-                        <?= $form->field($model, 'warehouse')->dropDownList(ArrayHelper::map($warehouse, 'id', 'name'), ['prompt' => '--Select--']) ?>
+                        <?= $form->field($model, 'warehouse')->dropDownList(ArrayHelper::map($warehouse, 'id', 'name'), ['prompt' => '--Select--', 'readonly' => TRUE,]) ?>
 
                 </div>
 
                 <?php $supplier = BusinessPartner::find()->where(['status' => 1, 'type' => 2])->all() ?>
-                <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'supplier')->dropDownList(ArrayHelper::map($supplier, 'id', 'company_name'), ['prompt' => '--Select--']) ?>
+                <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'supplier')->dropDownList(ArrayHelper::map($supplier, 'id', 'company_name'), ['prompt' => '--Select--', 'readonly' => TRUE,]) ?>
 
                 </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
                         <?php $country = Country::find()->where(['status' => 1])->all() ?>
-                        <?= $form->field($model, 'origin')->dropDownList(ArrayHelper::map($country, 'id', 'country_name'), ['prompt' => '--Select--']) ?>
+                        <?= $form->field($model, 'origin')->dropDownList(ArrayHelper::map($country, 'id', 'country_name'), ['prompt' => '--Select--', 'readonly' => TRUE,]) ?>
 
                 </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'cost')->textInput(['maxlength' => true]) ?>
 
@@ -165,12 +188,17 @@ if (isset($id) && $id != '') {
 
         <div class="row">
 
-                <?php if ($show == 1) { ?>
-                        <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'cartons')->textInput(['readonly' => true]) ?>
+                <?php
+                $model->pieces = $available_piece;
+                if ($show == 1) {
+                        $model->cartons = $available_carton;
+                        $model->total_weight = $availabel_weight;
+                        ?>
+                        <div class='col-md-3 col-sm-6 col-xs-12 left_padd cartoons'>    <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'cartons')->textInput(['readonly' => true]) ?>
 
                                 </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels">No's</label></div>
 
-                        </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'> <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'total_weight')->textInput(['maxlength' => true, 'class' => 'form-control', 'readonly' => true]) ?>
+                        </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd weight'> <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'total_weight')->textInput(['maxlength' => true, 'class' => 'form-control', 'readonly' => true]) ?>
 
                                 </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels">Kg</label></div>
 
@@ -186,14 +214,14 @@ if (isset($id) && $id != '') {
 
                 <?php if ($show == 1) { ?>
 
-                        <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>  <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'adjust_cartons')->textInput(['maxlength' => true]) ?>
+                        <div class='col-md-3 col-sm-6 col-xs-12 left_padd cartoons'>  <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'adjust_cartons')->textInput(['maxlength' => true]) ?>
 
                                 </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels stock">No's</label></div>
 
                         </div>
 
 
-                        <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>   <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'adjust_weight')->textInput(['maxlength' => true]) ?>
+                        <div class='col-md-3 col-sm-6 col-xs-12 left_padd weight'>   <div class='col-md-9 col-sm-6 col-xs-12 left_padd'>   <?= $form->field($model, 'adjust_weight')->textInput(['maxlength' => true]) ?>
 
                                 </div><div class='col-md-3 col-sm-6 col-xs-12 left_padd'><label class="labels available-stock"><?= $uom ?></label></div>
 
@@ -241,6 +269,53 @@ if (isset($id) && $id != '') {
                                 success: function (data) {
                                         $("#modal-pop-up").html(data);
                                         $('#modal-6').modal('show', {backdrop: 'static'});
+                                }
+                        });
+
+                });
+
+                $(document).on('click', '.choose-stock-batch', function () {
+                        var stock_view_id = $(this).attr('id');
+                        $.ajax({
+                                type: 'POST',
+                                cache: false,
+                                data: {stock_view_id: stock_view_id},
+                                url: homeUrl + 'stock/stock/stock-view-details',
+                                success: function (data) {
+                                        var res = $.parseJSON(data);
+                                        $("#stock-item_code").val(res['item_code']);
+                                        $("#stock-price").val(res['price']);
+                                        $("#stock-uom").val(res['UOM']);
+                                        $("#stock-available_stock").val(res['available_stock']);
+                                        $(".available-stock").html(res['unit_label']);
+                                        $(".closing-stock").html(res['unit_label']);
+                                        $(".stock").html(res['unit_label']);
+                                        $("#stock-item-type").val(res['category']);
+                                        $("#stock-batch_no").val(res['batch']);
+                                        $("#stock-slaughter_date_from").val(res['slaughter_date_from']);
+                                        $("#stock-slaughter_date_to").val(res['slaughter_date_to']);
+                                        $("#stock-production_date").val(res['production_date']);
+                                        $("#stock-due_date").val(res['due_date']);
+                                        $("#stock-plant").val(res['plant']);
+                                        $("#stock-location").val(res['location']);
+                                        $("#stock-warehouse").val(res['warehouse']);
+                                        $("#stock-supplier").val(res['supplier']);
+                                        $("#stock-origin").val(res['origin']);
+                                        $("#stock-cartons").val(res['cartoons']);
+                                        $("#stock-total_weight").val(res['weight']);
+                                        $("#stock-pieces").val(res['piecse']);
+                                        if (res['category'] != 1) {
+                                                $('.slaughter_date_from').hide();
+                                                $('.slaughter_date_to').hide();
+                                                $('.cartoons').hide();
+                                                $('.weight').hide();
+                                        } else {
+                                                $('.slaughter_date_from').show();
+                                                $('.slaughter_date_to').show();
+                                                $('.cartoons').show();
+                                                $('.weight').show();
+                                        }
+                                        $('#modal-6').hide();
                                 }
                         });
 
