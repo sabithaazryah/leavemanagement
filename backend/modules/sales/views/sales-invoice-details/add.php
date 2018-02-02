@@ -280,12 +280,12 @@ if (isset($estimate)) {
                             <table cellspacing="0" class="table table-small-font table-bordered table-striped" style="float:right;text-align: left;">
                             <!--<table style="float:right;text-align: left;">-->
                                 <tr>
-                                    <td>Round off</td>
-                                    <td><input type="text" id="round_of" class="amount-receipt"  name="round_of" style="width: 100%;" autocomplete="off" value="<?= sprintf('%0.2f', 0); ?>"/></td>
+                                    <td><label class="control-label">Round off</label></td>
+                                    <td><input type="text" id="round_of" class="amount-receipt form-control"  name="round_of" style="width: 100%;" autocomplete="off" value="<?= sprintf('%0.2f', 0); ?>"/></td>
                                 </tr>
                                 <tr>
-                                    <td>Cash</td>
-                                    <td><input type="text" id="cash_amount" class="amount-receipt"  name="cash_amount" style="width: 100%;" autocomplete="off" value="<?= sprintf('%0.2f', 0); ?>"/></td>
+                                    <td><label class="control-label">Cash</label></td>
+                                    <td><input type="text" id="cash_amount" class="amount-receipt form-control"  name="cash_amount" style="width: 100%;" autocomplete="off" value="<?= sprintf('%0.2f', 0); ?>" readonly /></td>
                                 </tr>
 <!--                                <tr>
                                     <td>Card</td>
@@ -293,23 +293,22 @@ if (isset($estimate)) {
                                 </tr>-->
 
                                 <tr>
-                                    <td>Amount Paid</td>
-                                    <td><input type="text" id="payed_amount" class="amount-receipt"  name="payed_amount" style="width: 100%;" readonly/></td></td>
+                                    <td><label class="control-label">Amount Paid</label></td>
+                                    <td><input type="text" id="payed_amount" class="amount-receipt form-control"  name="payed_amount" style="width: 100%;"/></td></td>
                                 </tr>
                                 <tr>
-                                    <td>Balance</td>
-                                    <td><input type="text" id="balance" class="amount-receipt"  name="balance" style="width: 100%;" readonly/></td>
-                                    <!--<td><span id="balance"></span></td>-->
+                                    <td> <label class="control-label">Balance</label></td>
+                                    <td><input type="text" id="balance" class="amount-receipt form-control"  name="balance" style="width: 100%;" readonly/></td>
                                 </tr>
                                 <tr class="due-date-row">
-                                    <td>Due Date</td>
+                                    <td><label class="control-label">Due Date</label></td>
                                     <td>
                                         <?php
                                         echo DatePicker::widget([
                                             'name' => 'due_date',
                                             'id' => 'due-date',
                                             'type' => DatePicker::TYPE_INPUT,
-                                            'value' => date('d-m-Y'),
+//                                            'value' => date('d-m-Y'),
                                             'pluginOptions' => [
                                                 'autoclose' => true,
                                                 'format' => 'dd-M-yyyy'
@@ -584,12 +583,8 @@ if (isset($estimate)) {
             lineTotalAmount(current_row_id);
 
         });
-        $(document).on('keyup', '#cash_amount', function () {
-            //        balanceCalculation();
-            var order_amount = $('#order_sub_total').val();
-            var cash_amount = $(this).val();
-            var card_amount = parseFloat(order_amount) - parseFloat(cash_amount);
-            $('#card_amount').val(card_amount.toFixed(2));
+        $(document).on('keyup', '#payed_amount', function () {
+            balanceCalculation();
         });
         $(document).on('keyup', '#round_of', function () {
             balanceCalculation();
@@ -766,15 +761,19 @@ if (isset($estimate)) {
         if (order_amount && order_amount != "") {
             var cash_amount = $('#cash_amount').val();
             var round_of_amount = $('#round_of').val();
+            var paid_amount = $('#payed_amount').val();
+            if (!paid_amount && paid_amount == '') {
+                paid_amount = 0;
+            }
             if (!cash_amount && cash_amount == '') {
                 cash_amount = 0;
             }
             if (!round_of_amount && round_of_amount == '') {
                 round_of_amount = 0;
             }
-            var order_balance = order_amount - (parseFloat(cash_amount) + parseFloat(round_of_amount));
-            var paid_amount = parseFloat(cash_amount);
-            $('#payed_amount').val(paid_amount.toFixed(2));
+            var order_balance = cash_amount - (parseFloat(round_of_amount) + parseFloat(paid_amount));
+//            var paid_amount = parseFloat(cash_amount);
+//            $('#payed_amount').val(paid_amount.toFixed(2));
             $('#balance').val(order_balance.toFixed(2));
             if (order_balance > 0) {
                 $('.due-date-row').show();
