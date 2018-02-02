@@ -73,7 +73,7 @@
                         $type = 'Rs';
                     }
                     ?>
-                    <option value="<?= $tax->id ?>" ><?= $tax->name . ' - ' . $tax->value . ' ' . $type ?></option>
+                    <option value="<?= $tax->id ?>" ><?= $tax->value . ' ' . $type ?></option>
                 <?php }
                 ?>
             </select>

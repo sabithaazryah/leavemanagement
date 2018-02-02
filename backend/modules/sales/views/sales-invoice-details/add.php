@@ -88,7 +88,12 @@ if (isset($estimate)) {
                             <?= $form->field($model_sales_master, 'sales_invoice_number')->textInput(['maxlength' => true, 'readonly' => TRUE])->label('Invoice Number') ?>
                         </div>
                         <div class='col-md-3 col-sm-6 col-xs-12'>
-                            <?php $customers = ArrayHelper::map(\common\models\BusinessPartner::findAll(['status' => 1, 'type' => 1]), 'id', 'name'); ?>
+                            <?php
+                            $customers = ArrayHelper::map(common\models\BusinessPartner::find()->where(['status' => 1, 'type' => 1])->all(), 'id', function($model) {
+                                        return $model['name'] . ' ( ' . $model['company_name'] . ' )';
+                                    }
+                            );
+                            ?>
                             <?= $form->field($model_sales_master, 'busines_partner_code')->dropDownList($customers, ['prompt' => '-Choose a Customer-'])->label('Customer') ?>
                         </div>
                         <div class='col-md-3 col-sm-6 col-xs-12'>
@@ -222,7 +227,7 @@ if (isset($estimate)) {
                                             $type = 'S$';
                                         }
                                         ?>
-                                        <option value="<?= $tax->id ?>" ><?= $tax->name . ' - ' . $tax->value . ' ' . $type ?></option>
+                                        <option value="<?= $tax->id ?>" ><?= $tax->value . ' ' . $type ?></option>
                                     <?php }
                                     ?>
                                 </select>
@@ -294,7 +299,7 @@ if (isset($estimate)) {
 
                                 <tr>
                                     <td><label class="control-label">Amount Paid</label></td>
-                                    <td><input type="text" id="payed_amount" class="amount-receipt form-control"  name="payed_amount" style="width: 100%;"/></td></td>
+                                    <td><input type="text" id="payed_amount" class="amount-receipt form-control"  name="payed_amount" autocomplete="off" style="width: 100%;"/></td></td>
                                 </tr>
                                 <tr>
                                     <td> <label class="control-label">Balance</label></td>
