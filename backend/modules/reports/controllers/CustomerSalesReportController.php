@@ -2,25 +2,23 @@
 
 namespace backend\modules\reports\controllers;
 
-use yii;
+use Yii;
 use kartik\mpdf\Pdf;
-use common\models\SalesInvoiceMasterSearch;
+use common\models\BusinessPartnerSearch;
 
-class SaleReportController extends \yii\web\Controller {
+class CustomerSalesReportController extends \yii\web\Controller {
 
     public function actionIndex() {
-        $searchModel = new SalesInvoiceMasterSearch();
+        $searchModel = new BusinessPartnerSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         if (Yii::$app->request->post()) {
-            if (isset($_POST['SalesInvoiceMasterSearch']['createdFrom']) && $_POST['SalesInvoiceMasterSearch']['createdFrom'] != '') {
-                $from = $_POST['SalesInvoiceMasterSearch']['createdFrom'];
-                $dataProvider->query->andWhere(['>=', 'sales_invoice_date', $from . '00:00:00']);
+            if (isset($_POST['BusinessPartnerSearch']['createdFrom']) && $_POST['BusinessPartnerSearch']['createdFrom'] != '') {
+                $from = $_POST['BusinessPartnerSearch']['createdFrom'];
             } else {
                 $from = '';
             }
-            if (isset($_POST['SalesInvoiceMasterSearch']['createdTo']) && $_POST['SalesInvoiceMasterSearch']['createdTo'] != '') {
-                $to = $_POST['SalesInvoiceMasterSearch']['createdTo'];
-                $dataProvider->query->andWhere(['<=', 'sales_invoice_date', $to . '60:60:60']);
+            if (isset($_POST['BusinessPartnerSearch']['createdTo']) && $_POST['BusinessPartnerSearch']['createdTo'] != '') {
+                $to = $_POST['BusinessPartnerSearch']['createdTo'];
             } else {
                 $to = '';
             }
@@ -28,7 +26,6 @@ class SaleReportController extends \yii\web\Controller {
             $from = '';
             $to = '';
         }
-        $dataProvider->pagination->pageSize = 20;
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
@@ -38,26 +35,24 @@ class SaleReportController extends \yii\web\Controller {
     }
 
     public function actionReports() {
-        $searchModel = new SalesInvoiceMasterSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $query = new yii\db\Query();
+        $query->select(['*'])
+                ->from('business_partner')
+                ->where(['type' => 1]);
         if (isset($_POST['from_date']) && $_POST['from_date'] != '') {
             $from = $_POST['from_date'];
-            $dataProvider->query->andWhere(['>=', 'sales_invoice_date', $from . '00:00:00']);
         } else {
             $from = '';
         }
         if (isset($_POST['to_date']) && $_POST['to_date'] != '') {
             $to = $_POST['to_date'];
-            $dataProvider->query->andWhere(['<=', 'sales_invoice_date', $to . '60:60:60']);
         } else {
             $to = '';
         }
-        $model_report = $dataProvider->models;
-        if (isset($_POST['from_date'])) {
-
-        }
-        $content = $this->renderPartial('sale_report', [
-            'model_report' => $model_report,
+        $command = $query->createCommand();
+        $customer_model = $command->queryAll();
+        $content = $this->renderPartial('customer_sales_report', [
+            'customer_model' => $customer_model,
         ]);
         $pdf = new Pdf([
             'mode' => Pdf::MODE_CORE,
@@ -67,7 +62,7 @@ class SaleReportController extends \yii\web\Controller {
             'content' => $content,
             'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
             'cssInline' => '.kv-heading-1{font-size:18px}',
-            'options' => ['title' => 'Sale Report'],
+            'options' => ['title' => 'Customer Sales Report'],
             'methods' => [
                 'SetHeader' => ['Sale Invoice System'],
                 'SetFooter' => ['{PAGENO}'],

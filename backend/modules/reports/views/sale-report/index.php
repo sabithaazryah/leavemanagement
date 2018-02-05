@@ -22,22 +22,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 </div>
                 <div class="panel-body">
-                    <div class="row" style="margin-left: 0px;">
-                        <div class="col-md-6">
+                    <div class="row" style="margin-left: 0px;margin-right: 0px;background-color: #eae9e9;">
+                        <div class="col-md-8">
 
                             <?= $this->render('_search', ['model' => $searchModel, 'from' => $from, 'to' => $to]) ?>
 
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group ">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" style="margin-left: 0px;">
-                        <div class="col-md-12">
+                        <div class="col-md-4">
                             <div class="sales-invoice-master-search" style="margin-right: 15px;float: right;">
 
-                                <?= Html::beginForm(['sale-report/reports'], 'post', ['target' => 'print_popup', 'id' => "epda-form"]) ?>
+                                <?= Html::beginForm(['sale-report/reports'], 'post', ['target' => 'print_popup', 'id' => "epda-form", 'style' => 'padding-top: 12px;margin-bottom: 0px;']) ?>
                                 <input type="hidden" value="<?= $from ?>" name="from_date"/>
                                 <input type="hidden" value="<?= $to ?>" name="to_date"/>
                                 <?= Html::submitButton('<i class="fa fa-file-pdf-o" style="padding-right: 10px;"></i><span>PDF</span>', ['class' => 'btn btn-default', 'id' => 'pdf-btn', 'name' => 'pdf', 'style' => 'background-color: #337ab7;border-color: #2e6da4;color:white;', 'formtarget' => '_blank']) ?>
@@ -54,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'dataProvider' => $dataProvider,
 //                       'filterModel' => $searchModel,
                         'columns' => [
-                            ['class' => 'yii\grid\SerialColumn'],
+                                ['class' => 'yii\grid\SerialColumn'],
 //                                                'id',
                             'sales_invoice_number',
                             'sales_invoice_date',
