@@ -152,6 +152,15 @@ AppAsset::register($this);
                                     <li>
                                         <?= Html::a('Customer Sales Report', ['/reports/customer-sales-report/index'], ['class' => 'title']) ?>
                                     </li>
+                                    <li>
+                                        <?= Html::a('Batch Wise Stock', ['/reports/batch-wise-stock/index'], ['class' => 'title']) ?>
+                                    </li>
+                                    <li>
+                                        <?= Html::a('Item Wise Stock', ['/reports/item-wise-stock/index'], ['class' => 'title']) ?>
+                                    </li>
+                                    <li>
+                                        <?= Html::a('Stock Report', ['/reports/stock-report/index'], ['class' => 'title']) ?>
+                                    </li>
                                 </ul>
                             </li>
                             <?php

@@ -122,9 +122,13 @@ class SalesInvoiceMaster extends \yii\db\ActiveRecord {
     public static function getSaleTotal($from_date, $to, $id, $field_name) {
         if ($from_date != '') {
             $from = $from_date . ' 00:00:00';
+        } else {
+            $from = '';
         }
         if ($to != '') {
             $to = $to . ' 60:60:60';
+        } else {
+            $to = '';
         }
         $query = new Query();
         $query->select('sum(' . $field_name . ') as amt_tot')
@@ -147,9 +151,13 @@ class SalesInvoiceMaster extends \yii\db\ActiveRecord {
     public static function getTotalCount($from_date, $to, $id) {
         if ($from_date != '') {
             $from = $from_date . ' 00:00:00';
+        } else {
+            $from = '';
         }
         if ($to != '') {
             $to = $to . ' 60:60:60';
+        } else {
+            $to = '';
         }
         $query = new Query();
         $query->select('*')

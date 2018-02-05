@@ -8,6 +8,10 @@ use common\models\BusinessPartnerSearch;
 
 class CustomerSalesReportController extends \yii\web\Controller {
 
+    /**
+     * Lists Customer wise sales report.
+     * @return mixed
+     */
     public function actionIndex() {
         $searchModel = new BusinessPartnerSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -43,6 +47,10 @@ class CustomerSalesReportController extends \yii\web\Controller {
         ]);
     }
 
+    /**
+     * Generate Customer wise sales report pdf.
+     * @return mixed
+     */
     public function actionReports() {
         $query = new yii\db\Query();
         $query->select(['*'])

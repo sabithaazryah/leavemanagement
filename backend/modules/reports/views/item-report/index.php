@@ -93,7 +93,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'attribute' => 'carton',
                                 'label' => 'Cartons Sold',
                                 'value' => function ($data) {
-                                    return $data->carton;
+                                    if ($data->carton != '') {
+                                        return $data->carton;
+                                    } else {
+                                        return '';
+                                    }
                                 },
                             ],
                             'tax_amount',

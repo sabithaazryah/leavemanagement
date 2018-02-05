@@ -1,8 +1,8 @@
-<html targrt = "print_popup">
+<html>
     <head>
     </head>
     <body>
-        <h4 style="text-align: center;">Sale Report</h4>
+        <h4 style="text-align: center;">Item Sales Report</h4>
         <table style="border: 1px solid; border-collapse: collapse;width: 100%;">
             <thead>
                 <tr style="background-color: #649bd0;">
@@ -18,6 +18,8 @@
             <tbody>
                 <?php
                 $i = 0;
+                $kg_tot = 0;
+                $carton_tot = 0;
                 $order_tot = 0;
                 $tax_tot = 0;
                 foreach ($model_report as $value) {

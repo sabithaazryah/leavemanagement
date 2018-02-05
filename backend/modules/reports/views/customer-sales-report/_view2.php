@@ -39,7 +39,6 @@ if (!empty($result)) {
         $amount_tot += $value['order_amount'];
         $tax_tot += $value['tax_amount'];
     }
-    $grand_total += $amount_tot;
     ?>
     <tr>
         <th colspan="4" style="text-align: center;">Total Amount</th>

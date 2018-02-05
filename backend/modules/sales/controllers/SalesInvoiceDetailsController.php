@@ -134,6 +134,11 @@ class SalesInvoiceDetailsController extends Controller {
         }
     }
 
+    /**
+     * Creates a new SalesInvoiceDetails model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
     public function actionAdd($id = NULL) {
         if (isset($id)) {
             $model = new SalesInvoiceDetails();
@@ -161,6 +166,10 @@ class SalesInvoiceDetailsController extends Controller {
         ]);
     }
 
+    /**
+     * To set data into SalesInvoiceMaster model.
+     * @return SalesInvoiceMaster model
+     */
     public function SaveSalesMaster($model_sales_master, $data) {
         $model_sales_master->sales_invoice_date = date("Y-m-d H:i:s");
         $model_sales_master->po_date = date("Y-m-d", strtotime(str_replace('/', '-', $model_sales_master->po_date)));
@@ -183,6 +192,9 @@ class SalesInvoiceDetailsController extends Controller {
         return $model_sales_master;
     }
 
+    /**
+     * To set sales details into an array.
+     */
     public function SalesCreate($create, $model_sales_master) {
         $flag = 0;
         $arr = [];
@@ -271,6 +283,9 @@ class SalesInvoiceDetailsController extends Controller {
         }
     }
 
+    /**
+     * This function save sales invoice details.
+     */
     public function AddSalesDetails($arr, $model_sales_master) {
         $flag = 0;
         foreach ($arr as $val) {
@@ -337,6 +352,9 @@ class SalesInvoiceDetailsController extends Controller {
         }
     }
 
+    /**
+     * This function add each sales details into stock register.
+     */
     public function AddStockRegister($aditional) {
         $flag = 0;
         $datas = Json::decode($aditional->qty_description);
@@ -373,6 +391,9 @@ class SalesInvoiceDetailsController extends Controller {
         }
     }
 
+    /**
+     * This function update stock details.
+     */
     public function AddStockView($stock) {
         $stock_view = StockView::find()->where(['batch_no' => $stock->batch_no])->one();
         $stock_view->available_carton -= $stock->cartoon_out;
@@ -385,6 +406,9 @@ class SalesInvoiceDetailsController extends Controller {
         }
     }
 
+    /**
+     * This function calculate sale quantity in kg,cartons and pieces.
+     */
     public function SaleQuantity($item_id, $type, $qty) {
         $items = \common\models\StockView::find()->where(['item_id' => $item_id])->all();
         $arr = array();
@@ -588,6 +612,10 @@ class SalesInvoiceDetailsController extends Controller {
         }
     }
 
+    /**
+     * This function find selected item details.
+     * return item details as json array
+     */
     public function actionGetItems() {
         if (Yii::$app->request->isAjax) {
             $item_id = $_POST['item_id'];
@@ -633,6 +661,10 @@ class SalesInvoiceDetailsController extends Controller {
         }
     }
 
+    /**
+     * This function add another row in sales invoice form.
+     * return next row html to form
+     */
     public function actionAddAnotherRow() {
         if (Yii::$app->request->isAjax) {
             $next_row_id = $_POST['next_row_id'];
@@ -648,6 +680,10 @@ class SalesInvoiceDetailsController extends Controller {
         }
     }
 
+    /**
+     * This function calculate the weight based on cartons and pieces.
+     * return weight in kg
+     */
     public function actionGetSalesQuantity() {
         if (Yii::$app->request->isAjax) {
             $item_id = $_POST['item_id'];

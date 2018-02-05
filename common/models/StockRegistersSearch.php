@@ -5,12 +5,12 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\StockView;
+use common\models\StockRegister;
 
 /**
- * StockViewSearch represents the model behind the search form about `common\models\StockView`.
+ * StockRegistersSearch represents the model behind the search form of `common\models\StockRegister`.
  */
-class StockViewSearch extends StockView {
+class StockRegistersSearch extends StockRegister {
 
     /**
      * @var string
@@ -23,18 +23,18 @@ class StockViewSearch extends StockView {
     public $createdTo;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules() {
         return [
-            [['id', 'item_id', 'status', 'CB', 'UB'], 'integer'],
-            [['item_code', 'item_name', 'location_code', 'batch_no', 'due_date', 'error_msg', 'DOC', 'DOU'], 'safe'],
-            [['mrp', 'retail_price', 'ws_price', 'opening_carton', 'opening_weight', 'opening_piece', 'weight_per_carton', 'piece_per_carton', 'available_carton', 'available_weight', 'available_pieces', 'average_cost'], 'number'],
+            [['id', 'transaction', 'document_line_id', 'item_id', 'balance_qty', 'status', 'CB', 'UB'], 'integer'],
+            [['document_no', 'document_date', 'item_code', 'item_name', 'batch_no', 'location_code', 'DOC', 'DOU'], 'safe'],
+            [['item_cost', 'cartoon_in', 'cartoon_out', 'weight_in', 'weight_out', 'piece_in', 'piece_out', 'total_cost'], 'number'],
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function scenarios() {
         // bypass scenarios() implementation in the parent class
@@ -49,7 +49,7 @@ class StockViewSearch extends StockView {
      * @return ActiveDataProvider
      */
     public function search($params) {
-        $query = StockView::find();
+        $query = StockRegister::find();
 
         // add conditions that should always apply here
 
@@ -68,20 +68,19 @@ class StockViewSearch extends StockView {
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'transaction' => $this->transaction,
+            'document_line_id' => $this->document_line_id,
+            'document_date' => $this->document_date,
             'item_id' => $this->item_id,
-            'mrp' => $this->mrp,
-            'retail_price' => $this->retail_price,
-            'ws_price' => $this->ws_price,
-            'opening_carton' => $this->opening_carton,
-            'opening_weight' => $this->opening_weight,
-            'opening_piece' => $this->opening_piece,
-            'weight_per_carton' => $this->weight_per_carton,
-            'piece_per_carton' => $this->piece_per_carton,
-            'available_carton' => $this->available_carton,
-            'available_weight' => $this->available_weight,
-            'available_pieces' => $this->available_pieces,
-            'average_cost' => $this->average_cost,
-            'due_date' => $this->due_date,
+            'item_cost' => $this->item_cost,
+            'cartoon_in' => $this->cartoon_in,
+            'cartoon_out' => $this->cartoon_out,
+            'balance_qty' => $this->balance_qty,
+            'weight_in' => $this->weight_in,
+            'weight_out' => $this->weight_out,
+            'piece_in' => $this->piece_in,
+            'piece_out' => $this->piece_out,
+            'total_cost' => $this->total_cost,
             'status' => $this->status,
             'CB' => $this->CB,
             'UB' => $this->UB,
@@ -89,11 +88,11 @@ class StockViewSearch extends StockView {
             'DOU' => $this->DOU,
         ]);
 
-        $query->andFilterWhere(['like', 'item_code', $this->item_code])
+        $query->andFilterWhere(['like', 'document_no', $this->document_no])
+                ->andFilterWhere(['like', 'item_code', $this->item_code])
                 ->andFilterWhere(['like', 'item_name', $this->item_name])
-                ->andFilterWhere(['like', 'location_code', $this->location_code])
                 ->andFilterWhere(['like', 'batch_no', $this->batch_no])
-                ->andFilterWhere(['like', 'error_msg', $this->error_msg]);
+                ->andFilterWhere(['like', 'location_code', $this->location_code]);
 
         return $dataProvider;
     }

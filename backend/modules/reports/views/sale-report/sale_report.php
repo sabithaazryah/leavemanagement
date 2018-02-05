@@ -1,4 +1,4 @@
-<html targrt = "print_popup">
+<html>
     <head>
     </head>
     <body>

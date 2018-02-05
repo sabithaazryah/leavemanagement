@@ -8,6 +8,10 @@ use common\models\SalesInvoiceMasterSearch;
 
 class SaleReportController extends \yii\web\Controller {
 
+    /**
+     * Lists sales.
+     * @return mixed
+     */
     public function actionIndex() {
         $searchModel = new SalesInvoiceMasterSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -37,6 +41,10 @@ class SaleReportController extends \yii\web\Controller {
         ]);
     }
 
+    /**
+     * Generate sales report pdf.
+     * @return mixed
+     */
     public function actionReports() {
         $searchModel = new SalesInvoiceMasterSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

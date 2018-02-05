@@ -4,40 +4,33 @@ namespace backend\modules\reports\controllers;
 
 use yii;
 use kartik\mpdf\Pdf;
-use common\models\SalesInvoiceDetailsSearch;
+use common\models\StockRegistersSearch;
 
-class ItemReportController extends \yii\web\Controller {
+class StockReportController extends \yii\web\Controller {
 
     /**
-     * Lists Item wise sales report.
+     * Generate Stock report.
      * @return mixed
      */
     public function actionIndex() {
-        $searchModel = new SalesInvoiceDetailsSearch();
+        $searchModel = new StockRegistersSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         if (Yii::$app->request->post()) {
-            if (isset($_POST['SalesInvoiceDetailsSearch']['item_id']) && $_POST['SalesInvoiceDetailsSearch']['item_id'] != '') {
-                $item_code = $_POST['SalesInvoiceDetailsSearch']['item_id'];
-                $dataProvider->query->andWhere(['item_id' => $item_code]);
-            } else {
-                $item_code = '';
-            }
-            if (isset($_POST['SalesInvoiceDetailsSearch']['createdFrom']) && $_POST['SalesInvoiceDetailsSearch']['createdFrom'] != '') {
-                $from = $_POST['SalesInvoiceDetailsSearch']['createdFrom'];
-                $dataProvider->query->andWhere(['>=', 'sales_invoice_date', $from . '00:00:00']);
+            if (isset($_POST['StockRegistersSearch']['createdFrom']) && $_POST['StockRegistersSearch']['createdFrom'] != '') {
+                $from = $_POST['StockRegistersSearch']['createdFrom'];
+                $dataProvider->query->andWhere(['>=', 'document_date', $from . '00:00:00']);
             } else {
                 $from = '';
             }
-            if (isset($_POST['SalesInvoiceDetailsSearch']['createdTo']) && $_POST['SalesInvoiceDetailsSearch']['createdTo'] != '') {
-                $to = $_POST['SalesInvoiceDetailsSearch']['createdTo'];
-                $dataProvider->query->andWhere(['<=', 'sales_invoice_date', $to . '60:60:60']);
+            if (isset($_POST['StockRegistersSearch']['createdTo']) && $_POST['StockRegistersSearch']['createdTo'] != '') {
+                $to = $_POST['StockRegistersSearch']['createdTo'];
+                $dataProvider->query->andWhere(['<=', 'document_date', $to . '60:60:60']);
             } else {
                 $to = '';
             }
         } else {
             $from = '';
             $to = '';
-            $item_code = '';
         }
         $dataProvider->pagination->pageSize = 20;
         return $this->render('index', [
@@ -45,40 +38,30 @@ class ItemReportController extends \yii\web\Controller {
                     'dataProvider' => $dataProvider,
                     'from' => $from,
                     'to' => $to,
-                    'item_code' => $item_code,
         ]);
     }
 
     /**
-     * Generate Item wise sales report pdf.
+     * Generate Stock report report pdf.
      * @return mixed
      */
     public function actionReports() {
-        $searchModel = new SalesInvoiceDetailsSearch();
+        $searchModel = new StockRegistersSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        if (isset($_POST['item_code']) && $_POST['item_code'] != '') {
-            $id = $_POST['item_code'];
-            $dataProvider->query->andWhere(['item_id' => $id]);
-        } else {
-            $id = '';
-        }
         if (isset($_POST['from_date']) && $_POST['from_date'] != '') {
             $from = $_POST['from_date'];
-            $dataProvider->query->andWhere(['>=', 'sales_invoice_date', $from . '00:00:00']);
+            $dataProvider->query->andWhere(['>=', 'document_date', $from . '00:00:00']);
         } else {
             $from = '';
         }
         if (isset($_POST['to_date']) && $_POST['to_date'] != '') {
             $to = $_POST['to_date'];
-            $dataProvider->query->andWhere(['<=', 'sales_invoice_date', $to . '60:60:60']);
+            $dataProvider->query->andWhere(['<=', 'document_date', $to . '60:60:60']);
         } else {
             $to = '';
         }
         $model_report = $dataProvider->models;
-        if (isset($_POST['from_date'])) {
-
-        }
-        $content = $this->renderPartial('item_report', [
+        $content = $this->renderPartial('stock_report', [
             'model_report' => $model_report,
         ]);
         $pdf = new Pdf([
@@ -89,7 +72,7 @@ class ItemReportController extends \yii\web\Controller {
             'content' => $content,
             'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
             'cssInline' => '.kv-heading-1{font-size:18px}',
-            'options' => ['title' => 'Item Sales Report'],
+            'options' => ['title' => 'Stock Report'],
             'methods' => [
                 'SetHeader' => ['Sale Invoice System'],
                 'SetFooter' => ['{PAGENO}'],
