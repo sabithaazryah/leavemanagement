@@ -22,6 +22,7 @@
             </thead>
             <tbody>
                 <?php
+                $i = 0;
                 foreach ($model_report as $value) {
                     $i++;
                     ?>
