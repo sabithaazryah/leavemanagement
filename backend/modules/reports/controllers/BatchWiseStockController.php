@@ -8,6 +8,17 @@ use common\models\StockViewSearch;
 
 class BatchWiseStockController extends \yii\web\Controller {
 
+    public function beforeAction($action) {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        if (Yii::$app->user->isGuest) {
+            $this->redirect(['/site/index']);
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Lists Batch wise stock report.
      * @return mixed

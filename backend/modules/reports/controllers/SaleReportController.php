@@ -8,6 +8,17 @@ use common\models\SalesInvoiceMasterSearch;
 
 class SaleReportController extends \yii\web\Controller {
 
+    public function beforeAction($action) {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        if (Yii::$app->user->isGuest) {
+            $this->redirect(['/site/index']);
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Lists sales.
      * @return mixed
