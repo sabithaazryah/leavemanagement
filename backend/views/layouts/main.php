@@ -147,6 +147,9 @@ AppAsset::register($this);
                                         <?= Html::a('Sale Report', ['/reports/sale-report/index'], ['class' => 'title']) ?>
                                     </li>
                                     <li>
+                                        <?= Html::a('Item Report', ['/reports/item-report/index'], ['class' => 'title']) ?>
+                                    </li>
+                                    <li>
                                         <?= Html::a('Customer Sales Report', ['/reports/customer-sales-report/index'], ['class' => 'title']) ?>
                                     </li>
                                 </ul>

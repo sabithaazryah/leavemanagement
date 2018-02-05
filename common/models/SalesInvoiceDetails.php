@@ -114,262 +114,53 @@ class SalesInvoiceDetails extends \yii\db\ActiveRecord {
         return $this->hasOne(SalesInvoiceMaster::className(), ['id' => 'sales_invoice_master_id']);
     }
 
-    public static function getQtyTotal($item_id, $from, $to, $salesman) {
-        if ($from != '') {
-            $from = $from . ' 00:00:00';
+    public static function getSaleTotal($from_date, $to, $id, $field_name) {
+        if ($from_date != '') {
+            $from = $from_date . ' 00:00:00';
         }
         if ($to != '') {
             $to = $to . ' 60:60:60';
         }
         $query = new Query();
-        $query_return = new Query();
-        $query->select('sum(qty) as sale_qty')
-                ->from('sales_invoice_details')
-                ->where(['item_id' => $item_id]);
-        $query_return->select('sum(qty) as return_qty')
-                ->from('sales_return_invoice_details')
-                ->where(['item_id' => $item_id]);
+        $query->select('sum(' . $field_name . ') as amt_tot')
+                ->from('sales_invoice_details');
         if ($from != '') {
             $query->andWhere(['>=', 'sales_invoice_date', $from]);
-            $query_return->andWhere(['>=', 'sales_invoice_date', $from]);
         }
         if ($to != '') {
             $query->andWhere(['<=', 'sales_invoice_date', $to]);
-            $query_return->andWhere(['<=', 'sales_invoice_date', $to]);
         }
-        if ($salesman != '') {
-            $query->andWhere(['salesman' => $salesman]);
-            $query_return->andWhere(['salesman' => $salesman]);
+        if ($id != '') {
+            $query->andWhere(['item_id' => $id]);
         }
         $command = $query->createCommand();
         $result = $command->queryAll();
-        $sale_tot = $result[0]['sale_qty'] == '' ? 0 : $result[0]['sale_qty'];
-        $command_return = $query_return->createCommand();
-        $result_return = $command_return->queryAll();
-        $return_tot = $result_return[0]['return_qty'] == '' ? 0 : $result_return[0]['return_qty'];
-        return $sale_tot - $return_tot;
+        $amt_tot = $result[0]['amt_tot'] == '' ? 0 : $result[0]['amt_tot'];
+        return $amt_tot;
     }
 
-    public static function getQtyAverageRate($item_id, $from, $to, $salesman) {
-        if ($from != '') {
-            $from = $from . ' 00:00:00';
+    public static function getTotalCount($from_date, $to, $id) {
+        if ($from_date != '') {
+            $from = $from_date . ' 00:00:00';
         }
         if ($to != '') {
             $to = $to . ' 60:60:60';
         }
         $query = new Query();
-        $query_return = new Query();
-        $query->select('sum(qty) as sale_qty,sum(amount) as sale_amount')
-                ->from('sales_invoice_details')
-                ->where(['item_id' => $item_id]);
-        $query_return->select('sum(qty) as return_qty,sum(amount) as return_amount')
-                ->from('sales_return_invoice_details')
-                ->where(['item_id' => $item_id]);
+        $query->select('*')
+                ->from('sales_invoice_details');
         if ($from != '') {
             $query->andWhere(['>=', 'sales_invoice_date', $from]);
-            $query_return->andWhere(['>=', 'sales_invoice_date', $from]);
         }
         if ($to != '') {
             $query->andWhere(['<=', 'sales_invoice_date', $to]);
-            $query_return->andWhere(['<=', 'sales_invoice_date', $to]);
         }
-        if ($salesman != '') {
-            $query->andWhere(['salesman' => $salesman]);
-            $query_return->andWhere(['salesman' => $salesman]);
+        if ($id != '') {
+            $query->andWhere(['item_id' => $id]);
         }
         $command = $query->createCommand();
         $result = $command->queryAll();
-        $sale_qty = $result[0]['sale_qty'] == '' ? 0 : $result[0]['sale_qty'];
-        $sale_amount = $result[0]['sale_amount'] == '' ? 0 : $result[0]['sale_amount'];
-        $command_return = $query_return->createCommand();
-        $result_return = $command_return->queryAll();
-        $return_qty = $result_return[0]['return_qty'] == '' ? 0 : $result_return[0]['return_qty'];
-        $return_amount = $result_return[0]['return_amount'] == '' ? 0 : $result_return[0]['return_amount'];
-        if (($sale_qty - $return_qty) != 0) {
-            return sprintf('%0.2f', ($sale_amount - $return_amount) / ($sale_qty - $return_qty));
-        } else {
-            return sprintf('%0.2f', 0);
-        }
-    }
-
-    public static function getAmountTotal($item_id, $from, $to, $salesman) {
-        if ($from != '') {
-            $from = $from . ' 00:00:00';
-        }
-        if ($to != '') {
-            $to = $to . ' 60:60:60';
-        }
-        $query = new Query();
-        $query_return = new Query();
-        $query->select('sum(amount) as sale_amount')
-                ->from('sales_invoice_details')
-                ->where(['item_id' => $item_id]);
-        $query_return->select('sum(amount) as return_amount')
-                ->from('sales_return_invoice_details')
-                ->where(['item_id' => $item_id]);
-        if ($from != '') {
-            $query->andWhere(['>=', 'sales_invoice_date', $from]);
-            $query_return->andWhere(['>=', 'sales_invoice_date', $from]);
-        }
-        if ($to != '') {
-            $query->andWhere(['<=', 'sales_invoice_date', $to]);
-            $query_return->andWhere(['<=', 'sales_invoice_date', $to]);
-        }
-        if ($salesman != '') {
-            $query->andWhere(['salesman' => $salesman]);
-            $query_return->andWhere(['salesman' => $salesman]);
-        }
-        $command = $query->createCommand();
-        $result = $command->queryAll();
-        $sale_amount = $result[0]['sale_amount'] == '' ? 0 : $result[0]['sale_amount'];
-        $command_return = $query_return->createCommand();
-        $result_return = $command_return->queryAll();
-        $return_amount = $result_return[0]['return_amount'] == '' ? 0 : $result_return[0]['return_amount'];
-        return sprintf('%0.2f', ($sale_amount - $return_amount));
-    }
-
-    public static function getDiscountTotal($item_id, $from, $to, $salesman) {
-        if ($from != '') {
-            $from = $from . ' 00:00:00';
-        }
-        if ($to != '') {
-            $to = $to . ' 60:60:60';
-        }
-        $query = new Query();
-        $query_return = new Query();
-        $query->select('sum(discount_amount) as sale_discount')
-                ->from('sales_invoice_details')
-                ->where(['item_id' => $item_id]);
-        $query_return->select('sum(discount_amount) as return_discount')
-                ->from('sales_return_invoice_details')
-                ->where(['item_id' => $item_id]);
-        if ($from != '') {
-            $query->andWhere(['>=', 'sales_invoice_date', $from]);
-            $query_return->andWhere(['>=', 'sales_invoice_date', $from]);
-        }
-        if ($to != '') {
-            $query->andWhere(['<=', 'sales_invoice_date', $to]);
-            $query_return->andWhere(['<=', 'sales_invoice_date', $to]);
-        }
-        if ($salesman != '') {
-            $query->andWhere(['salesman' => $salesman]);
-            $query_return->andWhere(['salesman' => $salesman]);
-        }
-        $command = $query->createCommand();
-        $result = $command->queryAll();
-        $sale_discount = $result[0]['sale_discount'] == '' ? 0 : $result[0]['sale_discount'];
-        $command_return = $query_return->createCommand();
-        $result_return = $command_return->queryAll();
-        $return_discount = $result_return[0]['return_discount'] == '' ? 0 : $result_return[0]['return_discount'];
-        return sprintf('%0.2f', ($sale_discount - $return_discount));
-    }
-
-    public static function getNetTotal($item_id, $from, $to, $salesman) {
-        if ($from != '') {
-            $from = $from . ' 00:00:00';
-        }
-        if ($to != '') {
-            $to = $to . ' 60:60:60';
-        }
-        $query = new Query();
-        $query_return = new Query();
-        $query->select('sum(net_amount) as sale_net_amount')
-                ->from('sales_invoice_details')
-                ->where(['item_id' => $item_id]);
-        $query_return->select('sum(net_amount) as return_net_amount')
-                ->from('sales_return_invoice_details')
-                ->where(['item_id' => $item_id]);
-        if ($from != '') {
-            $query->andWhere(['>=', 'sales_invoice_date', $from]);
-            $query_return->andWhere(['>=', 'sales_invoice_date', $from]);
-        }
-        if ($to != '') {
-            $query->andWhere(['<=', 'sales_invoice_date', $to]);
-            $query_return->andWhere(['<=', 'sales_invoice_date', $to]);
-        }
-        if ($salesman != '') {
-            $query->andWhere(['salesman' => $salesman]);
-            $query_return->andWhere(['salesman' => $salesman]);
-        }
-        $command = $query->createCommand();
-        $result = $command->queryAll();
-        $sale_net_amount = $result[0]['sale_net_amount'] == '' ? 0 : $result[0]['sale_net_amount'];
-        $command_return = $query_return->createCommand();
-        $result_return = $command_return->queryAll();
-        $return_net_amount = $result_return[0]['return_net_amount'] == '' ? 0 : $result_return[0]['return_net_amount'];
-        return sprintf('%0.2f', ($sale_net_amount - $return_net_amount));
-    }
-
-    public static function getTaxTotal($item_id, $from, $to, $salesman) {
-        if ($from != '') {
-            $from = $from . ' 00:00:00';
-        }
-        if ($to != '') {
-            $to = $to . ' 60:60:60';
-        }
-        $query = new Query();
-        $query_return = new Query();
-        $query->select('sum(tax_amount) as sale_tax_amount')
-                ->from('sales_invoice_details')
-                ->where(['item_id' => $item_id]);
-        $query_return->select('sum(tax_amount) as return_tax_amount')
-                ->from('sales_return_invoice_details')
-                ->where(['item_id' => $item_id]);
-        if ($from != '') {
-            $query->andWhere(['>=', 'sales_invoice_date', $from]);
-            $query_return->andWhere(['>=', 'sales_invoice_date', $from]);
-        }
-        if ($to != '') {
-            $query->andWhere(['<=', 'sales_invoice_date', $to]);
-            $query_return->andWhere(['<=', 'sales_invoice_date', $to]);
-        }
-        if ($salesman != '') {
-            $query->andWhere(['salesman' => $salesman]);
-            $query_return->andWhere(['salesman' => $salesman]);
-        }
-        $command = $query->createCommand();
-        $result = $command->queryAll();
-        $sale_tax_amount = $result[0]['sale_tax_amount'] == '' ? 0 : $result[0]['sale_tax_amount'];
-        $command_return = $query_return->createCommand();
-        $result_return = $command_return->queryAll();
-        $return_tax_amount = $result_return[0]['return_tax_amount'] == '' ? 0 : $result_return[0]['return_tax_amount'];
-        return sprintf('%0.2f', ($sale_tax_amount - $return_tax_amount));
-    }
-
-    public static function getSaleTotal($item_id, $from, $to, $salesman) {
-        if ($from != '') {
-            $from = $from . ' 00:00:00';
-        }
-        if ($to != '') {
-            $to = $to . ' 60:60:60';
-        }
-        $query = new Query();
-        $query_return = new Query();
-        $query->select('sum(line_total) as sale_line_total')
-                ->from('sales_invoice_details')
-                ->where(['item_id' => $item_id]);
-        $query_return->select('sum(line_total) as return_line_total')
-                ->from('sales_return_invoice_details')
-                ->where(['item_id' => $item_id]);
-        if ($from != '') {
-            $query->andWhere(['>=', 'sales_invoice_date', $from]);
-            $query_return->andWhere(['>=', 'sales_invoice_date', $from]);
-        }
-        if ($to != '') {
-            $query->andWhere(['<=', 'sales_invoice_date', $to]);
-            $query_return->andWhere(['<=', 'sales_invoice_date', $to]);
-        }
-        if ($salesman != '') {
-            $query->andWhere(['salesman' => $salesman]);
-            $query_return->andWhere(['salesman' => $salesman]);
-        }
-        $command = $query->createCommand();
-        $result = $command->queryAll();
-        $sale_line_total = $result[0]['sale_line_total'] == '' ? 0 : $result[0]['sale_line_total'];
-        $command_return = $query_return->createCommand();
-        $result_return = $command_return->queryAll();
-        $return_line_total = $result_return[0]['return_line_total'] == '' ? 0 : $result_return[0]['return_line_total'];
-        return sprintf('%0.2f', ($sale_line_total - $return_line_total));
+        return count($result);
     }
 
 }
