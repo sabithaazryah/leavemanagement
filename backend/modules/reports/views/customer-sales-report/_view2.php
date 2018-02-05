@@ -20,7 +20,7 @@ $result = $command->queryAll();
 if (!empty($result)) {
     ?>
     <tr>
-        <th colspan="6"><?= $model->company_name . '-' . $model->name ?></th>
+        <th colspan="6"><?= $model->company_name . ' - ' . $model->name ?></th>
     </tr>
     <?php
     $amount_tot = 0;

@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\db\Query;
 
 /**
  * This is the model class for table "sales_invoice_master".
@@ -116,6 +117,55 @@ class SalesInvoiceMaster extends \yii\db\ActiveRecord {
             'DOC' => 'Doc',
             'DOU' => 'Dou',
         ];
+    }
+
+    public static function getSaleTotal($from_date, $to, $id, $field_name) {
+        if ($from_date != '') {
+            $from = $from_date . ' 00:00:00';
+        }
+        if ($to != '') {
+            $to = $to . ' 60:60:60';
+        }
+        $query = new Query();
+        $query->select('sum(' . $field_name . ') as amt_tot')
+                ->from('sales_invoice_master');
+        if ($from != '') {
+            $query->andWhere(['>=', 'sales_invoice_date', $from]);
+        }
+        if ($to != '') {
+            $query->andWhere(['<=', 'sales_invoice_date', $to]);
+        }
+        if ($id != '') {
+            $query->andWhere(['busines_partner_code' => $id]);
+        }
+        $command = $query->createCommand();
+        $result = $command->queryAll();
+        $amt_tot = $result[0]['amt_tot'] == '' ? 0 : $result[0]['amt_tot'];
+        return $amt_tot;
+    }
+
+    public static function getTotalCount($from_date, $to, $id) {
+        if ($from_date != '') {
+            $from = $from_date . ' 00:00:00';
+        }
+        if ($to != '') {
+            $to = $to . ' 60:60:60';
+        }
+        $query = new Query();
+        $query->select('*')
+                ->from('sales_invoice_master');
+        if ($from != '') {
+            $query->andWhere(['>=', 'sales_invoice_date', $from]);
+        }
+        if ($to != '') {
+            $query->andWhere(['<=', 'sales_invoice_date', $to]);
+        }
+        if ($id != '') {
+            $query->andWhere(['busines_partner_code' => $id]);
+        }
+        $command = $query->createCommand();
+        $result = $command->queryAll();
+        return count($result);
     }
 
 }

@@ -12,6 +12,12 @@ class CustomerSalesReportController extends \yii\web\Controller {
         $searchModel = new BusinessPartnerSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         if (Yii::$app->request->post()) {
+            if (isset($_POST['BusinessPartnerSearch']['id']) && $_POST['BusinessPartnerSearch']['id'] != '') {
+                $id = $_POST['BusinessPartnerSearch']['id'];
+                $dataProvider->query->andWhere(['id' => $id]);
+            } else {
+                $id = '';
+            }
             if (isset($_POST['BusinessPartnerSearch']['createdFrom']) && $_POST['BusinessPartnerSearch']['createdFrom'] != '') {
                 $from = $_POST['BusinessPartnerSearch']['createdFrom'];
             } else {
@@ -25,12 +31,15 @@ class CustomerSalesReportController extends \yii\web\Controller {
         } else {
             $from = '';
             $to = '';
+            $id = '';
         }
+        $dataProvider->pagination->pageSize = 10;
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
                     'from' => $from,
                     'to' => $to,
+                    'id' => $id,
         ]);
     }
 
@@ -39,6 +48,12 @@ class CustomerSalesReportController extends \yii\web\Controller {
         $query->select(['*'])
                 ->from('business_partner')
                 ->where(['type' => 1]);
+        if (isset($_POST['customer_id']) && $_POST['customer_id'] != '') {
+            $customer_id = $_POST['customer_id'];
+            $query->andWhere(['id' => $customer_id]);
+        } else {
+            $from = '';
+        }
         if (isset($_POST['from_date']) && $_POST['from_date'] != '') {
             $from = $_POST['from_date'];
         } else {
@@ -53,6 +68,8 @@ class CustomerSalesReportController extends \yii\web\Controller {
         $customer_model = $command->queryAll();
         $content = $this->renderPartial('customer_sales_report', [
             'customer_model' => $customer_model,
+            'from' => $from,
+            'to' => $to,
         ]);
         $pdf = new Pdf([
             'mode' => Pdf::MODE_CORE,

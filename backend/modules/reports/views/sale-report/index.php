@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\ActiveForm;
+use common\models\SalesInvoiceMaster;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\SalesInvoiceMasterSearch */
@@ -22,22 +23,46 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 </div>
                 <div class="panel-body">
-                    <div class="row" style="margin-left: 0px;margin-right: 0px;background-color: #eae9e9;">
-                        <div class="col-md-8">
+                    <div class="row" style="margin-left: 0px;">
+                        <div class="col-md-6">
 
                             <?= $this->render('_search', ['model' => $searchModel, 'from' => $from, 'to' => $to]) ?>
 
                         </div>
-                        <div class="col-md-4">
-                            <div class="sales-invoice-master-search" style="margin-right: 15px;float: right;">
+                        <div class="col-md-6">
+                            <div class="col-md-2">
+                                <div class="sales-invoice-master-search" style="margin-right: 15px;float: left;">
 
-                                <?= Html::beginForm(['sale-report/reports'], 'post', ['target' => 'print_popup', 'id' => "epda-form", 'style' => 'padding-top: 12px;margin-bottom: 0px;']) ?>
-                                <input type="hidden" value="<?= $from ?>" name="from_date"/>
-                                <input type="hidden" value="<?= $to ?>" name="to_date"/>
-                                <?= Html::submitButton('<i class="fa fa-file-pdf-o" style="padding-right: 10px;"></i><span>PDF</span>', ['class' => 'btn btn-default', 'id' => 'pdf-btn', 'name' => 'pdf', 'style' => 'background-color: #337ab7;border-color: #2e6da4;color:white;', 'formtarget' => '_blank']) ?>
+                                    <?= Html::beginForm(['sale-report/reports'], 'post', ['target' => 'print_popup', 'id' => "epda-form", 'style' => 'margin-bottom: 0px;']) ?>
+                                    <input type="hidden" value="<?= $from ?>" name="from_date"/>
+                                    <input type="hidden" value="<?= $to ?>" name="to_date"/>
+                                    <?= Html::submitButton('<i class="fa fa-file-pdf-o" style="padding-right: 10px;"></i><span>PDF</span>', ['class' => 'btn btn-default', 'id' => 'pdf-btn', 'name' => 'pdf', 'style' => 'background-color: #337ab7;border-color: #2e6da4;color:white;', 'formtarget' => '_blank']) ?>
 
-                                <?= Html::endForm() ?>
+                                    <?= Html::endForm() ?>
 
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="3">Report Summary</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Total Sale</th>
+                                        <th>Total Amount</th>
+                                        <th>Total Tax Amount</th>
+                                    </tr>
+                                    <?php
+                                    $sale_total = SalesInvoiceMaster::getTotalCount($from, $to, '');
+                                    $amount_total = SalesInvoiceMaster::getSaleTotal($from, $to, '', 'order_amount');
+                                    $tax_total = SalesInvoiceMaster::getSaleTotal($from, $to, '', 'tax_amount');
+                                    ?>
+                                    <tr>
+                                        <th><?= $sale_total ?></th>
+                                        <th><?= Yii::$app->SetValues->NumberFormat(round($amount_total, 2)) . ' (S$)'; ?></th>
+                                        <th><?= Yii::$app->SetValues->NumberFormat(round($tax_total, 2)) . ' (S$)'; ?></th>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -48,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'dataProvider' => $dataProvider,
 //                       'filterModel' => $searchModel,
                         'columns' => [
-                                ['class' => 'yii\grid\SerialColumn'],
+                            ['class' => 'yii\grid\SerialColumn'],
 //                                                'id',
                             'sales_invoice_number',
                             'sales_invoice_date',
