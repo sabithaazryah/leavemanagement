@@ -6,6 +6,7 @@ use yii\helpers\ArrayHelper;
 use kartik\daterange\DateRangePicker;
 use common\models\BusinessPartner;
 use yii\helpers\Url;
+use common\components\ModalViewWidget;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\SalesInvoiceDetailsSearch */
@@ -27,7 +28,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                     <div class="panel-body">
                         <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+                        <?php
+                        echo ModalViewWidget::widget();
+                        ?>
                         <?= Html::a('<i class="fa-th-list"></i><span> New Invoice</span>', ['add'], ['class' => 'btn btn-warning  btn-icon btn-icon-standalone']) ?>
                         <button class="btn btn-white" id="search-option" style="float: right;">
                             <i class="linecons-search"></i>
@@ -89,19 +92,19 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'class' => 'yii\grid\ActionColumn',
                                     'contentOptions' => [],
                                     'header' => 'Actions',
-                                    'template' => '{edit}{view}{print}',
+                                    'template' => '{edit}{view}{print}{payment}',
 //                                    'template' => '{print}',
                                     'buttons' => [
                                         //view button
                                         'print' => function ($url, $model) {
-                                            return Html::a('<span class="fa fa-print" style="padding-top: 0px;font-size: 18px;"></span>', $url, [
+                                            return Html::a('<span class="fa fa-print" style="padding-top: 0px;font-size: 16px;"></span>', $url, [
                                                         'title' => Yii::t('app', 'print'),
                                                         'class' => 'actions',
                                                         'target' => '_blank',
                                             ]);
                                         },
                                         'view' => function ($url, $model) {
-                                            return Html::a('<span class="fa fa-eye" style="padding-top: 0px;font-size: 20px;"></span>', $url, [
+                                            return Html::a('<span class="fa fa-eye" style="padding-top: 0px;font-size: 16px;"></span>', $url, [
                                                         'title' => Yii::t('app', 'view'),
                                                         'class' => 'actions',
                                             ]);
@@ -109,10 +112,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'edit' => function ($url, $model) {
                                             $details = \common\models\SalesInvoiceDetails::find()->where(['sales_invoice_master_id' => $model->id])->all();
                                             if (empty($details)) {
-                                                return Html::a('<span class="fa fa-pencil" style="padding-top: 0px;font-size: 20px;"></span>', $url, [
+                                                return Html::a('<span class="fa fa-pencil" style="padding-top: 0px;font-size: 16px;"></span>', $url, [
                                                             'title' => Yii::t('app', 'Edit'),
                                                             'class' => 'actions',
                                                 ]);
+                                            }
+                                        },
+                                        'payment' => function ($url, $model) {
+                                            if ($model->due_amount > 0 && $model->due_amount != '') {
+                                                return Html::button('<i class="fa fa-credit-card" style="font-size: 16px;"></i>', ['value' => Url::to(['payment', 'id' => $model->id]), 'class' => 'modalButton edit-btn']);
                                             }
                                         },
                                     ],

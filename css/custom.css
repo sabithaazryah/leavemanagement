@@ -639,3 +639,7 @@ a {
 .salesinvoicedetails-inventory{
     margin: 14px 8px 0 !important;
 }
+.paym-history{
+    max-height: 182px;
+    overflow-y: scroll;
+}

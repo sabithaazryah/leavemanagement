@@ -109,8 +109,13 @@ class TaxController extends Controller {
      * @return mixed
      */
     public function actionDel($id) {
-        if ($this->findModel($id)->delete()) {
-            Yii::$app->getSession()->setFlash('success', 'Tax Removed Successfully');
+        $item = \common\models\ItemMaster::find()->where(['tax_id' => $id])->all();
+        if (empty($item)) {
+            if ($this->findModel($id)->delete()) {
+                Yii::$app->getSession()->setFlash('success', 'Tax Removed Successfully');
+            }
+        } else {
+            Yii::$app->getSession()->setFlash('error', "Can't delete the Item");
         }
 
         return $this->redirect(['index']);

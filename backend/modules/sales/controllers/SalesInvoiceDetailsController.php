@@ -13,6 +13,7 @@ use common\models\SalesInvoiceMasterSearch;
 use common\models\BusinessPartner;
 use yii\helpers\Json;
 use common\models\StockView;
+use common\models\Payments;
 
 /**
  * SalesInvoiceDetailsController implements the CRUD actions for SalesInvoiceDetails model.
@@ -151,11 +152,21 @@ class SalesInvoiceDetailsController extends Controller {
         if ($model_sales_master->load(Yii::$app->request->post())) {
             $data = Yii::$app->request->post();
             $model_sales_master = $this->SaveSalesMaster($model_sales_master, $data);
-            if ($model_sales_master->save()) {
-                if (isset($_POST['create']) && $_POST['create'] != '') {
-                    $this->SalesCreate($_POST['create'], $model_sales_master);
+            if ($model_sales_master->order_amount > 0) {
+
+                $transaction = Yii::$app->db->beginTransaction();
+                try {
+                    if ($model_sales_master->save() && $this->SalesCreate($model_sales_master) && $this->SavePayments($model_sales_master)) {
+                        $transaction->commit();
+                    } else {
+                        $transaction->rollBack();
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                    Yii::$app->session->setFlash('error', "There was a problem creating new invoice. Please try again.");
                 }
-//                Yii::$app->session->setFlash('success', "New Invoice created successfully.");
+            } else {
+                $model_sales_master->save();
             }
             return $this->redirect(['index']);
         }
@@ -164,6 +175,34 @@ class SalesInvoiceDetailsController extends Controller {
                     'model_sales_master' => $model_sales_master,
                     'id' => $id,
         ]);
+    }
+
+    /**
+     * To save data into Payment model.
+     * @return
+     */
+    public function SavePayments($model_sales_master) {
+        $flag = 0;
+        if ($model_sales_master->amount_payed > 0) {
+            $payment = new Payments();
+            $payment->invoice_id = $model_sales_master->id;
+            $payment->invoice_number = $model_sales_master->sales_invoice_number;
+            $payment->payment_date = date('Y-m-d');
+            $payment->invoice_type = 1;
+            $payment->amount = $model_sales_master->amount_payed;
+            $payment->status = 1;
+            Yii::$app->SetValues->Attributes($payment);
+            if ($payment->save()) {
+                $flag = 1;
+            }
+        } else {
+            $flag = 1;
+        }
+        if ($flag == 1) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
     /**
@@ -195,86 +234,94 @@ class SalesInvoiceDetailsController extends Controller {
     /**
      * To set sales details into an array.
      */
-    public function SalesCreate($create, $model_sales_master) {
+    public function SalesCreate($model_sales_master) {
         $flag = 0;
-        $arr = [];
-        $i = 0;
-        foreach ($create['item_id'] as $val) {
-            $arr[$i]['item_id'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($create['comment'] as $val) {
-            $arr[$i]['comment'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($create['qty'] as $val) {
-            $arr[$i]['qty'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($create['type'] as $val) {
-            $arr[$i]['type'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($create['avail_carton'] as $val) {
-            $arr[$i]['avail_carton'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($create['avail_weight'] as $val) {
-            $arr[$i]['avail_weight'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($create['avail_pieces'] as $val) {
-            $arr[$i]['avail_pieces'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($create['rate'] as $val) {
-            $arr[$i]['rate'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($create['discount_value'] as $val) {
-            $arr[$i]['discount_value'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($create['discount_type'] as $val) {
-            $arr[$i]['discount_type'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($create['tax_id'] as $val) {
-            $arr[$i]['tax_id'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($create['tax_value'] as $val) {
-            $arr[$i]['tax_value'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($create['tax_type'] as $val) {
-            $arr[$i]['tax_type'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($create['line_total'] as $val) {
-            $arr[$i]['line_total'] = $val;
-            $i++;
-        }
-        $i = 0;
-        foreach ($create['inventory'] as $val) {
-            $arr[$i]['inventory'] = $val;
-            $i++;
-        }
-        if ($this->AddSalesDetails($arr, $model_sales_master)) {
-            $flag = 1;
+        if (isset($_POST['create']) && $_POST['create'] != '') {
+            $create = $_POST['create'];
+            $arr = [];
+            $i = 0;
+            foreach ($create['item_id'] as $val) {
+                $arr[$i]['item_id'] = $val;
+                $i++;
+            }
+            $i = 0;
+            foreach ($create['comment'] as $val) {
+                $arr[$i]['comment'] = $val;
+                $i++;
+            }
+            $i = 0;
+            foreach ($create['qty'] as $val) {
+                $arr[$i]['qty'] = $val;
+                $i++;
+            }
+            $i = 0;
+            foreach ($create['type'] as $val) {
+                $arr[$i]['type'] = $val;
+                $i++;
+            }
+            $i = 0;
+            foreach ($create['avail_carton'] as $val) {
+                $arr[$i]['avail_carton'] = $val;
+                $i++;
+            }
+            $i = 0;
+            foreach ($create['avail_weight'] as $val) {
+                $arr[$i]['avail_weight'] = $val;
+                $i++;
+            }
+            $i = 0;
+            foreach ($create['avail_pieces'] as $val) {
+                $arr[$i]['avail_pieces'] = $val;
+                $i++;
+            }
+            $i = 0;
+            foreach ($create['rate'] as $val) {
+                $arr[$i]['rate'] = $val;
+                $i++;
+            }
+            $i = 0;
+            foreach ($create['discount_value'] as $val) {
+                $arr[$i]['discount_value'] = $val;
+                $i++;
+            }
+            $i = 0;
+            foreach ($create['discount_type'] as $val) {
+                $arr[$i]['discount_type'] = $val;
+                $i++;
+            }
+            $i = 0;
+            foreach ($create['tax_id'] as $val) {
+                $arr[$i]['tax_id'] = $val;
+                $i++;
+            }
+            $i = 0;
+            foreach ($create['tax_value'] as $val) {
+                $arr[$i]['tax_value'] = $val;
+                $i++;
+            }
+            $i = 0;
+            foreach ($create['tax_type'] as $val) {
+                $arr[$i]['tax_type'] = $val;
+                $i++;
+            }
+            $i = 0;
+            foreach ($create['line_total'] as $val) {
+                $arr[$i]['line_total'] = $val;
+                $i++;
+            }
+            $i = 0;
+            foreach ($create['inventory'] as $val) {
+                $arr[$i]['inventory'] = $val;
+                $i++;
+            }
+            $i = 0;
+            foreach ($create['comment'] as $val) {
+                $arr[$i]['comment'] = $val;
+                $i++;
+            }
+            if ($this->AddSalesDetails($arr, $model_sales_master)) {
+                $flag = 1;
+            }
         }
         if ($flag == 1) {
             return TRUE;
@@ -297,7 +344,7 @@ class SalesInvoiceDetailsController extends Controller {
                 $aditional->sales_invoice_date = $model_sales_master->sales_invoice_date;
                 $aditional->busines_partner_code = $model_sales_master->busines_partner_code;
                 $aditional->salesman = $model_sales_master->salesman;
-                $aditional->item_id = $val['item_id'];
+                $aditional->item_id = $item_datas->id;
                 $aditional->item_code = $item_datas->item_code;
                 $aditional->item_name = $item_datas->item_name;
                 $aditional->base_unit = $item_datas->base_unit_id;
@@ -370,7 +417,7 @@ class SalesInvoiceDetailsController extends Controller {
             $stock->cartoon_out = $value['no_of_carton'];
             $stock->piece_out = $value['no_of_pieces'];
             $stock->weight_out = $value['no_of_weight'];
-            $stock->location_code = 'HOFF';
+            $stock->location_code = '';
             $stock->item_cost = $aditional->rate;
             $stock->balance_qty = 0;
             $stock->total_cost = $aditional->line_total;
@@ -755,6 +802,35 @@ class SalesInvoiceDetailsController extends Controller {
         ]);
 
         exit;
+    }
+
+    /**
+     * Creates a new Payment model.
+     * If creation is successful, the browser will be redirected to the 'same' page.
+     * @return mixed
+     */
+    public function actionPayment($id) {
+        $sale = SalesInvoiceMaster::findOne($id);
+        $payment_details = Payments::find()->where(['invoice_id' => $id, 'invoice_type' => 1])->all();
+        $model = new Payments();
+
+        if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model) && $model->validate()) {
+            $model->invoice_id = $sale->id;
+            $model->invoice_type = 1;
+            if ($model->amount > 0) {
+                if ($model->save()) {
+                    $sale->due_amount = $sale->due_amount - $model->amount;
+                    $sale->amount_payed = $sale->amount_payed + $model->amount;
+                    $sale->update();
+                    Yii::$app->getSession()->setFlash('success', 'Payment Successfully');
+                }
+            }
+            return $this->redirect(['index']);
+        } return $this->renderAjax('payment', [
+                    'model' => $model,
+                    'sale' => $sale,
+                    'payment_details' => $payment_details,
+        ]);
     }
 
 }

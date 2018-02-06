@@ -101,7 +101,7 @@ class SalesInvoiceMaster extends \yii\db\ActiveRecord {
             'cash_amount' => 'Cash Amount',
             'card_amount' => 'Card Amount',
             'round_of_amount' => 'Round Of Amount',
-            'amount_payed' => 'Amount Payed',
+            'amount_payed' => 'Amount Paid',
             'due_amount' => 'Due Amount',
             'due_date' => 'Due Date',
             'payment_status' => 'Payment Status',

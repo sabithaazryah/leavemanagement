@@ -86,8 +86,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             'tax_amount',
                             'order_amount',
 //                            'ship_to_adress',
-                        // 'amount_payed',
-                        // 'due_amount',
+                            'amount_payed',
+                            'due_amount',
 //                            [
 //                                'attribute' => 'payment_status',
 //                                'format' => 'raw',

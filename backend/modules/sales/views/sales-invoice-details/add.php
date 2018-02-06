@@ -65,7 +65,7 @@ if (isset($estimate)) {
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h2  class="appoint-title panel-title"><?= Html::encode($this->title) . '</b>' ?></h2>
-                <div class="diplay-amount"><i class="fa fa-inr" aria-hidden="true"></i> <span id="total-order-amount">00.00</span></div>
+                <div class="diplay-amount">S$ <span id="total-order-amount">00.00</span></div>
             </div>
             <?php //Pjax::begin();        ?>
             <div class="panel-body">
