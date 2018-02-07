@@ -426,7 +426,7 @@ if (isset($estimate)) {
                 }
             });
         });
-        $(document).on('change', '.salesinvoicedetails-qty', function (e) {
+        $(document).on('keyup mouseup', '.salesinvoicedetails-qty', function (e) {
             var current_row_id = $(this).attr('id').match(/\d+/); // 123456
             var qty = $(this).val();
             var inventory = $('#sales-inventory-' + current_row_id).val();
@@ -696,7 +696,7 @@ if (isset($estimate)) {
             if (tax_type == 2) {
                 var tax_amount = tax;
             } else if (tax_type == 1) {
-                var total = (qty * rate) - discount_amount;
+                var total = amount - discount_amount;
                 var tax_amount = (total * tax) / 100;
             }
 
@@ -715,12 +715,14 @@ if (isset($estimate)) {
         var rate_sub_total = 0;
         var qty_total = 0;
         var discount_amount = 0;
+        var tax_amount = 0;
         for (i = 1; i <= row_count; i++) {
             var qty = $('#salesinvoicedetails-qty_val-' + i).val();
             var tax_type = $('#salesinvoicedetails-tax_type-' + i).val();
             var rate = $('#salesinvoicedetails-rate-' + i).val();
+            var tax = $('#salesinvoicedetails-tax_value-' + i).val();
             var discount = $('#salesinvoicedetails-discount_value-' + i).val();
-            var discount_type = $('#salesinvoicedetails-tax_type-' + i).val();
+            var discount_type = $('#salesinvoicedetails-discount_type-' + i).val();
             var amount = qty * rate;
             if (discount && discount != "") {
                 if (discount_type == 1) {
@@ -729,17 +731,14 @@ if (isset($estimate)) {
                     var discount_amount = (amount * discount) / 100;
                 }
             }
-            var tax = $('#salesinvoicedetails-tax_value-' + i).val();
             if (qty && qty != "" && rate && rate != "") {
-
                 if (tax_type == 2) {
                     var tax_amount = tax;
-                    var total = amount - discount_amount;
                 } else if (tax_type == 1) {
                     var total = amount - discount_amount;
                     var tax_amount = (total * tax) / 100;
                 }
-                var grand_total = (parseFloat(amount)) + parseFloat(tax_amount) - parseFloat(discount_amount);
+                var grand_total = (parseFloat(amount) + parseFloat(tax_amount)) - parseFloat(discount_amount);
                 $('#salesinvoicedetails-line_total-' + i).val(grand_total.toFixed(2));
                 qty_total = parseFloat(qty_total) + parseFloat(qty);
                 sub_total = parseFloat(sub_total) + parseFloat(total);

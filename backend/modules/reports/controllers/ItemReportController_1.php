@@ -5,7 +5,6 @@ namespace backend\modules\reports\controllers;
 use yii;
 use kartik\mpdf\Pdf;
 use common\models\SalesInvoiceDetailsSearch;
-use yii\data\ArrayDataProvider;
 
 class ItemReportController extends \yii\web\Controller {
 
@@ -26,26 +25,23 @@ class ItemReportController extends \yii\web\Controller {
      */
     public function actionIndex() {
         $searchModel = new SalesInvoiceDetailsSearch();
-        $query = new yii\db\Query();
-        $query->select(['item_code,item_name,SUM(CASE WHEN qty != "" THEN qty ELSE 0 END) as qty,SUM(CASE WHEN carton != "" THEN carton ELSE 0 END) as carton,SUM(CASE WHEN tax_amount != "" THEN tax_amount ELSE 0 END) as tax_amount,SUM(CASE WHEN line_total != "" THEN line_total ELSE 0 END) as line_total,SUM(CASE WHEN amount != "" THEN amount ELSE 0 END) as amount,SUM(CASE WHEN discount_amount != "" THEN discount_amount ELSE 0 END) as discount_amount,SUM(CASE WHEN pieces != "" THEN pieces ELSE 0 END) as pieces'])
-                ->from('sales_invoice_details')
-                ->groupBy('item_id');
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         if (Yii::$app->request->post()) {
             if (isset($_POST['SalesInvoiceDetailsSearch']['item_id']) && $_POST['SalesInvoiceDetailsSearch']['item_id'] != '') {
                 $item_code = $_POST['SalesInvoiceDetailsSearch']['item_id'];
-                $query->andWhere(['item_id' => $item_code]);
+                $dataProvider->query->andWhere(['item_id' => $item_code]);
             } else {
                 $item_code = '';
             }
             if (isset($_POST['SalesInvoiceDetailsSearch']['createdFrom']) && $_POST['SalesInvoiceDetailsSearch']['createdFrom'] != '') {
                 $from = $_POST['SalesInvoiceDetailsSearch']['createdFrom'];
-                $query->andWhere(['>=', 'sales_invoice_date', $from . '00:00:00']);
+                $dataProvider->query->andWhere(['>=', 'sales_invoice_date', $from . '00:00:00']);
             } else {
                 $from = '';
             }
             if (isset($_POST['SalesInvoiceDetailsSearch']['createdTo']) && $_POST['SalesInvoiceDetailsSearch']['createdTo'] != '') {
                 $to = $_POST['SalesInvoiceDetailsSearch']['createdTo'];
-                $query->andWhere(['<=', 'sales_invoice_date', $to . '60:60:60']);
+                $dataProvider->query->andWhere(['<=', 'sales_invoice_date', $to . '60:60:60']);
             } else {
                 $to = '';
             }
@@ -54,14 +50,7 @@ class ItemReportController extends \yii\web\Controller {
             $to = '';
             $item_code = '';
         }
-        $command = $query->createCommand();
-        $result = $command->queryAll();
-        $dataProvider = new ArrayDataProvider([
-            'allModels' => $result,
-            'pagination' => [
-                'pageSize' => 10,
-            ],
-        ]);
+        $dataProvider->pagination->pageSize = 20;
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
@@ -76,30 +65,30 @@ class ItemReportController extends \yii\web\Controller {
      * @return mixed
      */
     public function actionReports() {
-        $query = new yii\db\Query();
-        $query->select(['item_code,item_name,SUM(CASE WHEN qty != "" THEN qty ELSE 0 END) as qty,SUM(CASE WHEN carton != "" THEN carton ELSE 0 END) as carton,SUM(CASE WHEN tax_amount != "" THEN tax_amount ELSE 0 END) as tax_amount,SUM(CASE WHEN line_total != "" THEN line_total ELSE 0 END) as line_total,SUM(CASE WHEN amount != "" THEN amount ELSE 0 END) as amount,SUM(CASE WHEN discount_amount != "" THEN discount_amount ELSE 0 END) as discount_amount,SUM(CASE WHEN pieces != "" THEN pieces ELSE 0 END) as pieces'])
-                ->from('sales_invoice_details')
-                ->groupBy('item_id');
+        $searchModel = new SalesInvoiceDetailsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         if (isset($_POST['item_code']) && $_POST['item_code'] != '') {
             $id = $_POST['item_code'];
-            $query->andWhere(['item_id' => $id]);
+            $dataProvider->query->andWhere(['item_id' => $id]);
         } else {
             $id = '';
         }
         if (isset($_POST['from_date']) && $_POST['from_date'] != '') {
             $from = $_POST['from_date'];
-            $query->andWhere(['>=', 'sales_invoice_date', $from . '00:00:00']);
+            $dataProvider->query->andWhere(['>=', 'sales_invoice_date', $from . '00:00:00']);
         } else {
             $from = '';
         }
         if (isset($_POST['to_date']) && $_POST['to_date'] != '') {
             $to = $_POST['to_date'];
-            $query->andWhere(['<=', 'sales_invoice_date', $to . '60:60:60']);
+            $dataProvider->query->andWhere(['<=', 'sales_invoice_date', $to . '60:60:60']);
         } else {
             $to = '';
         }
-        $command = $query->createCommand();
-        $model_report = $command->queryAll();
+        $model_report = $dataProvider->models;
+        if (isset($_POST['from_date'])) {
+
+        }
         $content = $this->renderPartial('item_report', [
             'model_report' => $model_report,
         ]);

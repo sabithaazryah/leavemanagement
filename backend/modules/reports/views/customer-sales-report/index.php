@@ -26,12 +26,12 @@ $grand_total = 0;
                 </div>
                 <div class="panel-body">
                     <div class="row" style="margin-left: 0px;">
-                        <div class="col-md-6">
+                        <div class="col-md-5">
 
                             <?= $this->render('_search', ['model' => $searchModel, 'from' => $from, 'to' => $to, 'id' => $id]) ?>
 
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-7">
                             <div class="col-md-2">
                                 <div class="sales-invoice-master-search" style="margin-right: 15px;float: left;">
 
@@ -48,22 +48,28 @@ $grand_total = 0;
                             <div class="col-md-10">
                                 <table class="table table-bordered">
                                     <tr>
-                                        <th colspan="3">Report Summary</th>
+                                        <th colspan="5">Report Summary</th>
                                     </tr>
                                     <tr>
-                                        <th>Total Sale</th>
-                                        <th>Total Amount</th>
-                                        <th>Total Tax Amount</th>
+                                        <th>No. Of Sale</th>
+                                        <th>Amount</th>
+                                        <th>Discount</th>
+                                        <th>GST</th>
+                                        <th>Sale Amount</th>
                                     </tr>
                                     <?php
                                     $sale_total = SalesInvoiceMaster::getTotalCount($from, $to, $id);
-                                    $amount_total = SalesInvoiceMaster::getSaleTotal($from, $to, $id, 'order_amount');
+                                    $amount_total = SalesInvoiceMaster::getSaleTotal($from, $to, $id, 'amount');
                                     $tax_total = SalesInvoiceMaster::getSaleTotal($from, $to, $id, 'tax_amount');
+                                    $net_total = SalesInvoiceMaster::getSaleTotal($from, $to, $id, 'order_amount');
+                                    $discount_total = SalesInvoiceMaster::getSaleTotal($from, $to, $id, 'discount_amount');
                                     ?>
                                     <tr>
                                         <th><?= $sale_total ?></th>
                                         <th><?= Yii::$app->SetValues->NumberFormat(round($amount_total, 2)) . ' (S$)'; ?></th>
+                                        <th><?= Yii::$app->SetValues->NumberFormat(round($discount_total, 2)) . ' (S$)'; ?></th>
                                         <th><?= Yii::$app->SetValues->NumberFormat(round($tax_total, 2)) . ' (S$)'; ?></th>
+                                        <th><?= Yii::$app->SetValues->NumberFormat(round($net_total, 2)) . ' (S$)'; ?></th>
                                     </tr>
                                 </table>
                             </div>
@@ -76,8 +82,10 @@ $grand_total = 0;
                                 <th>Invoice Date</th>
                                 <th>Po.No.</th>
                                 <th>Po.Date</th>
-                                <th>Total Amount</th>
-                                <th>Total GST</th>
+                                <th>Amount</th>
+                                <th>Discount</th>
+                                <th>GST</th>
+                                <th>Sale Amount</th>
                             </tr>
                         </thead>
                         <tbody>

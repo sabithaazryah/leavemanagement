@@ -349,11 +349,28 @@ class SalesInvoiceDetailsController extends Controller {
                 $aditional->item_name = $item_datas->item_name;
                 $aditional->base_unit = $item_datas->base_unit_id;
                 $aditional->type = $val['type'];
-                $quantity = $this->SaleQuantity($aditional->item_id, $aditional->type, $val['qty']);
-                $aditional->qty = $quantity['tot-weight'];
-                $aditional->carton = $quantity['tot-cart'];
+                $aditional->inventory = $val['inventory'];
+                if ($aditional->inventory == 1) {
+                    $quantity = $this->SaleQuantity($aditional->item_id, $aditional->type, $val['qty']);
+                    $aditional->qty = $quantity['tot-weight'];
+                    $no_of_qty = $aditional->qty;
+                    $aditional->carton = $quantity['tot-cart'];
+                    $aditional->pieces = $quantity['tot-pieces'];
+                    $aditional->qty_description = Json::encode($quantity['arr']);
+                } elseif ($aditional->inventory == 0) {
+                    if ($aditional->type == 1) {
+                        $aditional->carton = $val['qty'];
+                        $no_of_qty = $val['qty'];
+                    } elseif ($aditional->type == 2) {
+                        $aditional->qty = $val['qty'];
+                        $no_of_qty = $val['qty'];
+                    } elseif ($aditional->type == 3) {
+                        $aditional->pieces = $val['qty'];
+                        $no_of_qty = $val['qty'];
+                    }
+                }
                 $aditional->rate = $val['rate'];
-                $aditional->amount = $aditional->qty * $aditional->rate;
+                $aditional->amount = $no_of_qty * $aditional->rate;
                 $aditional->discount_type = $val['discount_type'];
                 $aditional->discount_value = $val['discount_value'];
                 if ($aditional->discount_type == 1) {
@@ -374,13 +391,12 @@ class SalesInvoiceDetailsController extends Controller {
                 $aditional->tax_type = $tax->type;
                 $aditional->tax_percentage = $tax->value;
                 $aditional->comments = $val['comment'];
-                $aditional->qty_description = Json::encode($quantity['arr']);
                 $aditional->status = 1;
                 $aditional->CB = Yii::$app->user->identity->id;
                 $aditional->UB = Yii::$app->user->identity->id;
                 $aditional->DOC = date('Y-m-d');
                 if ($aditional->save()) {
-                    if ($item_datas->item_type == 1) {
+                    if ($aditional->inventory == 1) {
                         if ($this->AddStockRegister($aditional)) {
                             $flag = 1;
                         } else {
@@ -407,7 +423,7 @@ class SalesInvoiceDetailsController extends Controller {
         $datas = Json::decode($aditional->qty_description);
         foreach ($datas as $value) {
             $stock = new \common\models\StockRegister();
-            $stock->transaction = 0;
+            $stock->transaction = 3;
             $stock->document_no = $aditional->sales_invoice_number;
             $stock->document_date = $aditional->sales_invoice_date;
             $stock->item_id = $aditional->item_id;
@@ -583,7 +599,6 @@ class SalesInvoiceDetailsController extends Controller {
                     $total_pieces += $q;
                     break;
                 } elseif ($q < $item->available_pieces) {
-                    $weight = $q * $weight_kg;
                     $arr[$i]['no_of_pieces'] = $q;
                     if ($item_data->item_type == 1) {
                         $weight_kg = $item->piece_per_carton / $item->weight_per_carton;
@@ -600,13 +615,11 @@ class SalesInvoiceDetailsController extends Controller {
                     $total_pieces += $q;
                     break;
                 } elseif ($q > $item->available_pieces) {
-                    $weight = $q * $weight_kg;
                     $arr[$i]['no_of_pieces'] = $item->available_pieces;
                     if ($item_data->item_type == 1) {
-                        $weight_kg = $item->piece_per_carton / $item->weight_per_carton;
-                        $weight = $q * $weight_kg;
+                        $weight = $item->available_weight;
                         $arr[$i]['no_of_weight'] = $weight;
-                        $carton = $item->available_pieces / $item->piece_per_carton;
+                        $carton = $item->available_carton;
                         if ($item->available_carton > 0 && $item->available_carton != '') {
                             $arr[$i]['no_of_carton'] = (int) ($carton);
                             $total_crt += (int) ($carton);
@@ -615,7 +628,9 @@ class SalesInvoiceDetailsController extends Controller {
                     $arr[$i]['batch_name'] = $item->batch_no;
                     $total_wgt += $weight;
                     $total_pieces += $item->available_pieces;
+                    $q -= $item->available_pieces;
                 }
+                $i++;
             }
         }
         $document_data = array('arr' => $arr, 'tot-weight' => $total_wgt, 'tot-cart' => $total_crt, 'tot-pieces' => $total_pieces);

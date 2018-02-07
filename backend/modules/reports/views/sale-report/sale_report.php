@@ -12,15 +12,23 @@
                     <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Company Name</th>
                     <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">PO No.</th>
                     <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Invoice Address</th>
-                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Total Amount</th>
-                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Total GST</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Amount</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Discount</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">GST</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Net Amount</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Paid</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Balance</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
                 $i = 0;
+                $amount_tot = 0;
+                $discount_tot = 0;
                 $order_tot = 0;
                 $tax_tot = 0;
+                $paid_tot = 0;
+                $balance_tot = 0;
                 foreach ($model_report as $value) {
                     $i++;
                     ?>
@@ -42,18 +50,30 @@
                         </td>
                         <td style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= $value->po_no ?></td>
                         <td style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= $value->ship_to_adress ?></td>
-                        <td style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= $value->order_amount ?></td>
+                        <td style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= $value->amount ?></td>
+                        <td style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= $value->discount_amount ?></td>
                         <td style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= $value->tax_amount ?></td>
+                        <td style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= $value->order_amount ?></td>
+                        <td style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= $value->amount_payed ?></td>
+                        <td style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= $value->due_amount ?></td>
                     </tr>
                     <?php
+                    $discount_tot += $value->discount_amount;
+                    $amount_tot += $value->amount;
                     $order_tot += $value->order_amount;
                     $tax_tot += $value->tax_amount;
+                    $paid_tot += $value->amount_payed;
+                    $balance_tot += $value->due_amount;
                 }
                 ?>
                 <tr>
                     <th colspan="6" style="border: 1px solid;font-size: 12px;padding: 5px 3px;text-align: center">Total</th>
-                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= Yii::$app->SetValues->NumberFormat(round($order_tot, 2)) . ' (S$)'; ?></th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= Yii::$app->SetValues->NumberFormat(round($amount_tot, 2)) . ' (S$)'; ?></th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= Yii::$app->SetValues->NumberFormat(round($discount_tot, 2)) . ' (S$)'; ?></th>
                     <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= Yii::$app->SetValues->NumberFormat(round($tax_tot, 2)) . ' (S$)'; ?></th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= Yii::$app->SetValues->NumberFormat(round($order_tot, 2)) . ' (S$)'; ?></th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= Yii::$app->SetValues->NumberFormat(round($paid_tot, 2)) . ' (S$)'; ?></th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= Yii::$app->SetValues->NumberFormat(round($balance_tot, 2)) . ' (S$)'; ?></th>
                 </tr>
             </tbody>
         </table>

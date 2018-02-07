@@ -10,18 +10,22 @@
                     <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Invoice Date</th>
                     <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Po.No.</th>
                     <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Po.Date</th>
-                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Total Amount</th>
-                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Total GST</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Amount</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Discount</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">GST</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Sale Amount</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
                 $grand_total_amount = 0;
                 $grand_total_tax = 0;
+                $grand_total_disc = 0;
+                $grand_total_sale = 0;
                 if (!empty($customer_model)) {
                     foreach ($customer_model as $model_customer) {
                         $query = new yii\db\Query();
-                        $query->select(['sales_invoice_number', 'sales_invoice_date', 'po_no', 'po_date', 'order_amount', 'tax_amount'])
+                        $query->select(['sales_invoice_number', 'sales_invoice_date', 'po_no', 'po_date', 'order_amount', 'tax_amount', 'amount', 'discount_amount'])
                                 ->from('sales_invoice_master')
                                 ->where(['busines_partner_code' => $model_customer['id']]);
                         if ($from != '') {
@@ -40,6 +44,8 @@
                             <?php
                             $amount_tot = 0;
                             $tax_tot = 0;
+                            $dic_tot = 0;
+                            $sale_tot = 0;
                             foreach ($result as $value) {
                                 ?>
                                 <tr style="border: 1px solid;">
@@ -47,20 +53,28 @@
                                     <td style="border: 1px solid;font-size: 12px;padding: 7px 3px;"><?= $value['sales_invoice_date'] ?></td>
                                     <td style="border: 1px solid;font-size: 12px;padding: 7px 3px;"><?= $value['po_no'] ?></td>
                                     <td style="border: 1px solid;font-size: 12px;padding: 7px 3px;"><?= $value['po_date'] ?></td>
-                                    <td style="border: 1px solid;font-size: 12px;padding: 7px 3px;"><?= $value['order_amount'] ?></td>
+                                    <td style="border: 1px solid;font-size: 12px;padding: 7px 3px;"><?= $value['amount'] ?></td>
+                                    <td style="border: 1px solid;font-size: 12px;padding: 7px 3px;"><?= $value['discount_amount'] ?></td>
                                     <td style="border: 1px solid;font-size: 12px;padding: 7px 3px;"><?= $value['tax_amount'] ?></td>
+                                    <td style="border: 1px solid;font-size: 12px;padding: 7px 3px;"><?= $value['order_amount'] ?></td>
                                 </tr>
                                 <?php
-                                $amount_tot += $value['order_amount'];
+                                $amount_tot += $value['amount'];
+                                $sale_tot += $value['order_amount'];
+                                $dic_tot += $value['discount_amount'];
                                 $tax_tot += $value['tax_amount'];
                             }
                             $grand_total_amount += $amount_tot;
                             $grand_total_tax += $tax_tot;
+                            $grand_total_disc += $dic_tot;
+                            $grand_total_sale += $sale_tot;
                             ?>
                             <tr style="border: 1px solid;">
                                 <th colspan="4" style="text-align: right;padding: 7px 3px;border: 1px solid;">Total Amount</th>
                                 <th style="padding: 7px 3px;border: 1px solid;"><?= Yii::$app->SetValues->NumberFormat(round($amount_tot, 2)) . ' (S$)'; ?></th>
+                                <th style="padding: 7px 3px;border: 1px solid;"><?= Yii::$app->SetValues->NumberFormat(round($dic_tot, 2)) . ' (S$)'; ?></th>
                                 <th style="padding: 7px 3px;border: 1px solid;"><?= Yii::$app->SetValues->NumberFormat(round($tax_tot, 2)) . ' (S$)'; ?></th>
+                                <th style="padding: 7px 3px;border: 1px solid;"><?= Yii::$app->SetValues->NumberFormat(round($sale_tot, 2)) . ' (S$)'; ?></th>
                             </tr>
                             <?php
                         }
@@ -70,7 +84,9 @@
                 <tr style="border: 1px solid;">
                     <th colspan="4" style="text-align: right;padding: 7px 3px;border: 1px solid;">Grand Total</th>
                     <th style="padding: 7px 3px;border: 1px solid;"><?= Yii::$app->SetValues->NumberFormat(round($grand_total_amount, 2)) . ' (S$)'; ?></th>
+                    <th style="padding: 7px 3px;border: 1px solid;"><?= Yii::$app->SetValues->NumberFormat(round($grand_total_disc, 2)) . ' (S$)'; ?></th>
                     <th style="padding: 7px 3px;border: 1px solid;"><?= Yii::$app->SetValues->NumberFormat(round($grand_total_tax, 2)) . ' (S$)'; ?></th>
+                    <th style="padding: 7px 3px;border: 1px solid;"><?= Yii::$app->SetValues->NumberFormat(round($grand_total_sale, 2)) . ' (S$)'; ?></th>
                 </tr>
             </tbody>
         </table>

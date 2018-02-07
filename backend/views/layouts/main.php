@@ -93,7 +93,7 @@ AppAsset::register($this);
                         }
                         ?>
                         <?php
-                        if (Yii::$app->session['post']['masters'] == 1) {
+                        if (Yii::$app->session['post']['sales_invoice'] == 1) {
                             ?>
                             <li>
                                 <a href="">
@@ -104,13 +104,16 @@ AppAsset::register($this);
                                     <li>
                                         <?= Html::a('Invoice Details', ['/sales/sales-invoice-details/index'], ['class' => 'title']) ?>
                                     </li>
+                                    <li>
+                                        <?= Html::a('Create Invoice', ['/sales/sales-invoice-details/add'], ['class' => 'title']) ?>
+                                    </li>
                                 </ul>
                             </li>
                             <?php
                         }
                         ?>
                         <?php
-                        if (Yii::$app->session['post']['admin'] == 1) {
+                        if (Yii::$app->session['post']['stock'] == 1) {
                             ?>
                             <li>
                                 <a href="">
@@ -118,13 +121,24 @@ AppAsset::register($this);
                                     <span class="title">Stock</span>
                                 </a>
                                 <ul>
-                                    <li>
-                                        <?= Html::a('Opening Stock', ['/stock/stock/index'], ['class' => 'title']) ?>
-                                    </li>
-                                    <li>
-                                        <?= Html::a('Stock Adjustment', ['/stock/stock/update'], ['class' => 'title']) ?>
-                                    </li>
-
+                                    <?php
+                                    if (Yii::$app->session['post']['opening_stock'] == 1) {
+                                        ?>
+                                        <li>
+                                            <?= Html::a('Opening Stock', ['/stock/stock/index'], ['class' => 'title']) ?>
+                                        </li>
+                                        <?php
+                                    }
+                                    ?>
+                                    <?php
+                                    if (Yii::$app->session['post']['stock_adjustment'] == 1) {
+                                        ?>
+                                        <li>
+                                            <?= Html::a('Stock Adjustment', ['/stock/stock/update'], ['class' => 'title']) ?>
+                                        </li>
+                                        <?php
+                                    }
+                                    ?>
                                     <li>
                                         <?= Html::a('Avilable Stock', ['/stock/stock-view/index'], ['class' => 'title']) ?>
                                     </li>
@@ -135,7 +149,7 @@ AppAsset::register($this);
                         }
                         ?>
                         <?php
-                        if (Yii::$app->session['post']['admin'] == 1) {
+                        if (Yii::$app->session['post']['reports'] == 1) {
                             ?>
                             <li>
                                 <a href="">
@@ -147,7 +161,7 @@ AppAsset::register($this);
                                         <?= Html::a('Sale Report', ['/reports/sale-report/index'], ['class' => 'title']) ?>
                                     </li>
                                     <li>
-                                        <?= Html::a('Item Report', ['/reports/item-report/index'], ['class' => 'title']) ?>
+                                        <?= Html::a('Item Wise Sale Report', ['/reports/item-report/index'], ['class' => 'title']) ?>
                                     </li>
                                     <li>
                                         <?= Html::a('Customer Sales Report', ['/reports/customer-sales-report/index'], ['class' => 'title']) ?>
@@ -159,7 +173,7 @@ AppAsset::register($this);
                                         <?= Html::a('Item Wise Stock', ['/reports/item-wise-stock/index'], ['class' => 'title']) ?>
                                     </li>
                                     <li>
-                                        <?= Html::a('Stock Report', ['/reports/stock-report/index'], ['class' => 'title']) ?>
+                                        <?= Html::a('Stock Register', ['/reports/stock-report/index'], ['class' => 'title']) ?>
                                     </li>
                                 </ul>
                             </li>

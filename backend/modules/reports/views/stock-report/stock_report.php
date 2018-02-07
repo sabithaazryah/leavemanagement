@@ -2,7 +2,7 @@
     <head>
     </head>
     <body>
-        <h4 style="text-align: center;">Stock Report</h4>
+        <h4 style="text-align: center;">Stock Register</h4>
         <table style="border: 1px solid; border-collapse: collapse;width: 100%;">
             <thead>
                 <tr style="background-color: #649bd0;">
@@ -10,6 +10,7 @@
                     <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Document Date</th>
                     <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Item Code</th>
                     <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Item_name</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Type</th>
                     <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Price</th>
                     <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Batch No.</th>
                     <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Weight In</th>
@@ -31,6 +32,19 @@
                         <td style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= $value->document_date ?></td>
                         <td style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= $value->item_code ?></td>
                         <td style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= $value->item_name ?></td>
+                        <td style="border: 1px solid;font-size: 12px;padding: 5px 3px;">
+                            <?php
+                            if ($value->transaction == 1) {
+                                echo 'Opening Stock';
+                            } elseif ($value->transaction == 2) {
+                                echo 'Stock Adjustment';
+                            } elseif ($value->transaction == 3) {
+                                echo 'Stock Sale';
+                            } else {
+                                echo '';
+                            }
+                            ?>
+                        </td>
                         <td style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= isset($value->item_id) ? \common\models\ItemMaster::findOne($value->item_id)->MRP : ''; ?></td>
                         <td style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= isset($value->batch_no) ? $value->batch_no : ''; ?></td>
                         <td style="border: 1px solid;font-size: 12px;padding: 5px 3px;"><?= isset($value->weight_in) ? $value->weight_in : ''; ?></td>

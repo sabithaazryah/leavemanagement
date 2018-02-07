@@ -9,7 +9,7 @@ use common\models\SalesInvoiceDetails;
 /* @var $searchModel common\models\SalesInvoiceMasterSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Stock Report';
+$this->title = 'Stock Register';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="sales-invoice-master-index">
@@ -54,6 +54,21 @@ $this->params['breadcrumbs'][] = $this->title;
                             'document_date',
                             'item_code',
                             'item_name',
+                            [
+                                'attribute' => 'transaction',
+                                'attribute' => 'Type',
+                                'value' => function ($model) {
+                                    if ($model->transaction == 1) {
+                                        return 'Opening Stock';
+                                    } elseif ($model->transaction == 2) {
+                                        return 'Stock Adjustment';
+                                    } elseif ($model->transaction == 3) {
+                                        return 'Stock Sale';
+                                    } else {
+                                        return '';
+                                    }
+                                },
+                            ],
                             [
                                 'attribute' => 'price',
                                 'value' => function ($model) {

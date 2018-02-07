@@ -9,7 +9,7 @@ use common\models\SalesInvoiceDetails;
 /* @var $searchModel common\models\SalesInvoiceMasterSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Item Sales Report';
+$this->title = 'Item Wise Sales Report';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="sales-invoice-master-index">
@@ -24,12 +24,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <div class="panel-body">
                     <div class="row" style="margin-left: 0px;">
-                        <div class="col-md-5">
+                        <div class="col-md-4">
 
                             <?= $this->render('_search', ['model' => $searchModel, 'from' => $from, 'to' => $to, 'item_code' => $item_code]) ?>
 
                         </div>
-                        <div class="col-md-7">
+                        <div class="col-md-8">
                             <div class="col-md-2">
                                 <div class="sales-invoice-master-search" style="margin-right: 15px;float: left;">
 
@@ -46,19 +46,21 @@ $this->params['breadcrumbs'][] = $this->title;
                             <div class="col-md-10">
                                 <table class="table table-bordered">
                                     <tr>
-                                        <th colspan="5">Report Summary</th>
+                                        <th colspan="6">Report Summary</th>
                                     </tr>
                                     <tr>
-                                        <th>Total Sale</th>
-                                        <th>Total KG</th>
-                                        <th>Total Cartons</th>
-                                        <th>Tax Amount</th>
+                                        <th>No. Of Sale</th>
+                                        <th>KG Sold</th>
+                                        <th>Cartons Sold</th>
+                                        <th>Pieces Sold</th>
+                                        <th>GST</th>
                                         <th>Sale Amount</th>
                                     </tr>
                                     <?php
                                     $sale_total = SalesInvoiceDetails::getTotalCount($from, $to, $item_code);
                                     $total_kg = SalesInvoiceDetails::getSaleTotal($from, $to, $item_code, 'qty');
                                     $total_carton = SalesInvoiceDetails::getSaleTotal($from, $to, $item_code, 'carton');
+                                    $total_pieces = SalesInvoiceDetails::getSaleTotal($from, $to, $item_code, 'pieces');
                                     $amount_total = SalesInvoiceDetails::getSaleTotal($from, $to, $item_code, 'line_total');
                                     $tax_total = SalesInvoiceDetails::getSaleTotal($from, $to, $item_code, 'tax_amount');
                                     ?>
@@ -66,6 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <th><?= $sale_total ?></th>
                                         <th><?= $total_kg ?></th>
                                         <th><?= $total_carton ?></th>
+                                        <th><?= $total_pieces ?></th>
                                         <th><?= Yii::$app->SetValues->NumberFormat(round($tax_total, 2)) . ' (S$)'; ?></th>
                                         <th><?= Yii::$app->SetValues->NumberFormat(round($amount_total, 2)) . ' (S$)'; ?></th>
                                     </tr>
@@ -82,32 +85,19 @@ $this->params['breadcrumbs'][] = $this->title;
                             ['class' => 'yii\grid\SerialColumn'],
                             'item_code',
                             'item_name',
-                            [
-                                'attribute' => 'qty',
-                                'label' => 'KG Sold',
-                                'value' => function ($data) {
-                                    return $data->qty;
-                                },
-                            ],
-                            [
-                                'attribute' => 'carton',
-                                'label' => 'Cartons Sold',
-                                'value' => function ($data) {
-                                    if ($data->carton != '') {
-                                        return $data->carton;
-                                    } else {
-                                        return '';
-                                    }
-                                },
-                            ],
-                            'tax_amount',
-                            [
-                                'attribute' => 'line_total',
-                                'label' => 'Sale Amount',
-                                'value' => function ($data) {
-                                    return $data->line_total;
-                                },
-                            ],
+                            ['attribute' => 'qty',
+                                'header' => 'KG Sold'],
+                            ['attribute' => 'carton',
+                                'header' => 'Carton Sold'],
+                            ['attribute' => 'pieces',
+                                'header' => 'Pieces Sold'],
+                            'amount',
+                            ['attribute' => 'discount_amount',
+                                'header' => 'Discount'],
+                            ['attribute' => 'tax_amount',
+                                'header' => 'GST'],
+                            ['attribute' => 'line_total',
+                                'header' => 'Sale Amount'],
                         ],
                     ]);
                     ?>
