@@ -1,8 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
-use yii\widgets\ActiveForm;
+use kartik\grid\GridView;
 use common\models\SalesInvoiceDetails;
 
 /* @var $this yii\web\View */
@@ -24,26 +23,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <div class="panel-body">
                     <div class="row" style="margin-left: 0px;">
-                        <div class="col-md-4">
+                        <div class="col-md-5">
 
                             <?= $this->render('_search', ['model' => $searchModel, 'from' => $from, 'to' => $to, 'item_code' => $item_code]) ?>
 
                         </div>
-                        <div class="col-md-8">
-                            <div class="col-md-2">
-                                <div class="sales-invoice-master-search" style="margin-right: 15px;float: left;">
-
-                                    <?= Html::beginForm(['item-report/reports'], 'post', ['target' => 'print_popup', 'id' => "epda-form", 'style' => 'margin-bottom: 0px;']) ?>
-                                    <input type="hidden" value="<?= $from ?>" name="from_date"/>
-                                    <input type="hidden" value="<?= $to ?>" name="to_date"/>
-                                    <input type="hidden" value="<?= $item_code ?>" name="item_code"/>
-                                    <?= Html::submitButton('<i class="fa fa-file-pdf-o" style="padding-right: 10px;"></i><span>PDF</span>', ['class' => 'btn btn-default', 'id' => 'pdf-btn', 'name' => 'pdf', 'style' => 'background-color: #337ab7;border-color: #2e6da4;color:white;', 'formtarget' => '_blank']) ?>
-
-                                    <?= Html::endForm() ?>
-
-                                </div>
-                            </div>
-                            <div class="col-md-10">
+                        <div class="col-md-7" style="padding-right: 45px;">
+                            <div class="row" style="margin: 0px;">
                                 <table class="table table-bordered">
                                     <tr>
                                         <th colspan="6">Report Summary</th>
@@ -76,29 +62,47 @@ $this->params['breadcrumbs'][] = $this->title;
                             </div>
                         </div>
                     </div>
-                    <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
-
-                    <?=
-                    GridView::widget([
+                    <?php
+                    $gridColumns = [
+                        ['class' => 'kartik\grid\SerialColumn'],
+                        'item_code',
+                        'item_name',
+                        ['attribute' => 'qty',
+                            'header' => 'KG Sold'],
+                        ['attribute' => 'carton',
+                            'header' => 'Carton Sold'],
+                        ['attribute' => 'pieces',
+                            'header' => 'Pieces Sold'],
+                        'amount',
+                        ['attribute' => 'discount_amount',
+                            'header' => 'Discount'],
+                        ['attribute' => 'tax_amount',
+                            'header' => 'GST'],
+                        ['attribute' => 'line_total',
+                            'header' => 'Sale Amount'],
+                    ];
+                    echo GridView::widget([
                         'dataProvider' => $dataProvider,
-                        'columns' => [
-                            ['class' => 'yii\grid\SerialColumn'],
-                            'item_code',
-                            'item_name',
-                            ['attribute' => 'qty',
-                                'header' => 'KG Sold'],
-                            ['attribute' => 'carton',
-                                'header' => 'Carton Sold'],
-                            ['attribute' => 'pieces',
-                                'header' => 'Pieces Sold'],
-                            'amount',
-                            ['attribute' => 'discount_amount',
-                                'header' => 'Discount'],
-                            ['attribute' => 'tax_amount',
-                                'header' => 'GST'],
-                            ['attribute' => 'line_total',
-                                'header' => 'Sale Amount'],
+//                        'filterModel' => $searchModel,
+                        'columns' => $gridColumns,
+                        'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
+                        'toolbar' => [
+                            '{export}',
+                            '{toggleData}'
                         ],
+                        'pjax' => true,
+                        'bordered' => true,
+                        'striped' => false,
+                        'condensed' => false,
+                        'responsive' => true,
+                        'hover' => true,
+                        'floatHeader' => true,
+//                        'floatHeaderOptions' => ['scrollingTop' => $scrollingTop],
+//                        'showPageSummary' => true,
+                        'panel' => [
+                            'type' => GridView::TYPE_PRIMARY
+                        ],
+                        'caption' => 'Item Wise Sales Report'
                     ]);
                     ?>
                 </div>

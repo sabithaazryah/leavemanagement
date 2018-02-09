@@ -3,6 +3,14 @@ Yii Framework 2 Change Log
 
 2.0.14 under development
 ------------------------
+- Enh #15216: Added `yii\web\ErrorHandler::$traceLine` to allow opening file at line clicked in IDE (vladis84)
+- Enh #14488: Added support for X-Forwarded-Host to `yii\web\Request`, fixed `getServerPort()` usage (si294r, samdark)
+- Enh #13019: Support JSON in SchemaBuilderTrait (zhukovra, undefinedor)
+- Enh #15047: `yii\db\Query::select()` and `yii\db\Query::addSelect()` now check for duplicate column names (wapmorgan)
+- Enh #14643: Added `yii\web\ErrorAction::$layout` property to conveniently set layout from error action config (swods, cebe, samdark)
+- Enh #13465: Added `yii\helpers\FileHelper::findDirectory()` method (ArsSirek, developeruz)
+- Enh #8527: Added `yii\i18n\Locale` component having `getCurrencySymbol()` method (amarox, samdark)
+- Enh #14546: Added `dataDirectory` property into `BaseActiveFixture` (leandrogehlen)
 - Bug #15522: Fixed `yii\db\ActiveRecord::refresh()` method does not use an alias in the condition (vladis84)
 - Enh #15476: Added `\yii\widgets\ActiveForm::$validationStateOn` to be able to specify where to add class for invalid fields (samdark)
 - Enh #13996: Added `yii\web\View::registerJsVar()` method that allows registering JavaScript variables (Eseperio, samdark)
@@ -23,6 +31,7 @@ Yii Framework 2 Change Log
 - Bug #14135: Fixed `yii\web\Request::getBodyParam()` crashes on object type body params (klimov-paul)
 - Bug #14157: Add support for loading default value `CURRENT_TIMESTAMP` of MySQL `datetime` field (rossoneri)
 - Bug #14276: Fixed I18N format with dotted parameters (developeruz)
+- Bug #14296: Fixed log targets to throw exception in case log can not be properly exported (bizley)
 - Bug #14484: Fixed `yii\validators\UniqueValidator` for target classes with a default scope (laszlovl, developeruz)
 - Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150)
 - Bug #14903: Fixed route with extra dashes is executed controller while it should not (developeruz)
@@ -61,6 +70,7 @@ Yii Framework 2 Change Log
 - Enh #9137: Added `Access-Control-Allow-Method` header for the OPTIONS request (developeruz)
 - Enh #9253: Allow `variations` to be a string for `yii\filters\PageCache` and `yii\widgets\FragmentCache` (schojniak, developeruz)
 - Enh #12623: Added `yii\helpers\StringHelper::matchWildcard()` replacing usage of `fnmatch()`, which may be unreliable (klimov-paul)
+- Enh #13679: Added `yii\behaviors\CacheableWidgetBehavior` (Kolyunya)
 - Enh #13919: Added option to add comment for created table to migration console command (mixartemev, developeruz)
 - Enh #14043: Added `yii\helpers\IpHelper` (silverfire, cebe)
 - Enh #14355: Added ability to pass an empty array as a parameter in console command (developeruz)
@@ -83,6 +93,7 @@ Yii Framework 2 Change Log
 - Enh #15422: Added default roles dynamic definition support via closure for `yii\rbac\BaseManager` (deltacube)
 - Enh: Added check to `yii\base\Model::formName()` to prevent source path disclosure when form is represented by an anonymous class (silverfire)
 - Chg #15420: Handle OPTIONS request in `yii\filter\Cors` so the preflight check isn't passed trough authentication filters (michaelarnauts, leandrogehlen)
+- Enh #15595: `yii\data\DataFilter` can now handle `lt`,`gt`,`lte` and `gte` on `yii\validators\DateValidator` (mikk150)
 
 2.0.13.1 November 14, 2017
 --------------------------
@@ -150,6 +161,7 @@ Yii Framework 2 Change Log
 - Enh #4495:  Added closure support in `yii\i18n\Formatter` (developeruz)
 - Enh #5786: Allowed to use custom constructors in ActiveRecord-based classes (ElisDN, klimov-paul)
 - Enh #6644: Added `yii\helpers\ArrayHelper::setValue()` (LAV45)
+- Enh #7640: Implemented custom data types support. Added JSON support for MySQL and PostgreSQL, array support for PostgreSQL (silverfire, cebe)
 - Enh #7823: Added `yii\filters\AjaxFilter` filter (dmirogin)
 - Enh #9438: `yii\web\DbSession` now relies on error handler to display errors (samdark)
 - Enh #9703, #9709: Added `yii\i18n\Formatter::asWeight()` and `::asLength()` formatters (nineinchnick, silverfire)
@@ -192,6 +204,7 @@ Yii Framework 2 Change Log
 - Enh #14958: Added options to copy stacktrace and search for error message to the exception page (cebe)
 - Enh #14967: Added Armenian Translations (gevorgmansuryan)
 - Enh #15015: Added `StringHelper::floatToString()` to safely cast float values independent of the locale, also fixes some places in the framework that use it now (cebe)
+- Enh #15076: Perfect `yii\db\QueryBuilder` buildColumns function (hiscaler)
 - Chg #7936: Deprecate `yii\base\Object` in favor of `yii\base\BaseObject` for compatibility with PHP 7.2 (rob006, cebe, klimov-paul)
 - Chg #14201: `yii\console\controllers\MessageController::extractMessagesFromTokens()` is now protected (faenir)
 - Chg #14286: Used primary inputmask package name instead of an alias (samdark)

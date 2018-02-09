@@ -228,8 +228,6 @@ class EmployeeController extends Controller {
             }
             if ($model->save()) {
                 if (!empty($files)) {
-                    $model->photo = $model->id . '.' . $files->extension;
-                    $model->update();
                     $this->upload($model, $files);
                 }
                 $this->Imageupload($model);

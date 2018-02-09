@@ -45,6 +45,7 @@ class Employee extends ActiveRecord implements IdentityInterface {
         return [
             [['post_id', 'user_name', 'password', 'name', 'email'], 'required', 'on' => 'create'],
             [['post_id', 'user_name', 'password', 'name', 'email'], 'required', 'on' => 'update'],
+            [['phone'], 'number'],
             [['user_name'], 'unique', 'message' => 'Username must be unique.', 'on' => 'create'],
             [['user_name'], 'unique', 'message' => 'Username must be unique.', 'on' => 'update'],
             [['photo'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
@@ -53,6 +54,7 @@ class Employee extends ActiveRecord implements IdentityInterface {
             [['DOC', 'DOU', 'phone'], 'safe'],
             [['user_name'], 'string', 'max' => 30],
             [['password'], 'string', 'max' => 300],
+            [['phone'], 'string', 'max' => 13],
             [['name', 'email'], 'string', 'max' => 100],
             [['post_id'], 'exist', 'skipOnError' => true, 'targetClass' => AdminPost::className(), 'targetAttribute' => ['post_id' => 'id']],
             [['user_name', 'password'], 'required', 'on' => 'login'],

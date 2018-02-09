@@ -1,9 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
-use yii\widgets\ActiveForm;
-use common\models\StockView;
+use kartik\grid\GridView;
 use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
@@ -31,42 +29,49 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         </div>
                         <div class="col-md-7">
-                            <div class="col-md-2">
-                                <div class="sales-invoice-master-search" style="margin-right: 15px;float: left;">
-
-                                    <?= Html::beginForm(['batch-wise-stock/reports'], 'post', ['target' => 'print_popup', 'id' => "epda-form", 'style' => 'margin-bottom: 0px;']) ?>
-                                    <input type="hidden" value="<?= $batch ?>" name="batch"/>
-                                    <?= Html::submitButton('<i class="fa fa-file-pdf-o" style="padding-right: 10px;"></i><span>PDF</span>', ['class' => 'btn btn-default', 'id' => 'pdf-btn', 'name' => 'pdf', 'style' => 'background-color: #337ab7;border-color: #2e6da4;color:white;', 'formtarget' => '_blank']) ?>
-
-                                    <?= Html::endForm() ?>
-
-                                </div>
-                            </div>
                         </div>
                     </div>
-                    <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
-
-                    <?=
-                    GridView::widget([
-                        'dataProvider' => $dataProvider,
-                        'columns' => [
-                            ['class' => 'yii\grid\SerialColumn'],
-                            [
-                                'attribute' => 'item_id',
-                                'label' => 'Item Name',
-                                'filter' => Html::activeDropDownList($searchModel, 'item_id', ArrayHelper::map(common\models\ItemMaster::find()->all(), 'id', 'item_name'), ['class' => 'form-control', 'id' => 'item-name', 'prompt' => '']),
-                                'value' => function ($data) {
-                                    $item = common\models\ItemMaster::findOne($data->item_id);
-                                    if (isset($item))
-                                        return $item->item_name;
-                                },
-                            ],
-                            'item_code',
-                            'batch_no',
-                            'available_carton',
-                            'available_weight',
-                            'available_pieces',
+                    <?php
+                    $gridColumns = [
+                        ['class' => 'kartik\grid\SerialColumn'],
+                        [
+                            'attribute' => 'item_id',
+                            'label' => 'Item Name',
+                            'filter' => Html::activeDropDownList($searchModel, 'item_id', ArrayHelper::map(common\models\ItemMaster::find()->all(), 'id', 'item_name'), ['class' => 'form-control', 'id' => 'item-name', 'prompt' => '']),
+                            'value' => function ($data) {
+                                $item = common\models\ItemMaster::findOne($data->item_id);
+                                if (isset($item))
+                                    return $item->item_name;
+                            },
                         ],
+                        'item_code',
+                        'batch_no',
+                        'available_carton',
+                        'available_weight',
+                        'available_pieces',
+                    ];
+                    echo GridView::widget([
+                        'dataProvider' => $dataProvider,
+//                        'filterModel' => $searchModel,
+                        'columns' => $gridColumns,
+                        'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
+                        'toolbar' => [
+                            '{export}',
+                            '{toggleData}'
+                        ],
+                        'pjax' => true,
+                        'bordered' => true,
+                        'striped' => false,
+                        'condensed' => false,
+                        'responsive' => true,
+                        'hover' => true,
+                        'floatHeader' => true,
+//                        'floatHeaderOptions' => ['scrollingTop' => $scrollingTop],
+//                        'showPageSummary' => true,
+                        'panel' => [
+                            'type' => GridView::TYPE_PRIMARY
+                        ],
+                        'caption' => 'Batch Wise Stock Report'
                     ]);
                     ?>
                 </div>

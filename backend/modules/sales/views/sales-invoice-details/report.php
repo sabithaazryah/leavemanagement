@@ -410,11 +410,4 @@
     }
     ?>
     <button onclick="window.close();" style="font-weight: bold !important;">Close</button>
-    <?php
-    if ($save) {
-        ?>
-        <a href="<?= Yii::$app->homeUrl ?>appointment/close-estimate/save-report?estid=<?php echo implode('_', $est_id) ?>"><button onclick="" style="font-weight: bold !important;">Save</button></a>
-        <?php
-    }
-    ?>
 </div>

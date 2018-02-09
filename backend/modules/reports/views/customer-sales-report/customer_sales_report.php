@@ -5,15 +5,15 @@
         <h4 style="text-align: center;"> Customer Sales Report</h4>
         <table style="border: 1px solid; border-collapse: collapse;width: 100%;">
             <thead>
-                <tr style="background-color: #649bd0;border: 1px solid;">
-                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Invoice No.</th>
-                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Invoice Date</th>
-                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Po.No.</th>
-                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Po.Date</th>
-                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Amount</th>
-                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Discount</th>
-                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">GST</th>
-                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;color: white;">Sale Amount</th>
+                <tr style="border: 1px solid;">
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;">Invoice No.</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;">Invoice Date</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;">Po.No.</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;">Po.Date</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;">Amount</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;">Discount</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;">GST</th>
+                    <th style="border: 1px solid;font-size: 12px;padding: 5px 3px;">Sale Amount</th>
                 </tr>
             </thead>
             <tbody>

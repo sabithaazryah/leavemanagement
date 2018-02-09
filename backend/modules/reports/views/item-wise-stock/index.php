@@ -1,10 +1,7 @@
 <?php
 
-use yii\helpers\Html;
-use yii\grid\GridView;
-use yii\widgets\ActiveForm;
-use common\models\StockView;
-use yii\helpers\ArrayHelper;
+use kartik\grid\GridView;
+use yii\bootstrap\Html;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\SalesInvoiceMasterSearch */
@@ -31,32 +28,39 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         </div>
                         <div class="col-md-8">
-                            <div class="col-md-2">
-                                <div class="sales-invoice-master-search" style="margin-right: 15px;float: left;">
-
-                                    <?= Html::beginForm(['item-wise-stock/reports'], 'post', ['target' => 'print_popup', 'id' => "epda-form", 'style' => 'margin-bottom: 0px;']) ?>
-                                    <input type="hidden" value="<?= $item ?>" name="item_idd"/>
-                                    <?= Html::submitButton('<i class="fa fa-file-pdf-o" style="padding-right: 10px;"></i><span>PDF</span>', ['class' => 'btn btn-default', 'id' => 'pdf-btn', 'name' => 'pdf', 'style' => 'background-color: #337ab7;border-color: #2e6da4;color:white;', 'formtarget' => '_blank']) ?>
-
-                                    <?= Html::endForm() ?>
-
-                                </div>
-                            </div>
                         </div>
                     </div>
-                    <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
-
-                    <?=
-                    GridView::widget([
+                    <?php
+                    $gridColumns = [
+                        ['class' => 'kartik\grid\SerialColumn'],
+                        'item_name',
+                        'item_code',
+                        'available_carton',
+                        'available_weight',
+                        'available_pieces',
+                    ];
+                    echo GridView::widget([
                         'dataProvider' => $dataProvider,
-                        'columns' => [
-                            ['class' => 'yii\grid\SerialColumn'],
-                            'item_name',
-                            'item_code',
-                            'available_carton',
-                            'available_weight',
-                            'available_pieces',
+//                        'filterModel' => $searchModel,
+                        'columns' => $gridColumns,
+                        'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
+                        'toolbar' => [
+                            '{export}',
+                            '{toggleData}'
                         ],
+                        'pjax' => true,
+                        'bordered' => true,
+                        'striped' => false,
+                        'condensed' => false,
+                        'responsive' => true,
+                        'hover' => true,
+                        'floatHeader' => true,
+//                        'floatHeaderOptions' => ['scrollingTop' => $scrollingTop],
+//                        'showPageSummary' => true,
+                        'panel' => [
+                            'type' => GridView::TYPE_PRIMARY
+                        ],
+                        'caption' => 'Item Wise Stock Report'
                     ]);
                     ?>
                 </div>

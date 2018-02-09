@@ -158,6 +158,7 @@ class SalesInvoiceDetailsController extends Controller {
                 try {
                     if ($model_sales_master->save() && $this->SalesCreate($model_sales_master) && $this->SavePayments($model_sales_master)) {
                         $transaction->commit();
+                        Yii::$app->session->setFlash('success', "Invoice Created successfully");
                     } else {
                         $transaction->rollBack();
                     }
@@ -223,7 +224,9 @@ class SalesInvoiceDetailsController extends Controller {
             $model_sales_master->amount_payed = $data['payed_amount'];
             $model_sales_master->due_amount = $data['balance'];
             if ($data['balance'] > 0) {
-                $model_sales_master->due_date = date("Y-m-d", strtotime($data['due_date']));
+                if ($data['due_date'] != '') {
+                    $model_sales_master->due_date = date("Y-m-d", strtotime($data['due_date']));
+                }
             }
         }
         $model_sales_master->status = 1;
@@ -355,7 +358,7 @@ class SalesInvoiceDetailsController extends Controller {
                     $aditional->qty = $quantity['tot-weight'];
                     $no_of_qty = $aditional->qty;
                     $aditional->carton = $quantity['tot-cart'];
-                    $aditional->pieces = $quantity['tot-pieces'];
+                    $aditional->pieces = (int) $quantity['tot-pieces'];
                     $aditional->qty_description = Json::encode($quantity['arr']);
                 } elseif ($aditional->inventory == 0) {
                     if ($aditional->type == 1) {

@@ -56,7 +56,6 @@ if (isset($estimate)) {
     .stock-dtl-tble tr td:last-child {
         display: block !important;
     }
-
 </style>
 <?php $form = ActiveForm::begin(); ?>
 <div class="row">

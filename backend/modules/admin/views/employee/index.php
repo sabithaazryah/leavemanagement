@@ -40,9 +40,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'format' => 'raw',
                                 'value' => function ($data) {
                                     if ($data->photo != '') {
-                                        $dirPath = Yii::getAlias(Yii::$app->params['uploadPath']) . '/uploads/employee/' . $data->photo;
+                                        $dirPath = Yii::getAlias(Yii::$app->params['uploadPath']) . '/uploads/employee/' . $data->id . '.' . $data->photo;
                                         if (file_exists($dirPath)) {
-                                            $img = '<img width="120px" src="' . Yii::$app->homeUrl . 'uploads/employee/' . $data->photo . '"/>';
+                                            $img = '<img width="120px" src="' . Yii::$app->homeUrl . 'uploads/employee/' . $data->id . '.' . $data->photo . '"/>';
                                         } else {
                                             $img = 'No Image';
                                         }

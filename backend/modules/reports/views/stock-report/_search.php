@@ -21,7 +21,7 @@ use kartik\date\DatePicker;
 </style>
 
 <div class="sales-invoice-master-search">
-    <div class="row">
+    <div class="row" style="margin: 0px 10px;">
         <?php
         $form = ActiveForm::begin([
                     'action' => ['index'],

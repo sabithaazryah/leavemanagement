@@ -7,6 +7,7 @@ use kartik\daterange\DateRangePicker;
 use common\models\BusinessPartner;
 use yii\helpers\Url;
 use common\components\ModalViewWidget;
+Use kartik\date\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\SalesInvoiceDetailsSearch */
@@ -31,6 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php
                         echo ModalViewWidget::widget();
                         ?>
+                        <?= \common\widgets\Alert::widget(); ?>
                         <?= Html::a('<i class="fa-th-list"></i><span> New Invoice</span>', ['add'], ['class' => 'btn btn-warning  btn-icon btn-icon-standalone']) ?>
                         <button class="btn btn-white" id="search-option" style="float: right;">
                             <i class="linecons-search"></i>
@@ -57,7 +59,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'value' => function ($data) {
                                         return date("d-m-Y", strtotime($data->sales_invoice_date));
                                     },
-                                    'filter' => DateRangePicker::widget(['model' => $searchModel, 'attribute' => 'sales_invoice_date', 'pluginOptions' => ['format' => 'd-m-Y', 'autoUpdateInput' => false]]),
+                                    'filter' => kartik\date\DatePicker::widget(['model' => $searchModel, 'attribute' => 'sales_invoice_date', 'pluginOptions' => ['format' => 'yyyy-mm-dd', 'autoclose' => true], 'type' => DatePicker::TYPE_INPUT]),
+//                                    'filter' => DateRangePicker::widget(['model' => $searchModel, 'attribute' => 'sales_invoice_date', 'pluginOptions' => ['format' => 'd-m-Y', 'autoUpdateInput' => false]]),
                                 ],
                                 [
                                     'attribute' => 'busines_partner_code',
@@ -82,6 +85,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'order_amount',
                                 'amount_payed',
                                 'due_amount',
+                                [
+                                    'attribute' => 'due_date',
+                                    'value' => function($model) {
+                                        return $model->due_date;
+                                    },
+                                    'filter' => kartik\date\DatePicker::widget(['model' => $searchModel, 'attribute' => 'due_date', 'pluginOptions' => ['format' => 'yyyy-mm-dd', 'autoclose' => true], 'type' => DatePicker::TYPE_INPUT]),
+                                ],
+//                                'due_date',
                                 // 'status',
                                 // 'CB',
                                 // 'UB',

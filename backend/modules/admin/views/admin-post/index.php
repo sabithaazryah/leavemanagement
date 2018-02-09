@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel common\models\AdminPostSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Admin Posts';
+$this->title = 'Access Powers';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="admin-post-index">
@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="panel-body">
                     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-                    <?= Html::a('<i class="fa-th-list"></i><span> Create Admin Post</span>', ['create'], ['class' => 'btn btn-warning  btn-icon btn-icon-standalone']) ?>
+                    <?= Html::a('<i class="fa-th-list"></i><span> Create Access Powers</span>', ['create'], ['class' => 'btn btn-warning  btn-icon btn-icon-standalone']) ?>
                     <?=
                     GridView::widget([
                         'dataProvider' => $dataProvider,
@@ -79,6 +79,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'filter' => [1 => 'Yes', 0 => 'No'],
                                 'value' => function ($model) {
                                     return $model->opening_stock == 1 ? 'Yes' : 'No';
+                                },
+                            ],
+                            [
+                                'attribute' => 'reports',
+                                'format' => 'raw',
+                                'filter' => [1 => 'Yes', 0 => 'No'],
+                                'value' => function ($model) {
+                                    return $model->reports == 1 ? 'Yes' : 'No';
                                 },
                             ],
                             [

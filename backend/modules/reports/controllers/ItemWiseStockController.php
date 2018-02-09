@@ -47,7 +47,7 @@ class ItemWiseStockController extends \yii\web\Controller {
         $dataProvider = new ArrayDataProvider([
             'allModels' => $result,
             'pagination' => [
-                'pageSize' => 10,
+                'pageSize' => 20,
             ],
         ]);
         return $this->render('index', [

@@ -35,6 +35,8 @@ class ComposerStaticInitb90d6a1aee0199b4bc692e3f30a1130d
         array (
             'kartik\\select2\\' => 15,
             'kartik\\mpdf\\' => 12,
+            'kartik\\grid\\' => 12,
+            'kartik\\dialog\\' => 14,
             'kartik\\datetime\\' => 16,
             'kartik\\daterange\\' => 17,
             'kartik\\date\\' => 12,
@@ -112,7 +114,7 @@ class ComposerStaticInitb90d6a1aee0199b4bc692e3f30a1130d
         ),
         'yii\\bootstrap\\' => 
         array (
-            0 => __DIR__ . '/..' . '/yiisoft/yii2-bootstrap',
+            0 => __DIR__ . '/..' . '/yiisoft/yii2-bootstrap/src',
         ),
         'yii\\' => 
         array (
@@ -131,6 +133,14 @@ class ComposerStaticInitb90d6a1aee0199b4bc692e3f30a1130d
         'kartik\\mpdf\\' => 
         array (
             0 => __DIR__ . '/..' . '/kartik-v/yii2-mpdf',
+        ),
+        'kartik\\grid\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/kartik-v/yii2-grid',
+        ),
+        'kartik\\dialog\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/kartik-v/yii2-dialog',
         ),
         'kartik\\datetime\\' => 
         array (

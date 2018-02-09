@@ -22,6 +22,9 @@ return [
                 ]
             ],
         ],
+        'gridview' => [
+            'class' => '\kartik\grid\Module'
+        ],
         'admin' => [
             'class' => 'backend\modules\admin\Module',
         ],
@@ -36,6 +39,9 @@ return [
         ],
         'reports' => [
             'class' => 'backend\modules\reports\Module',
+        ],
+        'notification' => [
+            'class' => 'backend\modules\notification\Module',
         ],
     ],
     'components' => [

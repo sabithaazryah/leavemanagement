@@ -140,7 +140,7 @@ AppAsset::register($this);
                                     }
                                     ?>
                                     <li>
-                                        <?= Html::a('Avilable Stock', ['/stock/stock-view/index'], ['class' => 'title']) ?>
+                                        <?= Html::a('Available Stock', ['/stock/stock-view/index'], ['class' => 'title']) ?>
                                     </li>
 
                                 </ul>

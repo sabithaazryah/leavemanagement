@@ -67,7 +67,7 @@ use yii\helpers\ArrayHelper;
                 if (!empty($model->photo)) {
                     ?>
 
-                    <img src="<?= Yii::$app->homeUrl ?>uploads/employee/<?= $model->photo ?> ?>" width="125" height="100"/>
+                    <img src="<?= Yii::$app->homeUrl ?>uploads/employee/<?= $model->id ?>.<?= $model->photo ?>" width="125" height="100"/>
                     <?php
                 }
             }
