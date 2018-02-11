@@ -233,18 +233,47 @@ AppAsset::register($this);
                                 <i class="fa-bars"></i>
                             </a>
                         </li>
+                        <?php
+                        $notifications = \common\models\Notification::find()->where(['closed' => 0])->orderBy(['id' => SORT_DESC])->limit(10)->all();
+                        $notification_count = \common\models\Notification::find()->where(['closed' => 0])->count();
+                        ?>
                         <li class="dropdown hover-line hover-line-notify" style="min-height: 48px;">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Notifications">
                                 <i class="fa-bell-o"></i>
                                 <!--<span class="badge badge-purple" id="notify-count"></span>-->
-                                <span class="badge badge-purple" id="notify-count">6</span>
+                                <span class="badge badge-purple" id="notify-count"><?= $notification_count ?></span>
                             </a>
                             <ul class="dropdown-menu notifications">
                                 <li class="top">
                                     <p class="small">
                                         <!--                                        <a href="#" class="pull-right">Mark all Read</a>-->
-                                        You have <strong id="notify-counts"></strong> new notifications.
+                                        You have <strong id="notify-counts"><?= $notification_count ?></strong> new notifications.
                                     </p>
+                                </li>
+                                <li>
+                                    <ul class="dropdown-menu-list list-unstyled ps-scrollbar ps-container">
+                                        <?php
+                                        foreach ($notifications as $value) {
+                                            ?>
+                                            <li class="active notification-success" id="notify-<?= $value->id ?>">
+                                                <a href="#">
+                                                    <i class="fa fa-envelope-o"></i>
+
+                                                    <span class="line">
+                                                        <strong><?= $value->content ?></strong>
+                                                    </span>
+                                                    <input type="checkbox" checked="" class="iswitch iswitch-secondary disable-notification" data-id= "<?= $value->id ?>" style="margin-top: -25px;float: right;">
+                                                </a>
+                                            </li>
+                                            <?php
+                                        }
+                                        ?>
+
+                                        <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 3px;"><div class="ps-scrollbar-x" style="left: 0px; width: 0px;"></div></div><div class="ps-scrollbar-y-rail" style="top: 0px; right: 2px;"><div class="ps-scrollbar-y" style="top: 0px; height: 0px;"></div></div></ul>
+                                </li>
+
+                                <li class="external">
+                                    <?= Html::a('<span>View all notifications</span> <i class="fa-link-ext"></i>', ['/notification/notification']) ?>
                                 </li>
                             </ul>
                         </li>
@@ -427,3 +456,41 @@ AppAsset::register($this);
 
 </html>
 <?php $this->endPage() ?>
+<script>
+                jQuery(document).ready(function ($) {
+                    $(document).on('change', '.disable-notification', function (e) {
+                        var idd = $(this).attr('data-id');
+                        var count = $('#notify-count').text();
+                        $.ajax({
+                            type: 'POST',
+                            cache: false,
+                            async: false,
+                            data: {id: idd},
+                            url: '<?= Yii::$app->homeUrl; ?>notification/notification/update-notification',
+                            success: function (data) {
+                                $(".hover-line-notify").addClass("open");
+                                var res = $.parseJSON(data);
+                                $('#notify-' + idd).fadeOut(750, function () {
+                                    $(this).remove();
+                                });
+                                $('#notify-count').text(count - 1);
+                                $('#notify-counts').text(count - 1);
+                                if (data != 1) {
+                                    var next_row = '<li class="active notification-success" id="notify-' + res.result["id"] + '" >\n\
+                                <a href="#">\n\
+                                                    <span class="line notification-line" style="width: 85%;padding-left: 0;cursor:pointer" id ="' + res.result["appointment_id"] + '" >\n\
+                                                        <strong style="line-height: 20px;">' + res.result["content"] + '</strong>\n\
+                                                    </span>\n\
+                                                    <span class="line small time" style="padding-left: 0;">' + res.result["date"] + '\n\
+                                                    </span>\n\
+                                                    <input type="checkbox" checked="" class="iswitch iswitch-secondary disable-notification" data-id= "' + res.result["id"] + '" style="margin-top: -35px;float: right;" title="Ignore">\n\
+                                                </a>\n\
+                                </li>';
+                                    $(".dropdown-menu-list-notify").append(next_row);
+                                }
+                                e.preventDefault();
+                            }
+                        });
+                    });
+                });
+</script>
