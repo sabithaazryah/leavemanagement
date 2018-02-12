@@ -27,9 +27,9 @@ class SalesInvoiceDetailsSearch extends SalesInvoiceDetails {
      */
     public function rules() {
         return [
-            [['id', 'sales_invoice_master_id', 'base_unit', 'qty', 'tax_id', 'status', 'CB', 'UB', 'busines_partner_code', 'item_id'], 'integer'],
+            [['id', 'sales_invoice_master_id', 'base_unit', 'tax_id', 'status', 'CB', 'UB', 'busines_partner_code', 'item_id'], 'integer'],
             [['sales_invoice_number', 'sales_invoice_date', 'item_code', 'item_name', 'discount_type', 'tax_percentage', 'reference', 'error_message', 'DOC', 'DOU', 'hsn'], 'safe'],
-            [['rate', 'amount', 'discount_value', 'net_amount', 'tax_amount', 'line_total', 'discount_amount'], 'number'],
+            [['rate', 'amount', 'discount_value', 'net_amount', 'tax_amount', 'line_total', 'discount_amount', 'qty'], 'number'],
         ];
     }
 

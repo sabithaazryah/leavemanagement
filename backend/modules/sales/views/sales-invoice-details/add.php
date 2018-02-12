@@ -96,20 +96,20 @@ if (isset($estimate)) {
                             <?= $form->field($model_sales_master, 'busines_partner_code')->dropDownList($customers, ['prompt' => '-Choose a Customer-'])->label('Customer') ?>
                         </div>
                         <div class='col-md-3 col-sm-6 col-xs-12'>
-                            <?= $form->field($model_sales_master, 'ship_to_adress')->textarea(['rows' => '1'])->label('Billing Address') ?>
+                            <?= $form->field($model_sales_master, 'email')->textInput(['maxlength' => true])->label('Email') ?>
                         </div>
                         <div class='col-md-3 col-sm-6 col-xs-12'>
-                            <?= $form->field($model_sales_master, 'delivery_address')->textarea(['rows' => '1']) ?>
+                            <?= $form->field($model_sales_master, 'cc')->textInput(['maxlength' => true])->label('Cc') ?>
                         </div>
                     </div>
                     <div class="row">
-                        <div class='col-md-3 col-sm-6 col-xs-12'>
+                        <div class='col-md-4 col-sm-4 col-xs-12'>
                             <?= $form->field($model_sales_master, 'contact_number')->textInput(['maxlength' => true])->label('Contact Number') ?>
                         </div>
-                        <div class='col-md-3 col-sm-6 col-xs-12'>
+                        <div class='col-md-4 col-sm-4 col-xs-12'>
                             <?= $form->field($model_sales_master, 'po_no')->textInput(['maxlength' => true])->label('PO NO.') ?>
                         </div>
-                        <div class='col-md-3 col-sm-6 col-xs-12'>
+                        <div class='col-md-4 col-sm-4 col-xs-12'>
                             <?php
                             $model_sales_master->po_date = date('d-M-Y');
                             ?>
@@ -123,8 +123,13 @@ if (isset($estimate)) {
                             ])->label('PO Date');
                             ?>
                         </div>
-                        <div class='col-md-3 col-sm-6 col-xs-12'>
-                            <?= $form->field($model_sales_master, 'email')->textInput(['maxlength' => true])->label('Email') ?>
+                    </div>
+                    <div class="row">
+                        <div class='col-md-6 col-sm-6 col-xs-12'>
+                            <?= $form->field($model_sales_master, 'ship_to_adress')->textarea(['rows' => '1'])->label('Billing Address') ?>
+                        </div>
+                        <div class='col-md-6 col-sm-6 col-xs-12'>
+                            <?= $form->field($model_sales_master, 'delivery_address')->textarea(['rows' => '1']) ?>
                         </div>
                     </div>
                 </div>

@@ -56,6 +56,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="panel-body">
                 <?= Html::a('<i class="fa-th-list"></i><span> Manage Invoice</span>', ['index'], ['class' => 'btn btn-warning  btn-icon btn-icon-standalone']) ?>
                 <?= Html::a('<i class="fa-print"></i><span> Print Invoice</span>', ['report', 'id' => $model->id], ['class' => 'btn btn-secondary btn-icon btn-icon-standalone', 'target' => '_blank']) ?>
+                <?= Html::a('<i class="fa fa-envelope-o"></i><span> Send Invoice</span>', ['send-invoice', 'id' => $model->id], ['class' => 'btn btn-primary btn-icon btn-icon-standalone']) ?>
+                <?= \common\widgets\Alert::widget(); ?>
                 <div class="panel-body">
                     <div class="sales-master table-responsive">
                         <h4>Sales Invoice : <?= $model->sales_invoice_number; ?></h4>

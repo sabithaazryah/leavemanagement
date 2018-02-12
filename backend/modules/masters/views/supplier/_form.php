@@ -34,16 +34,6 @@ use common\models\Locations;
     </div>
     <div class="row">
         <div class='col-md-6 col-sm-6 col-xs-12 left_padd'>
-            <?= $form->field($model, 'billing_address')->textarea(['rows' => 3]) ?>
-
-        </div>
-        <div class='col-md-6 col-sm-6 col-xs-12 left_padd'>
-            <?= $form->field($model, 'shipping_address')->textarea(['rows' => 3]) ?>
-
-        </div>
-    </div>
-    <div class="row">
-        <div class='col-md-6 col-sm-6 col-xs-12 left_padd'>
             <?= $form->field($model, 'phone_no')->textInput(['maxlength' => true]) ?>
 
         </div>

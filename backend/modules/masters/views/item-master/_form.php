@@ -17,15 +17,11 @@ use common\models\ProductCategory;
 
     <?php $form = ActiveForm::begin(); ?>
     <div class="row">
-        <div class='col-md-4 col-sm-4 col-xs-12 left_padd'>
-            <?php $locations = ArrayHelper::map(Locations::findAll(['status' => 1]), 'id', 'location_name'); ?>
-            <?= $form->field($model, 'location')->dropDownList($locations, ['prompt' => '-Choose a Location-']) ?>
-        </div>
-        <div class='col-md-4 col-sm-4 col-xs-12 left_padd'>
+        <div class='col-md-6 col-sm-6 col-xs-12 left_padd'>
             <?php $product_category = ArrayHelper::map(ProductCategory::findAll(['status' => 1]), 'id', 'category_name'); ?>
             <?= $form->field($model, 'item_type')->dropDownList($product_category, ['prompt' => '-Choose a Category-']) ?>
         </div>
-        <div class='col-md-4 col-sm-4 col-xs-12 left_padd'>
+        <div class='col-md-6 col-sm-6 col-xs-12 left_padd'>
             <?php
             if ($model->isNewRecord) {
                 $item_code = $this->context->generateItemCode();

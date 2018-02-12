@@ -37,7 +37,7 @@ class BusinessPartner extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['location', 'billing_address', 'shipping_address', 'name', 'fax_no', 'email', 'company_name', 'phone_no'], 'required'],
+            [['location', 'name', 'fax_no', 'email', 'company_name', 'phone_no'], 'required'],
             [['type', 'location', 'status', 'CB', 'UB'], 'integer'],
             [['billing_address', 'shipping_address'], 'string'],
             [['DOC', 'DOU'], 'safe'],

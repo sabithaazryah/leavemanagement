@@ -807,7 +807,7 @@ class SalesInvoiceDetailsController extends Controller {
     }
 
     /*
-     * Generate report based on service
+     * Generate report
      */
 
     public function actionReport($id) {
@@ -820,6 +820,29 @@ class SalesInvoiceDetailsController extends Controller {
         ]);
 
         exit;
+    }
+
+    /*
+     * Send Sales invoice
+     */
+
+    public function actionSendInvoice($id) {
+        $model = SalesInvoiceMaster::findOne(['id' => $id]);
+        $sales_details = SalesInvoiceDetails::findAll(['sales_invoice_master_id' => $id]);
+        $message = $this->renderPartial('send-invoice', [
+            'model' => $model,
+            'sales_details' => $sales_details,
+            'print' => true,
+        ]);
+        $to = 'manu@azryah.com';
+        $subject = 'Sales Invoice';
+        $headers = 'MIME-Version: 1.0' . "\r\n";
+        $headers .= "Content-type: text/html; charset=iso-8859-1" . "\r\n" .
+                "From: 'no-reply@sis.innoq.com";
+        if (mail($to, $subject, $message, $headers)) {
+            Yii::$app->getSession()->setFlash('success', 'Mail has been send');
+        }
+        return $this->redirect(Yii::$app->request->referrer);
     }
 
     /**

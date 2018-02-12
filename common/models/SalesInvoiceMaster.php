@@ -68,7 +68,8 @@ class SalesInvoiceMaster extends \yii\db\ActiveRecord {
             [['amount', 'tax_amount', 'order_amount', 'discount_amount', 'cash_amount', 'card_amount', 'round_of_amount', 'amount_payed', 'due_amount', 'goods_total', 'service_total'], 'number'],
             [['sales_invoice_number', 'ship_to_adress', 'reference', 'error_message'], 'string', 'max' => 50],
             [['payment_terms', 'delivery_terms', 'contact_number'], 'string', 'max' => 30],
-            [['po_no', 'email', 'receipt_no'], 'string', 'max' => 100],
+            [['po_no', 'email', 'receipt_no', 'cc'], 'string', 'max' => 100],
+            [['email', 'cc'], 'email'],
             [['sales_invoice_number'], 'unique'],
         ];
     }
@@ -97,6 +98,7 @@ class SalesInvoiceMaster extends \yii\db\ActiveRecord {
             'po_no' => 'Po No',
             'po_date' => 'Po Date',
             'email' => 'Email',
+            'cc' => 'Cc',
             'discount_amount' => 'Discount',
             'cash_amount' => 'Cash Amount',
             'card_amount' => 'Card Amount',
