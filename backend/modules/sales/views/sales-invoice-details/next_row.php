@@ -16,7 +16,7 @@
         <div class="form-group field-salesinvoicedetails-discount_percentage has-success">
             <div class="row" style="margin:0px;">
                 <div class="col-md-4" style="padding:0px;">
-                    <input type="number" id="salesinvoicedetails-qty-<?= $next ?>" value="" class="form-control salesinvoicedetails-qty" name="create[qty][<?= $next ?>]" placeholder="Qty" min="1" aria-invalid="false" autocomplete="off"  style="display:inline-block;">
+                    <input type="number" id="salesinvoicedetails-qty-<?= $next ?>" value="" class="form-control salesinvoicedetails-qty" name="create[qty][<?= $next ?>]" placeholder="Qty" min="1" aria-invalid="false" autocomplete="off"  style="display:inline-block;" step="any">
                 </div>
                 <div class="col-md-4" style="padding:0px;">
                     <select id="salesinvoicedetails-type-<?= $next ?>" class="form-control salesinvoicedetails-type" name="create[type][<?= $next ?>]">

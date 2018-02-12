@@ -41,11 +41,11 @@ class CroneMailController extends Controller {
     public function AddNotification($expiry_data, $type) {
         $data_exist = \common\models\Notification::find()->where(['invoice_id' => $expiry_data->id, 'notification_type' => 1])->one();
         if ($type == 1) {
-            $msg = 'Item <span class="appno-highlite">' . $expiry_data->item_code . '</span> will expired on <span class="appno-highlite">' . $expiry_data->due_date;
-            $msg1 = 'Item ' . $expiry_data->item_code . ' will expired on ' . $expiry_data->due_date;
+            $msg = 'Item <span class="appno-highlite">' . $expiry_data->item_code . '</span> will expires on <span class="appno-highlite">' . $expiry_data->due_date;
+            $msg1 = 'Item ' . $expiry_data->item_code . ' will expires on ' . $expiry_data->due_date;
         } elseif ($type == 2) {
-            $msg = 'Item <span class="appno-highlite">' . $expiry_data->item_code . '</span> expiry date is over in <span class="appno-highlite"> ' . $expiry_data->due_date;
-            $msg1 = 'Item ' . $expiry_data->item_code . ' expiry date is over in ' . $expiry_data->due_date;
+            $msg = 'Item <span class="appno-highlite">' . $expiry_data->item_code . '</span> is expired. <span class="appno-highlite"> ';
+            $msg1 = 'Item ' . $expiry_data->item_code . ' is expired.';
         }
         if (empty($data_exist)) {
             $model = new \common\models\Notification();

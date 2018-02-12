@@ -172,7 +172,7 @@ if (isset($estimate)) {
                             <div class="form-group field-salesinvoicedetails-discount_percentage has-success">
                                 <div class="row" style="margin:0px;">
                                     <div class="col-md-4" style="padding:0px;">
-                                        <input type="number" id="salesinvoicedetails-qty-1" value="" class="form-control salesinvoicedetails-qty" name="create[qty][1]" placeholder="Qty" min="1" aria-invalid="false" autocomplete="off"  style="display:inline-block;">
+                                        <input type="number" id="salesinvoicedetails-qty-1" value="" class="form-control salesinvoicedetails-qty" name="create[qty][1]" placeholder="Qty" min="1" aria-invalid="false" autocomplete="off"  style="display:inline-block;" step="any">
                                     </div>
                                     <div class="col-md-4" style="padding:0px;">
                                         <select id="salesinvoicedetails-type-1" class="form-control salesinvoicedetails-type" name="create[type][1]">
@@ -620,6 +620,7 @@ if (isset($estimate)) {
                         $('#add-invoicee tr:last').after(res.result['next_row_html']);
                         $("#next_item_id").val(next);
                         $('.salesinvoicedetails-qty').attr('type', 'number');
+                        $('.salesinvoicedetails-qty').attr('step', 'any');
                         $('.salesinvoicedetails-qty').attr('min', 1);
                         $("#stock-table-" + current_row_id).html(res.result['stock-table']);
                         $("#salesinvoicedetails-rate-" + current_row_id).val(res.result['item_rate']);

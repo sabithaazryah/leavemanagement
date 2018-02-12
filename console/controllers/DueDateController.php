@@ -42,8 +42,8 @@ class CroneMailController extends Controller {
             $msg = 'Invoice <span class="appno-highlite">' . $expiry_data->sales_invoice_number . '</span> amount <span class="appno-highlite">' . $expiry_data->due_amount . '</span> due date is on <span class="appno-highlite">' . $expiry_data->due_date;
             $msg1 = 'Invoice ' . $expiry_data->sales_invoice_number . ' amount <span class="appno-highlite">' . $expiry_data->due_amount . '</span> due date is on ' . $expiry_data->due_date;
         } elseif ($type == 2) {
-            $msg = 'Invoice <span class="appno-highlite">' . $expiry_data->sales_invoice_number . '</span> amount <span class="appno-highlite">' . $expiry_data->due_amount . '</span> due date is over in <span class="appno-highlite"> ' . $expiry_data->due_date;
-            $msg1 = 'Invoice ' . $expiry_data->sales_invoice_number . ' amount <span class="appno-highlite">' . $expiry_data->due_amount . '</span> due date is over in ' . $expiry_data->due_date;
+            $msg = 'Invoice <span class="appno-highlite">' . $expiry_data->sales_invoice_number . '</span> amount <span class="appno-highlite">' . $expiry_data->due_amount . '</span> due date is over. <span class="appno-highlite"> ';
+            $msg1 = 'Invoice ' . $expiry_data->sales_invoice_number . ' amount <span class="appno-highlite">' . $expiry_data->due_amount . '</span> due date is over.';
         }
         if (empty($data_exist)) {
             $model = new \common\models\Notification();
