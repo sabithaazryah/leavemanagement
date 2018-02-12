@@ -21,6 +21,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="panel-body">
                                 <?= Html::a('<i class="fa-th-list"></i><span> Manage Opening Stock</span>', ['index'], ['class' => 'btn btn-warning  btn-icon btn-icon-standalone']) ?>
                                 <div class="panel-body"><div class="stock-create">
+
+                                                <?= \common\widgets\Alert::widget(); ?>
                                                 <?=
                                                 $this->render('_form', [
                                                     'model' => $model,

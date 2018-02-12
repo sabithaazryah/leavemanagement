@@ -20,12 +20,16 @@ $this->params['breadcrumbs'][] = 'Stock Adjustment';
 
                         </div>
                         <div class="panel-body">
-				<?=  Html::a('<i class="fa-th-list"></i><span> Manage Stock</span>', ['index'], ['class' => 'btn btn-warning  btn-icon btn-icon-standalone']) ?>
+                                <?= Html::a('<i class="fa-th-list"></i><span> Manage Stock</span>', ['index'], ['class' => 'btn btn-warning  btn-icon btn-icon-standalone']) ?>
                                 <div class="panel-body"><div class="stock-create">
-						<?= $this->render('stock_adjustment', [
-                                                'model' => $model,
-                                                'id' => $id,
-                                                ]) ?>
+
+
+                                                <?=
+                                                $this->render('stock_adjustment', [
+                                                    'model' => $model,
+                                                    'id' => $id,
+                                                ])
+                                                ?>
                                         </div>
                                 </div>
                         </div>
