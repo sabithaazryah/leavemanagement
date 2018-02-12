@@ -35,6 +35,7 @@ class NotificationController extends Controller {
     public function actionIndex() {
         $searchModel = new NotificationSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->andWhere(['closed' => 0]);
 
         return $this->render('index', [
                     'searchModel' => $searchModel,
@@ -86,6 +87,13 @@ class NotificationController extends Controller {
                         'model' => $model,
             ]);
         }
+    }
+
+    public function actionDisableNotification($id) {
+        $notification = \common\models\Notification::findOne(['id' => $id]);
+        $notification->closed = 1;
+        $notification->save();
+        return $this->redirect(Yii::$app->request->referrer);
     }
 
     /**
