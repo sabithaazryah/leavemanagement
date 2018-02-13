@@ -112,7 +112,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             '{export}',
                             '{toggleData}'
                         ],
-                        'pjax' => true,
+//                        'pjax' => true,
                         'bordered' => true,
                         'striped' => false,
                         'condensed' => false,
@@ -132,5 +132,4 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
-
 

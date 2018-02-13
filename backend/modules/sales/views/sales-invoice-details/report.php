@@ -399,6 +399,7 @@
         document.body.innerHTML = printcontent;
         window.print();
         document.body.innerHTML = restorepage;
+        window.close();
     }
 </script>
 <div class="print">

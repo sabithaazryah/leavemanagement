@@ -608,12 +608,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-widget-select2.git",
-                "reference": "28f5fa4e2b392983c5e74189346f80d4505bc396"
+                "reference": "d46c74c67536622c8e38bcb0e7bcaac981832936"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-widget-select2/zipball/28f5fa4e2b392983c5e74189346f80d4505bc396",
-                "reference": "28f5fa4e2b392983c5e74189346f80d4505bc396",
+                "url": "https://api.github.com/repos/kartik-v/yii2-widget-select2/zipball/d46c74c67536622c8e38bcb0e7bcaac981832936",
+                "reference": "d46c74c67536622c8e38bcb0e7bcaac981832936",
                 "shasum": ""
             },
             "require": {
@@ -653,7 +653,7 @@
                 "widget",
                 "yii2"
             ],
-            "time": "2018-02-07T06:40:28+00:00"
+            "time": "2018-02-09T11:39:11+00:00"
         },
         {
             "name": "mpdf/mpdf",
@@ -661,12 +661,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mpdf/mpdf.git",
-                "reference": "c06d29e02e6dac9ba5720c284a6c96360619f9c8"
+                "reference": "0382895f5488a123ab0f429432639d479788a1b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mpdf/mpdf/zipball/c06d29e02e6dac9ba5720c284a6c96360619f9c8",
-                "reference": "c06d29e02e6dac9ba5720c284a6c96360619f9c8",
+                "url": "https://api.github.com/repos/mpdf/mpdf/zipball/0382895f5488a123ab0f429432639d479788a1b2",
+                "reference": "0382895f5488a123ab0f429432639d479788a1b2",
                 "shasum": ""
             },
             "require": {
@@ -720,7 +720,7 @@
                 "php",
                 "utf-8"
             ],
-            "time": "2018-01-29T19:26:38+00:00"
+            "time": "2018-02-10T07:04:23+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -926,12 +926,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "0b7cbb8bf6f55714e7597bc72c0119b9ffbd0abe"
+                "reference": "59cfebdd1ce2d83a551427356ce5f699c53aa9d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/0b7cbb8bf6f55714e7597bc72c0119b9ffbd0abe",
-                "reference": "0b7cbb8bf6f55714e7597bc72c0119b9ffbd0abe",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/59cfebdd1ce2d83a551427356ce5f699c53aa9d1",
+                "reference": "59cfebdd1ce2d83a551427356ce5f699c53aa9d1",
                 "shasum": ""
             },
             "require": {
@@ -1018,7 +1018,7 @@
                 "framework",
                 "yii2"
             ],
-            "time": "2018-02-07T19:36:29+00:00"
+            "time": "2018-02-12T09:01:21+00:00"
         },
         {
             "name": "yiisoft/yii2-bootstrap",
@@ -1825,12 +1825,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "9a84d1c09fbf7918e9d3cf998b83ecbf7555261d"
+                "reference": "9f901e29c93dae4aa77c0bb161df4276f9c9a1be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/9a84d1c09fbf7918e9d3cf998b83ecbf7555261d",
-                "reference": "9a84d1c09fbf7918e9d3cf998b83ecbf7555261d",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/9f901e29c93dae4aa77c0bb161df4276f9c9a1be",
+                "reference": "9f901e29c93dae4aa77c0bb161df4276f9c9a1be",
                 "shasum": ""
             },
             "require": {
@@ -1880,7 +1880,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2017-12-21T16:59:48+00:00"
+            "time": "2018-02-11T18:49:29+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -2898,12 +2898,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "361106a3b8c122d9aa267f71d1a7b5ec94ef9f13"
+                "reference": "996fd519af74ddfaa7733ea358acbca5d7d43f34"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/361106a3b8c122d9aa267f71d1a7b5ec94ef9f13",
-                "reference": "361106a3b8c122d9aa267f71d1a7b5ec94ef9f13",
+                "url": "https://api.github.com/repos/symfony/console/zipball/996fd519af74ddfaa7733ea358acbca5d7d43f34",
+                "reference": "996fd519af74ddfaa7733ea358acbca5d7d43f34",
                 "shasum": ""
             },
             "require": {
@@ -2959,7 +2959,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-31T10:38:55+00:00"
+            "time": "2018-02-09T14:10:47+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -3195,12 +3195,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "613e26310776f49a1773b6737c6bd554b8bc8c6f"
+                "reference": "6a615613745cef820d807443f32076bb9f5d0a38"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/613e26310776f49a1773b6737c6bd554b8bc8c6f",
-                "reference": "613e26310776f49a1773b6737c6bd554b8bc8c6f",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/6a615613745cef820d807443f32076bb9f5d0a38",
+                "reference": "6a615613745cef820d807443f32076bb9f5d0a38",
                 "shasum": ""
             },
             "require": {
@@ -3236,7 +3236,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-03T07:37:34+00:00"
+            "time": "2018-02-11T17:15:12+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -3303,12 +3303,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "eab73b6c21d27ae4cd037c417618dfd4befb0bfe"
+                "reference": "f44c40e9eb06da59bdaf83309e9a1312eb6eaf84"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/eab73b6c21d27ae4cd037c417618dfd4befb0bfe",
-                "reference": "eab73b6c21d27ae4cd037c417618dfd4befb0bfe",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/f44c40e9eb06da59bdaf83309e9a1312eb6eaf84",
+                "reference": "f44c40e9eb06da59bdaf83309e9a1312eb6eaf84",
                 "shasum": ""
             },
             "require": {
@@ -3353,7 +3353,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-21T19:05:02+00:00"
+            "time": "2018-02-11T15:00:48+00:00"
         },
         {
             "name": "webmozart/assert",
