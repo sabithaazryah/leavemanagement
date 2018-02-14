@@ -247,8 +247,15 @@ class EmployeeController extends Controller {
      * @return mixed
      */
     public function actionDelete($id) {
-        $this->findModel($id)->delete();
-
+        $model = $this->findModel($id);
+        if ($model->delete()) {
+            $dirPath = Yii::getAlias(Yii::$app->params['uploadPath']) . '/uploads/employee';
+            $file_name = $dirPath . '/' . $model->id . '.' . $model->photo;
+            if (file_exists($file_name)) {
+                unlink($file_name);
+                Yii::$app->session->setFlash('success', "Employee Removed Successfully");
+            }
+        }
         return $this->redirect(['index']);
     }
 
