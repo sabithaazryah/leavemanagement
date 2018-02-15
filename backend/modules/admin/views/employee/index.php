@@ -56,6 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'attribute' => 'post_id',
                                 'value' => 'post.post_name',
                                 'filter' => ArrayHelper::map(AdminPost::find()->asArray()->all(), 'id', 'post_name'),
+                                'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'prompt' => 'All'],
                             ],
 //                            'user_name',
 //                            'password',

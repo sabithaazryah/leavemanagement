@@ -51,43 +51,18 @@ use common\models\ItemMaster;
             // Pageviews Visitors Chart
             var i = 0,
                     line_chart_data_source = [
-                        {id: ++i, part1: 4, part2: 2},
-                        {id: ++i, part1: 5, part2: 3},
-                        {id: ++i, part1: 5, part2: 3},
-                        {id: ++i, part1: 4, part2: 2},
-                        {id: ++i, part1: 3, part2: 1},
-                        {id: ++i, part1: 3, part2: 2},
-                        {id: ++i, part1: 5, part2: 3},
-                        {id: ++i, part1: 7, part2: 4},
-                        {id: ++i, part1: 9, part2: 5},
-                        {id: ++i, part1: 7, part2: 4},
-                        {id: ++i, part1: 7, part2: 3},
-                        {id: ++i, part1: 11, part2: 6},
-                        {id: ++i, part1: 10, part2: 8},
-                        {id: ++i, part1: 9, part2: 7},
-                        {id: ++i, part1: 8, part2: 7},
-                        {id: ++i, part1: 8, part2: 7},
-                        {id: ++i, part1: 8, part2: 7},
-                        {id: ++i, part1: 8, part2: 6},
-                        {id: ++i, part1: 15, part2: 5},
-                        {id: ++i, part1: 10, part2: 5},
-                        {id: ++i, part1: 9, part2: 6},
-                        {id: ++i, part1: 9, part2: 3},
-                        {id: ++i, part1: 8, part2: 5},
-                        {id: ++i, part1: 8, part2: 4},
-                        {id: ++i, part1: 9, part2: 5},
-                        {id: ++i, part1: 8, part2: 6},
-                        {id: ++i, part1: 8, part2: 5},
-                        {id: ++i, part1: 7, part2: 6},
-                        {id: ++i, part1: 7, part2: 5},
-                        {id: ++i, part1: 6, part2: 5},
-                        {id: ++i, part1: 7, part2: 6},
-                        {id: ++i, part1: 7, part2: 5},
-                        {id: ++i, part1: 8, part2: 5},
-                        {id: ++i, part1: 6, part2: 5},
-                        {id: ++i, part1: 5, part2: 4},
-                        {id: ++i, part1: 5, part2: 3},
-                        {id: ++i, part1: 6, part2: 3},
+                        {id: ++i, part1: 4},
+                        {id: ++i, part1: 10},
+                        {id: ++i, part1: 5},
+                        {id: ++i, part1: 8},
+                        {id: ++i, part1: 3},
+                        {id: ++i, part1: 5},
+                        {id: ++i, part1: 2},
+                        {id: ++i, part1: 7},
+                        {id: ++i, part1: 3},
+                        {id: ++i, part1: 4},
+                        {id: ++i, part1: 1},
+                        {id: ++i, part1: 3},
                     ];
 
             $("#pageviews-visitors-chart").dxChart({
@@ -98,8 +73,8 @@ use common\models\ItemMaster;
                     line: {width: 1, hoverStyle: {width: 1}}
                 },
                 series: [
-                    {valueField: "part1", name: "Pageviews", color: "#68b828"},
-                    {valueField: "part2", name: "Visitors", color: "#eeeeee"},
+                    {valueField: "part1", name: "Sales", color: "#68b828"},
+//                    {valueField: "part2", name: "Visitors", color: "#eeeeee"},
                 ],
                 legend: {
                     position: 'inside',
@@ -526,7 +501,7 @@ use common\models\ItemMaster;
     </script>
 
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-12">
             <?php
             $items = ItemMaster::find()->where(['status' => 1])->all();
             $invoices = common\models\SalesInvoiceMaster::find()->all();
@@ -539,83 +514,122 @@ use common\models\ItemMaster;
                 $sale_amount += $invoice->order_amount;
             }
             ?>
-            <div class="xe-widget xe-counter" data-count=".num" data-from="0" data-to="<?= count($items) ?>" data-suffix="" data-duration="2">
-                <div class="xe-icon">
-                    <i class="fa fa-shopping-cart"></i>
-                </div>
-                <div class="xe-label">
-                    <strong class="num">0.0</strong>
-                    <span>No Of Items</span>
-                </div>
-            </div>
-
-            <div class="xe-widget xe-counter xe-counter-purple" data-count=".num" data-from="1" data-to="<?= count($invoices) ?>" data-suffix="" data-duration="3" data-easing="false">
-                <div class="xe-icon">
-                    <i class="fa fa-file"></i>
-                </div>
-                <div class="xe-label">
-                    <strong class="num">0.0</strong>
-                    <span>No Of Invoices</span>
+            <div class="col-sm-4">
+                <div class="xe-widget xe-counter" data-count=".num" data-from="0" data-to="<?= count($items) ?>" data-suffix="" data-duration="2">
+                    <div class="xe-icon">
+                        <i class="fa fa-shopping-cart"></i>
+                    </div>
+                    <div class="xe-label">
+                        <strong class="num">0.0</strong>
+                        <span>No Of Items</span>
+                    </div>
                 </div>
             </div>
-
-            <div class="xe-widget xe-counter xe-counter-info" data-count=".num" data-from="0" data-to="<?= count($customer) ?>" data-duration="4" data-easing="true">
-                <div class="xe-icon">
-                    <i class="fa fa-user"></i>
-                </div>
-                <div class="xe-label">
-                    <strong class="num">1000</strong>
-                    <span>No Of Customers</span>
+            <div class="col-sm-4">
+                <div class="xe-widget xe-counter xe-counter-purple" data-count=".num" data-from="1" data-to="<?= count($invoices) ?>" data-suffix="" data-duration="3" data-easing="false">
+                    <div class="xe-icon">
+                        <i class="fa fa-file"></i>
+                    </div>
+                    <div class="xe-label">
+                        <strong class="num">0.0</strong>
+                        <span>No Of Invoices</span>
+                    </div>
                 </div>
             </div>
-
-        </div>
-        <div class="col-sm-6">
-
-            <div class="chart-item-bg">
-                <div class="chart-label">
-                    <div class="h3 text-secondary text-bold"  data-count="this" data-from="0.00" data-to="14.85" data-suffix="%" data-duration="1">0.00%</div>
-                    <span class="text-medium text-muted">More visitors</span>
+            <div class="col-sm-4">
+                <div class="xe-widget xe-counter xe-counter-info" data-count=".num" data-from="0" data-to="<?= count($customer) ?>" data-duration="4" data-easing="true">
+                    <div class="xe-icon">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="xe-label">
+                        <strong class="num">1000</strong>
+                        <span>No Of Customers</span>
+                    </div>
                 </div>
-                <div id="pageviews-visitors-chart" style="height: 298px;"></div>
             </div>
 
         </div>
-        <div class="col-sm-3">
-
-            <div class="xe-widget xe-counter" data-count=".num" data-from="0" data-to="<?= count($supplier) ?>" data-suffix="" data-duration="2">
-                <div class="xe-icon">
-                    <i class="fa fa-user"></i>
-                </div>
-                <div class="xe-label">
-                    <strong class="num">0.0%</strong>
-                    <span>No Of Suppliers</span>
-                </div>
-            </div>
-
-            <div class="xe-widget xe-counter xe-counter-purple" data-count=".num" data-from="0" data-to="<?= sprintf('%0.2f', $sale_amount); ?>" data-suffix="" data-duration="3" data-easing="false">
-                <div class="xe-icon">
-                    <i class="fa fa-credit-card"></i>
-                </div>
-                <div class="xe-label">
-                    <strong class="num">1k</strong>
-                    <span>Sales Amount</span>
+        <div class="col-sm-12">
+            <div class="col-sm-4">
+                <div class="xe-widget xe-counter" data-count=".num" data-from="0" data-to="<?= count($supplier) ?>" data-suffix="" data-duration="2">
+                    <div class="xe-icon">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="xe-label">
+                        <strong class="num">0.0%</strong>
+                        <span>No Of Suppliers</span>
+                    </div>
                 </div>
             </div>
-
-            <div class="xe-widget xe-counter xe-counter-info" data-count=".num" data-from="0" data-to="<?= sprintf('%0.2f', $due_amount); ?>" data-duration="4" data-easing="true">
-                <div class="xe-icon">
-                    <i class="fa fa-money"></i>
-                </div>
-                <div class="xe-label">
-                    <strong class="num">1000</strong>
-                    <span>Balance Amount</span>
+            <div class="col-sm-4">
+                <div class="xe-widget xe-counter xe-counter-purple" data-count=".num" data-from="0" data-to="<?= sprintf('%0.2f', $sale_amount); ?>" data-suffix="" data-duration="3" data-easing="false">
+                    <div class="xe-icon">
+                        <i class="fa fa-credit-card"></i>
+                    </div>
+                    <div class="xe-label">
+                        <strong class="num">1k</strong>
+                        <span>Sales Amount</span>
+                    </div>
                 </div>
             </div>
-
+            <div class="col-sm-4">
+                <div class="xe-widget xe-counter xe-counter-info" data-count=".num" data-from="0" data-to="<?= sprintf('%0.2f', $due_amount); ?>" data-duration="4" data-easing="true">
+                    <div class="xe-icon">
+                        <i class="fa fa-money"></i>
+                    </div>
+                    <div class="xe-label">
+                        <strong class="num">1000</strong>
+                        <span>Balance Amount</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="clearfix"></div>
+</div>
+<div class="clearfix"></div>
+<div class="row" style="margin-left: -5px;margin-right: -5px;">
+    <div class="col-sm-12">
+
+        <div class="panel panel-default" style="border-top: 3px solid #19569f;">
+            <div class="panel-heading">
+                <h3 class="panel-title" style="text-transform: uppercase;color: #0579b1;">Last 30 Days Sales Report</h3>
+            </div>
+            <div class="panel-body">
+                <script type="text/javascript">
+                    jQuery(document).ready(function ($)
+                    {
+                        var current_page = <?php echo $salesdatas ?>;
+                        if (!$.isFunction($.fn.dxChart))
+                            return;
+
+                        $("#bar-1").dxChart({
+                            dataSource: current_page,
+
+                            series: {
+                                argumentField: "day",
+                                valueField: "sales",
+                                name: "Sales",
+                                type: "bar",
+                                color: '#68b828'
+                            }
+                        });
+
+                    });
+
+                    function between(randNumMin, randNumMax)
+                    {
+                        var randInt = Math.floor((Math.random() * ((randNumMax + 1) - randNumMin)) + randNumMin);
+
+                        return randInt;
+                    }
+                </script>
+                <div id="bar-1" style="height: 440px; width: 100%;"></div>
+                <!--                <br />
+                                <a href="#" id="bar-1-randomize" class="btn btn-primary btn-small">Randomize</a>-->
+            </div>
+        </div>
+
+    </div>
 </div>
 <script src="<?= Yii::$app->homeUrl; ?>js/devexpress-web-14.1/js/globalize.min.js"></script>
 <script src="<?= Yii::$app->homeUrl; ?>js/devexpress-web-14.1/js/dx.chartjs.js"></script>

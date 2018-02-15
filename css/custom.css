@@ -698,3 +698,10 @@ a {
     padding: 0px;
 }
 /****************************** Gridview export style end   ***************************/
+
+.xe-widget.xe-counter .xe-icon, .xe-widget.xe-counter .xe-label, .xe-widget.xe-counter-block .xe-upper .xe-icon, .xe-widget.xe-counter-block .xe-upper .xe-label, .xe-widget.xe-progress-counter .xe-upper .xe-icon, .xe-widget.xe-progress-counter .xe-upper .xe-label {
+    padding: 5px;
+}
+.xe-widget.xe-counter .xe-icon, .xe-widget.xe-counter .xe-label, .xe-widget.xe-counter-block .xe-upper .xe-icon, .xe-widget.xe-counter-block .xe-upper .xe-label, .xe-widget.xe-progress-counter .xe-upper .xe-icon, .xe-widget.xe-progress-counter .xe-upper .xe-label {
+    padding: 5px;
+}

@@ -21,7 +21,7 @@ use yii\helpers\ArrayHelper;
 
 <div class="employee-form form-inline">
     <?= \common\widgets\Alert::widget(); ?>
-    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'id' => 'employee-form']]); ?>
     <div class="row">
         <?php $posts = ArrayHelper::map(AdminPost::findAll(['status' => 1]), 'id', 'post_name'); ?>
         <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>
@@ -37,7 +37,7 @@ use yii\helpers\ArrayHelper;
 
         </div>
         <div class='col-md-12 col-sm-12 col-xs-12 left_padd'>
-            <?= $form->field($model, 'address')->textarea(['rows' => 2]) ?>
+            <?= $form->field($model, 'address')->textarea(['rows' => 2, 'maxlength' => true]) ?>
 
         </div>
         <?php if ($model->isNewRecord) { ?>
@@ -102,26 +102,26 @@ use yii\helpers\ArrayHelper;
             </table>
         <?php }
         ?>
-
+        <input type="hidden" id="row-count" value="1">
         <span>
             <div class="row">
                 <div class = 'col-md-4 col-sm-12 col-xs-12 left_padd'>
                     <div class = "form-group field-staffperviousemployer-hospital_address">
                         <label class = "control-label">Document</label>
-                        <input type = "file" name = "creates[file][]">
+                        <input type = "file" name = "creates[file][]" id="document-file-1">
 
                     </div>
                 </div>
                 <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
                     <div class="form-group field-staffperviousemployer-designation">
                         <label class="control-label" for="">Document Title</label>
-                        <input class="form-control" type = "text" name = "creates[file_name][]">
+                        <input class="form-control" type = "text" name = "creates[file_name][]" id="document-title-1">
                     </div>
                 </div>
                 <div class='col-md-3 col-sm-12 col-xs-12 left_padd'>
                     <div class="form-group field-staffperviousemployer-designation">
                         <label class="control-label" for="">Expiry Date</label>
-                        <input type="date" class="form-control" name="creates[expiry_date][]">
+                        <input type="date" class="form-control" name="creates[expiry_date][]" id="document-expiry-1">
                     </div>
                 </div>
             </div>
@@ -129,7 +129,7 @@ use yii\helpers\ArrayHelper;
                 <div class='col-md-11 col-sm-12 col-xs-12 left_padd'>
                     <div class="form-group field-staffperviousemployer-designation">
                         <label class="control-label" for="">Description</label>
-                        <textarea rows="3" class="form-control" name="creates[description][]"></textarea>
+                        <textarea rows="3" class="form-control" name="creates[description][]" id="document-desc-1"></textarea>
                     </div>
                 </div>
             </div>
@@ -160,15 +160,17 @@ use yii\helpers\ArrayHelper;
     $("document").ready(function () {
         var scntDiv = $('#p_attach');
         var i = $('#p_attach span').size() + 1;
-
         $('#addAttach').on('click', function () {
+            var current_row = $('#row-count').val();
+            var next_row = parseInt(current_row) + 1;
             $.ajax({
                 type: 'POST',
                 cache: false,
-                data: {},
+                data: {next: next_row},
                 url: '<?= Yii::$app->homeUrl; ?>admin/employee/attachment',
                 success: function (data) {
                     $(data).appendTo(scntDiv);
+                    $('#row-count').val(next_row);
                     i++;
                     return false;
 
@@ -189,5 +191,32 @@ use yii\helpers\ArrayHelper;
             }
             return false;
         });
+
+        $(document).on('submit', '#employee-form', function (e) {
+            if (validateDocument() == 0) {
+                return true;
+            } else {
+                e.preventDefault();
+            }
+        });
     });
+    function validateDocument() {
+        var row_count = $('#row-count').val();
+        var valid = 0;
+        for (i = 1; i <= row_count; i++) {
+            if ($("#document-file-" + i).val() != '') {
+                if (!$('#document-title-' + i).val()) {
+                    if ($('#document-title-' + i).next(".validation").length == 0) // only add if not added
+                    {
+                        $('#document-title-' + i).after("<div class='validation' style='color:#cc3f44;font-size: 11px;;'>Document title cannot be blank.</div>");
+                    }
+                    $('#document-title-' + i).focus();
+                    var valid = 1;
+                } else {
+                    $('#document-title-' + i).next(".validation").remove(); // remove it
+                }
+            }
+        }
+        return valid;
+    }
 </script>

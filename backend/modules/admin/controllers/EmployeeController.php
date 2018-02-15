@@ -253,7 +253,7 @@ class EmployeeController extends Controller {
             $file_name = $dirPath . '/' . $model->id . '.' . $model->photo;
             if (file_exists($file_name)) {
                 unlink($file_name);
-                Yii::$app->session->setFlash('success', "Employee Removed Successfully");
+                Yii::$app->session->setFlash('success', "Employee Remove Successfully");
             }
         }
         return $this->redirect(['index']);
@@ -279,7 +279,8 @@ class EmployeeController extends Controller {
      */
     public function actionAttachment() {
         if (Yii::$app->request->isAjax) {
-            $data = $this->renderPartial('_form_add_attachment');
+            $next = $_POST['next'];
+            $data = $this->renderPartial('_form_add_attachment', ['next' => $next]);
             echo $data;
         }
     }
@@ -297,7 +298,9 @@ class EmployeeController extends Controller {
                     unlink($file_name);
                 }
                 if (is_dir($dirPath)) {
-                    rmdir($dirPath);
+                    if (is_dir_empty($dirPath)) {
+                        rmdir($dirPath);
+                    }
                 }
             }
         }
