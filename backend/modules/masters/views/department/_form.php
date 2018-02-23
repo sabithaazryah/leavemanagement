@@ -11,37 +11,37 @@ use yii\helpers\ArrayHelper;
 
 <div class="department-form form-inline">
 
-    <?php $form = ActiveForm::begin(); ?>
-    <div class="row">
-        <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>
-            <?= $form->field($model, 'department_code')->textInput(['maxlength' => true]) ?>
+        <?php $form = ActiveForm::begin(); ?>
+        <div class="row">
+                <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>
+                        <?= $form->field($model, 'department_code')->textInput(['maxlength' => true]) ?>
 
-        </div><div class='col-md-4 col-sm-6 col-xs-12 left_padd'>
-            <?= $form->field($model, 'department_name')->textInput(['maxlength' => true]) ?>
+                </div><div class='col-md-4 col-sm-6 col-xs-12 left_padd'>
+                        <?= $form->field($model, 'department_name')->textInput(['maxlength' => true]) ?>
 
-        </div><div class='col-md-4 col-sm-6 col-xs-12 left_padd'>
-            <?= $form->field($model, 'description')->textInput() ?>
+                </div><div class='col-md-4 col-sm-6 col-xs-12 left_padd'>
+                        <?= $form->field($model, 'description')->textInput() ?>
 
+                </div>
         </div>
-    </div>
-    <div class="row">
-        <?php $employees = ArrayHelper::map(common\models\Employee::findAll(['status' => 1]), 'id', 'name'); ?>
-        <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>
-            <?= $form->field($model, 'recomender')->dropDownList($employees, ['prompt' => '-Choose a Recomender-']) ?>
+        <div class="row">
+                <?php $employees = ArrayHelper::map(common\models\Employee::findAll(['status' => 1]), 'id', 'name'); ?>
+                <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>
+                        <?= $form->field($model, 'recomender')->dropDownList($employees, ['prompt' => '-Choose a Recomender-', 'class' => 'select-dropdown']) ?>
 
-        </div>
-        <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>
-            <?= $form->field($model, 'approver')->dropDownList($employees, ['prompt' => '-Choose a Recomender-']) ?>
+                </div>
+                <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>
+                        <?= $form->field($model, 'approver')->dropDownList($employees, ['prompt' => '-Choose a Approver-', 'class' => 'select-dropdown']) ?>
 
+                </div>
         </div>
-    </div>
-    <div class="row">
-        <div class='col-md-12 col-sm-12 col-xs-12'>
-            <div class="form-group">
-                <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary', 'style' => 'margin-top: 18px; height: 36px; width:100px;float:right;']) ?>
-            </div>
+        <div class="row">
+                <div class='col-md-12 col-sm-12 col-xs-12'>
+                        <div class="form-group">
+                                <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary', 'style' => 'margin-top: 18px; height: 36px; width:100px;float:right;']) ?>
+                        </div>
+                </div>
         </div>
-    </div>
-    <?php ActiveForm::end(); ?>
+        <?php ActiveForm::end(); ?>
 
 </div>

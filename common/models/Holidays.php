@@ -20,42 +20,43 @@ use Yii;
  */
 class Holidays extends \yii\db\ActiveRecord {
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName() {
-        return 'holidays';
-    }
+        /**
+         * {@inheritdoc}
+         */
+        public static function tableName() {
+                return 'holidays';
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules() {
-        return [
-            [['date', 'country', 'holiday_name', 'description'], 'required'],
-            [['date', 'DOC', 'DOU'], 'safe'],
-            [['country', 'status', 'CB', 'UB'], 'integer'],
-            [['holiday_name'], 'string', 'max' => 100],
-            [['description'], 'string', 'max' => 500],
-        ];
-    }
+        /**
+         * {@inheritdoc}
+         */
+        public function rules() {
+                return [
+                        [['date', 'country', 'holiday_name', 'description', 'branch'], 'required'],
+                        [['date', 'DOC', 'DOU'], 'safe'],
+                        [['country', 'status', 'CB', 'UB', 'branch'], 'integer'],
+                        [['holiday_name'], 'string', 'max' => 100],
+                        [['description'], 'string', 'max' => 500],
+                ];
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels() {
-        return [
-            'id' => 'ID',
-            'holiday_name' => 'Holiday Name',
-            'date' => 'Date',
-            'country' => 'Country',
-            'description' => 'Description',
-            'status' => 'Status',
-            'CB' => 'Cb',
-            'UB' => 'Ub',
-            'DOC' => 'Doc',
-            'DOU' => 'Dou',
-        ];
-    }
+        /**
+         * {@inheritdoc}
+         */
+        public function attributeLabels() {
+                return [
+                    'id' => 'ID',
+                    'holiday_name' => 'Holiday Name',
+                    'date' => 'Date',
+                    'country' => 'Country',
+                    'branch' => 'Branch',
+                    'description' => 'Description',
+                    'status' => 'Status',
+                    'CB' => 'Cb',
+                    'UB' => 'Ub',
+                    'DOC' => 'Doc',
+                    'DOU' => 'Dou',
+                ];
+        }
 
 }

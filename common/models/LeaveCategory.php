@@ -20,42 +20,43 @@ use Yii;
  */
 class LeaveCategory extends \yii\db\ActiveRecord {
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName() {
-        return 'leave_category';
-    }
+        /**
+         * {@inheritdoc}
+         */
+        public static function tableName() {
+                return 'leave_category';
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules() {
-        return [
-            [['no_of_days', 'leave_code', 'leave_name'], 'required'],
-            [['no_of_days', 'include_docs', 'status', 'CB', 'UB'], 'integer'],
-            [['DOC', 'DOU'], 'safe'],
-            [['leave_code'], 'string', 'max' => 15],
-            [['leave_name'], 'string', 'max' => 50],
-        ];
-    }
+        /**
+         * {@inheritdoc}
+         */
+        public function rules() {
+                return [
+                        [['no_of_days', 'leave_code', 'leave_name', 'country'], 'required'],
+                        [['no_of_days', 'include_docs', 'status', 'CB', 'UB'], 'integer'],
+                        [['DOC', 'DOU'], 'safe'],
+                        [['leave_code'], 'string', 'max' => 15],
+                        [['leave_name'], 'string', 'max' => 50],
+                ];
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels() {
-        return [
-            'id' => 'ID',
-            'leave_code' => 'Leave Code',
-            'leave_name' => 'Leave Name',
-            'no_of_days' => 'No Of Days',
-            'include_docs' => 'Include Docs',
-            'status' => 'Status',
-            'CB' => 'Cb',
-            'UB' => 'Ub',
-            'DOC' => 'Doc',
-            'DOU' => 'Dou',
-        ];
-    }
+        /**
+         * {@inheritdoc}
+         */
+        public function attributeLabels() {
+                return [
+                    'id' => 'ID',
+                    'country' => 'Country',
+                    'leave_code' => 'Leave Code',
+                    'leave_name' => 'Leave Name',
+                    'no_of_days' => 'No Of Days',
+                    'include_docs' => 'Include Docs',
+                    'status' => 'Status',
+                    'CB' => 'Cb',
+                    'UB' => 'Ub',
+                    'DOC' => 'Doc',
+                    'DOU' => 'Dou',
+                ];
+        }
 
 }
