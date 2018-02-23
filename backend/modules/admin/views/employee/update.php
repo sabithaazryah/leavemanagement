@@ -20,12 +20,11 @@ $this->params['breadcrumbs'][] = 'Update';
 
             </div>
             <div class="panel-body">
-                <?= Html::a('<i class="fa-th-list"></i><span> Manage Employee</span>', ['index'], ['class' => 'btn btn-warning  btn-icon btn-icon-standalone']) ?>
+                <?= Html::a('<i class="fa fa-users"></i><span> Manage Employee</span>', ['index'], ['class' => 'btn btn-warning  btn-icon btn-icon-standalone']) ?>
                 <div class="panel-body"><div class="employee-create">
                         <?=
                         $this->render('_form', [
                             'model' => $model,
-                            'model_upload' => $model_upload,
                         ])
                         ?>
                     </div>

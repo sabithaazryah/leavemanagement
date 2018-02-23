@@ -19,7 +19,7 @@ class CountrySearch extends Country
     {
         return [
             [['id', 'status', 'CB', 'UB'], 'integer'],
-            [['country_name', 'country_code', 'DOC', 'DOU'], 'safe'],
+            [['country_flag', 'country_code', 'country_name', 'DOC', 'DOU'], 'safe'],
         ];
     }
 
@@ -67,8 +67,9 @@ class CountrySearch extends Country
             'DOU' => $this->DOU,
         ]);
 
-        $query->andFilterWhere(['like', 'country_name', $this->country_name])
-            ->andFilterWhere(['like', 'country_code', $this->country_code]);
+        $query->andFilterWhere(['like', 'country_flag', $this->country_flag])
+            ->andFilterWhere(['like', 'country_code', $this->country_code])
+            ->andFilterWhere(['like', 'country_name', $this->country_name]);
 
         return $dataProvider;
     }

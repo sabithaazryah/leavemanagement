@@ -31,18 +31,6 @@ return [
         'masters' => [
             'class' => 'backend\modules\masters\Module',
         ],
-        'sales' => [
-            'class' => 'backend\modules\sales\Module',
-        ],
-        'stock' => [
-            'class' => 'backend\modules\stock\Module',
-        ],
-        'reports' => [
-            'class' => 'backend\modules\reports\Module',
-        ],
-        'notification' => [
-            'class' => 'backend\modules\notification\Module',
-        ],
     ],
     'components' => [
         'request' => [

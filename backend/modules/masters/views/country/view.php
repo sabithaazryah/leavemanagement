@@ -37,8 +37,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 'model' => $model,
                                                 'attributes' => [
                                                             'id',
-            'country_name',
+            'country_flag',
             'country_code',
+            'country_name',
             'status',
             'CB',
             'UB',

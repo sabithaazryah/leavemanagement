@@ -84,7 +84,7 @@ $this->title = 'Login';
             ?>
 
             <div class="login-header">
-                <img width="100" height="" src="<?= Yii::$app->homeUrl ?>images/logo.png"/>
+                <img width="150" height="" src="<?= Yii::$app->homeUrl ?>images/logo.png"/>
 
                 <p>Dear user, Please log in to access!</p>
             </div>

@@ -93,38 +93,11 @@ class SiteController extends Controller {
     }
 
     public function actionHome() {
-        $datearr = [];
-        $current_date = date('Y-m-d');
-        $start_date = date('Y-m-d', strtotime("-30 day", strtotime($current_date)));
-        $datearr[] = $start_date;
-        for ($x = 1; $x <= 30; $x++) {
-            $datearr[] = date('Y-m-d', strtotime("+" . $x . " day", strtotime($start_date)));
-        }
-        $i = 0;
-        foreach ($datearr as $value) {
-            $i++;
-            $from_date = $value . ' 00:00:00';
-            $to_date = $value . ' 60:60:60';
-            $sales_count = \common\models\SalesInvoiceMaster::find()->where(['>=', 'sales_invoice_date', $from_date])->andWhere(['<=', 'sales_invoice_date', $to_date])->all();
-            if (empty($sales_count)) {
-                $values[] = array(
-                    'day' => $i,
-                    'sales' => 0,
-                );
-            } else {
-                $values[] = array(
-                    'day' => $i,
-                    'sales' => count($sales_count),
-                );
-            }
-        }
-        $salesdatas = json_encode($values);
         if (isset(Yii::$app->user->identity->id)) {
             if (Yii::$app->user->isGuest) {
                 return $this->redirect(array('site/index'));
             }
             return $this->render('index', [
-                        'salesdatas' => $salesdatas,
             ]);
         } else {
             throw new \yii\web\HttpException(2000, 'Session Expired.');

@@ -17,13 +17,15 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'country_name') ?>
+    <?= $form->field($model, 'country_flag') ?>
 
     <?= $form->field($model, 'country_code') ?>
 
+    <?= $form->field($model, 'country_name') ?>
+
     <?= $form->field($model, 'status') ?>
 
-    <?= $form->field($model, 'CB') ?>
+    <?php // echo $form->field($model, 'CB') ?>
 
     <?php // echo $form->field($model, 'UB') ?>
 

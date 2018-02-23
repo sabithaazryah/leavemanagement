@@ -19,15 +19,39 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'post_id') ?>
 
-    <?= $form->field($model, 'user_name') ?>
+    <?= $form->field($model, 'employee_code') ?>
 
-    <?= $form->field($model, 'password') ?>
+    <?= $form->field($model, 'full_name') ?>
 
-    <?= $form->field($model, 'name') ?>
+    <?= $form->field($model, 'date_of_birth') ?>
+
+    <?php // echo $form->field($model, 'branch') ?>
+
+    <?php // echo $form->field($model, 'department') ?>
+
+    <?php // echo $form->field($model, 'designation') ?>
+
+    <?php // echo $form->field($model, 'hired_date') ?>
+
+    <?php // echo $form->field($model, 'recommender') ?>
+
+    <?php // echo $form->field($model, 'approver') ?>
+
+    <?php // echo $form->field($model, 'job_grade') ?>
+
+    <?php // echo $form->field($model, 'working_hours') ?>
+
+    <?php // echo $form->field($model, 'user_name') ?>
+
+    <?php // echo $form->field($model, 'password') ?>
+
+    <?php // echo $form->field($model, 'name') ?>
 
     <?php // echo $form->field($model, 'email') ?>
 
     <?php // echo $form->field($model, 'phone') ?>
+
+    <?php // echo $form->field($model, 'photo') ?>
 
     <?php // echo $form->field($model, 'address') ?>
 

@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="row" style="margin-left: 0px;">
                         <div class="col-md-6">
 
-                            <?= $this->render('_search', ['model' => $searchModel, 'from' => $from, 'to' => $to]) ?>
+                            <?= $this->render('_search', ['model' => $searchModel, 'from' => $from, 'to' => $to, 'item_code' => $item_code]) ?>
 
                         </div>
                         <div class="col-md-6">
