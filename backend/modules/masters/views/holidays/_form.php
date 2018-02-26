@@ -67,7 +67,7 @@ use common\models\Country;
                         }
                         ?>
 
-                        <?= $form->field($model, 'branch')->dropDownList(ArrayHelper::map($branches, 'id', 'branch_name'), ['prompt' => '-Choose a Branch-', 'class' => 'select-dropdown']) ?>
+                        <?= $form->field($model, 'branch')->dropDownList(ArrayHelper::map($branches, 'id', 'branch_name'), ['prompt' => '-Choose a Branch-', 'class' => 'form-control']) ?>
 
                 </div>
                 <div class='col-md-6 col-sm-6 col-xs-12 left_padd'>
@@ -105,4 +105,18 @@ use common\models\Country;
                         });
                 });
         });
+</script>
+<link rel="stylesheet" href="<?= Yii::$app->homeUrl; ?>js/select2/select2.css">
+<link rel="stylesheet" href="<?= Yii::$app->homeUrl; ?>js/select2/select2-bootstrap.css">
+<script src="<?= Yii::$app->homeUrl; ?>js/select2/select2.min.js"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function ($)
+    {
+        $("#holidays-branch").select2({
+            allowClear: true
+        }).on('select2-open', function ()
+        {
+            $(this).data('select2').results.addClass('overflow-hidden').perfectScrollbar();
+        });
+    });
 </script>

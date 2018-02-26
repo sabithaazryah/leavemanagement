@@ -105,7 +105,20 @@ use common\models\WorkingHours;
         </div>
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
             <?= $form->field($model, 'photo')->fileInput() ?>
+        </div>
+        <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
+            <?php
+            if ($model->isNewRecord)
+                echo "";
+            else {
+                if (!empty($model->photo)) {
+                    ?>
 
+                    <img src="<?= Yii::$app->homeUrl ?>uploads/employee/<?= $model->id ?>.<?= $model->photo ?>" width="125" height="100"/>
+                    <?php
+                }
+            }
+            ?>
         </div>
     </div>
     <div class="row">

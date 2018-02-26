@@ -27,11 +27,11 @@ use yii\helpers\ArrayHelper;
         <div class="row">
                 <?php $employees = ArrayHelper::map(common\models\Employee::findAll(['status' => 1]), 'id', 'name'); ?>
                 <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>
-                        <?= $form->field($model, 'recomender')->dropDownList($employees, ['prompt' => '-Choose a Recomender-', 'class' => 'select-dropdown']) ?>
+                        <?= $form->field($model, 'recomender')->dropDownList($employees, ['prompt' => '-Choose a Recomender-', 'class' => 'form-control']) ?>
 
                 </div>
                 <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>
-                        <?= $form->field($model, 'approver')->dropDownList($employees, ['prompt' => '-Choose a Approver-', 'class' => 'select-dropdown']) ?>
+                        <?= $form->field($model, 'approver')->dropDownList($employees, ['prompt' => '-Choose a Approver-', 'class' => 'form-control']) ?>
 
                 </div>
         </div>
@@ -45,3 +45,23 @@ use yii\helpers\ArrayHelper;
         <?php ActiveForm::end(); ?>
 
 </div>
+<link rel="stylesheet" href="<?= Yii::$app->homeUrl; ?>js/select2/select2.css">
+<link rel="stylesheet" href="<?= Yii::$app->homeUrl; ?>js/select2/select2-bootstrap.css">
+<script src="<?= Yii::$app->homeUrl; ?>js/select2/select2.min.js"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function ($)
+    {
+        $("#department-recomender").select2({
+            allowClear: true
+        }).on('select2-open', function ()
+        {
+            $(this).data('select2').results.addClass('overflow-hidden').perfectScrollbar();
+        });
+        $("#department-approver").select2({
+            allowClear: true
+        }).on('select2-open', function ()
+        {
+            $(this).data('select2').results.addClass('overflow-hidden').perfectScrollbar();
+        });
+    });
+</script>

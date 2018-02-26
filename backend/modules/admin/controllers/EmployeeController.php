@@ -8,6 +8,8 @@ use common\models\EmployeeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
+use common\models\LeaveConfiguration;
 
 /**
  * EmployeeController implements the CRUD actions for Employee model.
@@ -112,6 +114,10 @@ class EmployeeController extends Controller {
      */
     public function actionUpdate($id) {
         $model = $this->findModel($id);
+        $model->setScenario('update');
+        $searchModel = new \common\models\LeaveConfigurationSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $model_leave = new LeaveConfiguration();
         $photo_ = $model->photo;
         if ($model->load(Yii::$app->request->post())) {
             $files = UploadedFile::getInstance($model, 'photo');
@@ -127,8 +133,16 @@ class EmployeeController extends Controller {
                 Yii::$app->session->setFlash('success', "Employee Details Updated Successfully");
                 return $this->redirect(['update', 'id' => $model->id]);
             }
-        } return $this->render('update', [
+        } elseif ($model_leave->load(Yii::$app->request->post())) {
+            $model_leave->employee_id = $model->id;
+            $model_leave->available_days = $model_leave->no_of_days;
+            $model_leave->save();
+            return $this->redirect(['update', 'id' => $model_leave->employee_id]);
+        }return $this->render('update', [
                     'model' => $model,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+                    'model_leave' => $model_leave,
         ]);
     }
 

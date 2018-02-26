@@ -149,12 +149,12 @@ AppAsset::register($this);
                                 <li class="top">
                                     <p class="small">
                                         <!--                                        <a href="#" class="pull-right">Mark all Read</a>-->
-                                        You have <strong id="notify-counts">00/strong> new notifications.
+                                        You have <strong id="notify-counts">00</strong> new notifications.
                                     </p>
                                 </li>
-
+<!--
                                 <li class="external">
-                                    <?= Html::a('<span>View all notifications</span> <i class="fa-link-ext"></i>', ['']) ?>
+                                    <span>View all notifications</span> <i class="fa-link-ext"></i>-->
                                 </li>
                             </ul>
                         </li>

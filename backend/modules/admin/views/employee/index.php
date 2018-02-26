@@ -2,6 +2,9 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\ArrayHelper;
+use common\models\Department;
+use common\models\Designation;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\EmployeeSearch */
@@ -37,8 +40,30 @@ $this->params['breadcrumbs'][] = $this->title;
                             'full_name',
                             'date_of_birth',
                             // 'branch',
-                            'department',
-                            'designation',
+                            [
+                                'attribute' => 'department',
+                                'value' => function($data) {
+                                    if (isset($data->department)) {
+                                        return Department::findOne($data->department)->department_name;
+                                    } else {
+                                        return '';
+                                    }
+                                },
+                                'filter' => ArrayHelper::map(Department::find()->asArray()->all(), 'id', 'department_name'),
+                                'filterOptions' => array('id' => "employee_department_search"),
+                            ],
+                            [
+                                'attribute' => 'designation',
+                                'value' => function($data) {
+                                    if (isset($data->designation)) {
+                                        return Designation::findOne($data->designation)->designation_name;
+                                    } else {
+                                        return '';
+                                    }
+                                },
+                                'filter' => ArrayHelper::map(Designation::find()->asArray()->all(), 'id', 'designation_name'),
+                                'filterOptions' => array('id' => "employee_designation_search"),
+                            ],
                             // 'hired_date',
                             // 'recommender',
                             // 'approver',
