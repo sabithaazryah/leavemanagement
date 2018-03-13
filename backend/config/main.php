@@ -31,6 +31,9 @@ return [
         'masters' => [
             'class' => 'backend\modules\masters\Module',
         ],
+        'leave' => [
+            'class' => 'backend\modules\leave\Module',
+        ],
     ],
     'components' => [
         'request' => [
@@ -48,7 +51,7 @@ return [
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
-                [
+                    [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],

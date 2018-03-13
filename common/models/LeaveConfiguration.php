@@ -23,56 +23,61 @@ use Yii;
  *
  * @property Employee $id0
  */
-class LeaveConfiguration extends \yii\db\ActiveRecord
-{
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-        return 'leave_configuration';
-    }
+class LeaveConfiguration extends \yii\db\ActiveRecord {
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [['leave_type'], 'required'],
-            [['employee_id', 'leave_type', 'entitlement', 'carry_forward', 'adjustments', 'adjustments_type', 'no_of_days', 'status', 'CB', 'UB'], 'integer'],
-            [['DOC', 'DOU','available_days'], 'safe'],
-            [['id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::className(), 'targetAttribute' => ['id' => 'id']],
-        ];
-    }
+        /**
+         * {@inheritdoc}
+         */
+        public static function tableName() {
+                return 'leave_configuration';
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'employee_id' => 'Employee ID',
-            'leave_type' => 'Leave Type',
-            'entitlement' => 'Entitlement',
-            'carry_forward' => 'Carry Forward',
-            'adjustments' => 'Adjustments',
-            'adjustments_type' => 'Adjustments Type',
-            'no_of_days' => 'No Of Days',
-            'status' => 'Status',
-            'CB' => 'Cb',
-            'UB' => 'Ub',
-            'DOC' => 'Doc',
-            'DOU' => 'Dou',
-        ];
-    }
+        /**
+         * {@inheritdoc}
+         */
+        public function rules() {
+                return [
+                        [['leave_type'], 'required'],
+                        [['employee_id', 'leave_type', 'entitlement', 'carry_forward', 'adjustments', 'adjustments_type', 'no_of_days', 'status', 'CB', 'UB'], 'integer'],
+                        [['DOC', 'DOU', 'available_days'], 'safe'],
+                        [['id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::className(), 'targetAttribute' => ['id' => 'id']],
+                ];
+        }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getId0()
-    {
-        return $this->hasOne(Employee::className(), ['id' => 'id']);
-    }
+        /**
+         * {@inheritdoc}
+         */
+        public function attributeLabels() {
+                return [
+                    'id' => 'ID',
+                    'employee_id' => 'Employee ID',
+                    'leave_type' => 'Leave Type',
+                    'entitlement' => 'Entitlement',
+                    'carry_forward' => 'Carry Forward',
+                    'adjustments' => 'Adjustments',
+                    'adjustments_type' => 'Adjustments Type',
+                    'no_of_days' => 'No Of Days',
+                    'status' => 'Status',
+                    'CB' => 'Cb',
+                    'UB' => 'Ub',
+                    'DOC' => 'Doc',
+                    'DOU' => 'Dou',
+                ];
+        }
+
+        /**
+         * @return \yii\db\ActiveQuery
+         */
+        public function getId0() {
+                return $this->hasOne(Employee::className(), ['id' => 'id']);
+        }
+
+        public function getLeave() {
+                return $this->hasOne(LeaveCategory::className(), ['id' => 'leave_type']);
+        }
+
+        public function getName() {
+                return $this->leave->leave_name;
+        }
+
 }
