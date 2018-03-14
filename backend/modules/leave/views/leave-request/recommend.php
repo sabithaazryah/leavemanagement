@@ -5,12 +5,13 @@ use yii\grid\GridView;
 use common\models\LeaveConfiguration;
 use common\models\LeaveCategory;
 use common\models\Employee;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\LeaveRequestSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Leave Requests';
+$this->title = 'Leave Recommendation';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="leave-request-index">
@@ -25,9 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                 </div>
                                 <div class="panel-body">
-                                        <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-                                        <?= Html::a('<i class="fa-th-list"></i><span> Apply Leave </span>', ['create'], ['class' => 'btn btn-warning  btn-icon btn-icon-standalone']) ?>
+                                        <?= common\widgets\Alert::widget() ?>
                                         <?=
                                         GridView::widget([
                                             'dataProvider' => $dataProvider,
@@ -59,22 +58,41 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     'value' => function($model) {
                                                             if ($model->status == 1) {
                                                                     return 'Leave Applied';
-                                                            } else if ($model->status == 2) {
-                                                                    return 'Leave Recommender';
-                                                            } else if ($model->status == 3) {
-                                                                    return 'Leave Rejected by the recommender';
-                                                            } else if ($model->status == 4) {
-                                                                    return 'Leave Approved';
-                                                            } else if ($model->status == 5) {
-                                                                    return 'Leave Rejected by the approver';
                                                             }
                                                     },
                                                 ],
-                                            // 'CB',
-                                            // 'UB',
-                                            // 'DOC',
-                                            // 'DOU',
-                                            //['class' => 'yii\grid\ActionColumn'],
+                                                    [
+                                                    'class' => 'yii\grid\ActionColumn',
+                                                    'contentOptions' => ['style' => 'width:100px;'],
+                                                    'header' => 'Actions',
+                                                    'template' => '{recommend}{reject}',
+                                                    'buttons' => [
+                                                        'recommend' => function ($url, $model) {
+                                                                return Html::a('Recommend', $url, [
+                                                                            'title' => Yii::t('app', 'Recommend this leave'),
+                                                                            'class' => 'btn btn-secondary',
+                                                                            'style' => 'padding: 4px 4px;border-radius: 5px;',
+                                                                ]);
+                                                        },
+                                                        'reject' => function ($url, $model) {
+                                                                return Html::a('Reject', $url, [
+                                                                            'title' => Yii::t('app', 'Reject this leave'),
+                                                                            'class' => 'btn btn-red',
+                                                                            'style' => 'border-radius: 5px;padding: 4px 4px;',
+                                                                ]);
+                                                        },
+                                                    ],
+                                                    'urlCreator' => function ($action, $model) {
+                                                            if ($action === 'recommend') {
+                                                                    $url = Url::to(['recommend-leave', 'id' => $model->id]);
+                                                                    return $url;
+                                                            }
+                                                            if ($action === 'reject') {
+                                                                    $url = Url::to(['reject', 'id' => $model->id]);
+                                                                    return $url;
+                                                            }
+                                                    }
+                                                ],
                                             ],
                                         ]);
                                         ?>

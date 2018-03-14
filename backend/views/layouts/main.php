@@ -132,6 +132,25 @@ AppAsset::register($this);
                                                                 <li>
                                                                         <?= Html::a('Apply leave', ['/leave/leave-request/index'], ['class' => 'title']) ?>
                                                                 </li>
+                                                                <?php
+                                                                $recommender_exists = common\models\Employee::find()->where(['recommender' => Yii::$app->user->identity->id])->exists();
+                                                                if ($recommender_exists || Yii::$app->user->identity->post_id == 1) {
+                                                                        ?>
+
+                                                                        <li>
+                                                                                <?= Html::a('Leave Recommendations', ['/leave/leave-request/recommend'], ['class' => 'title']) ?>
+                                                                        </li>
+                                                                <?php } ?>
+
+                                                                <?php
+                                                                $approver_exists = common\models\Employee::find()->where(['approver' => Yii::$app->user->identity->id])->exists();
+                                                                if ($approver_exists || Yii::$app->user->identity->post_id == 1) {
+                                                                        ?>
+
+                                                                        <li>
+                                                                                <?= Html::a('Leave Approval', ['/leave/leave-request/approve'], ['class' => 'title']) ?>
+                                                                        </li>
+                                                                <?php } ?>
 
                                                         </ul>
                                                 </li>
@@ -354,15 +373,15 @@ AppAsset::register($this);
                                                                 $('#notify-counts').text(count - 1);
                                                                 if (data != 1) {
                                                                         var next_row = '<li class="active notification-success" id="notify-' + res.result["id"] + '" >\n\
-                                <a href="#">\n\
-                                                    <span class="line notification-line" style="width: 85%;padding-left: 0;cursor:pointer" id ="' + res.result["appointment_id"] + '" >\n\
-                                                        <strong style="line-height: 20px;">' + res.result["content"] + '</strong>\n\
-                                                    </span>\n\
-                                                    <span class="line small time" style="padding-left: 0;">' + res.result["date"] + '\n\
-                                                    </span>\n\
-                                                    <input type="checkbox" checked="" class="iswitch iswitch-secondary disable-notification" data-id= "' + res.result["id"] + '" style="margin-top: -35px;float: right;" title="Ignore">\n\
-                                                </a>\n\
-                                </li>';
+                        <a href="#">\n\
+                                            <span class="line notification-line" style="width: 85%;padding-left: 0;cursor:pointer" id ="' + res.result["appointment_id"] + '" >\n\
+                                                <strong style="line-height: 20px;">' + res.result["content"] + '</strong>\n\
+                                            </span>\n\
+                                            <span class="line small time" style="padding-left: 0;">' + res.result["date"] + '\n\
+                                            </span>\n\
+                                            <input type="checkbox" checked="" class="iswitch iswitch-secondary disable-notification" data-id= "' + res.result["id"] + '" style="margin-top: -35px;float: right;" title="Ignore">\n\
+                                        </a>\n\
+                        </li>';
                                                                         $(".dropdown-menu-list-notify").append(next_row);
                                                                 }
                                                                 e.preventDefault();

@@ -35,7 +35,7 @@ class LeaveRequest extends \yii\db\ActiveRecord {
          */
         public function rules() {
                 return [
-                        [['employee_id', 'leave_type', 'recommender', 'approver', 'status', 'CB', 'UB'], 'integer'],
+                        [['employee_id', 'leave_type', 'recommender', 'approver', 'status', 'CB', 'UB', 'recommended_by', 'approved_by'], 'integer'],
                         [['reason'], 'string'],
                         [['from_date', 'to_date', 'DOC', 'DOU'], 'safe'],
                         [['employee_id', 'leave_type', 'from_date', 'to_date', 'reason'], 'required']

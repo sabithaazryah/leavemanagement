@@ -185,4 +185,8 @@ class Employee extends ActiveRecord implements IdentityInterface {
                 return $this->hasOne(AdminPost::className(), ['id' => 'post_id']);
         }
 
+        public function getEmpname() {
+                return $this->full_name . ' (' . $this->employee_code . ')';
+        }
+
 }

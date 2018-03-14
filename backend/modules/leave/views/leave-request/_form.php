@@ -13,7 +13,7 @@ use kartik\date\DatePicker;
 ?>
 
 <div class="leave-request-form form-inline">
-
+        <?= common\widgets\Alert::widget() ?>
         <?php $form = ActiveForm::begin(); ?>
 
         <div class="row">
@@ -22,7 +22,7 @@ use kartik\date\DatePicker;
                 $employees1 = Employee::find()->where(['id' => Yii::$app->user->identity->id])->all();
                 $employees_list = array_merge($employees, $employees1);
                 ?>
-                <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'employee_id')->dropDownList(ArrayHelper::map($employees_list, 'id', 'full_name'), ['prompt' => 'Select']) ?>
+                <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'employee_id')->dropDownList(ArrayHelper::map($employees_list, 'id', 'empname'), ['prompt' => 'Select']) ?>
 
                 </div>
 
