@@ -140,7 +140,7 @@ class LeaveRequestController extends Controller {
         }
 
         /*
-         * List leaves to the corresponding recommender
+         * List leaves to the corresponding approver
          */
 
         public function actionApprove() {
@@ -158,7 +158,7 @@ class LeaveRequestController extends Controller {
         }
 
         /**
-         * Recommended leave request by the recommender
+         * Approve leave request by the approver
          */
         public function actionApproveleave($id) {
                 $leave = LeaveRequest::findOne($id);
@@ -181,7 +181,7 @@ class LeaveRequestController extends Controller {
         }
 
         /*
-         * Reject leave request by the recommender
+         * Reject leave request by the approver
          */
 
         public function actionRejectleave($id) {

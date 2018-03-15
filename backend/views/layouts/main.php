@@ -154,6 +154,19 @@ AppAsset::register($this);
 
                                                         </ul>
                                                 </li>
+
+                                                <li>
+                                                        <a href="">
+                                                                <i class="fa fa-user-circle"></i>
+                                                                <span class="title">Profiles</span>
+                                                        </a>
+                                                        <ul>
+
+                                                                <li>
+                                                                        <?= Html::a('Comapny Details', ['/masters/company-details/update?id=1'], ['class' => 'title']) ?>
+                                                                </li>
+                                                        </ul>
+                                                </li>
                                         </ul>
 
                                 </div>
