@@ -49,7 +49,7 @@ class LeaveRequest extends \yii\db\ActiveRecord {
                 return [
                     'id' => 'ID',
                     'employee_id' => 'Employee',
-                    'leave_type' => 'Leave Type',
+                    'leave_type' => 'Leave Category',
                     'reason' => 'Reason',
                     'from_date' => 'From Date',
                     'to_date' => 'To Date',

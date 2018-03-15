@@ -20,54 +20,93 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         </div>
                         <div class="panel-body">
-                                <?=  Html::a('<i class="fa-th-list"></i><span> Manage Employee</span>', ['index'], ['class' => 'btn btn-warning  btn-icon btn-icon-standalone']) ?>
                                 <div class="panel-body"><div class="employee-view">
-                                                <p>
-                                                        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-                                                        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-                                                        'class' => 'btn btn-danger',
-                                                        'data' => [
-                                                        'confirm' => 'Are you sure you want to delete this item?',
-                                                        'method' => 'post',
-                                                        ],
-                                                        ]) ?>
-                                                </p>
+                                                <?php if (!empty($model->photo)) { ?>
 
-                                                <?= DetailView::widget([
-                                                'model' => $model,
-                                                'attributes' => [
-                                                            'id',
-            'post_id',
-            'employee_code',
-            'full_name',
-            'date_of_birth',
-            'branch',
-            'department',
-            'designation',
-            'hired_date',
-            'recommender',
-            'approver',
-            'job_grade',
-            'working_hours',
-            'user_name',
-            'password',
-            'name',
-            'email:email',
-            'phone',
-            'photo',
-            'address:ntext',
-            'status',
-            'CB',
-            'UB',
-            'DOC',
-            'DOU',
-                                                ],
-                                                ]) ?>
-</div>
+                                                        <div class="col-md-12 disp-image">
+                                                                <img src="<?= Yii::$app->homeUrl ?>uploads/employee/<?= $model->id ?>.<?= $model->photo ?>" />
+                                                        </div>
+                                                <?php } ?>
+                                                <?=
+                                                DetailView::widget([
+                                                    'model' => $model,
+                                                    'attributes' => [
+                                                        'employee_code',
+                                                        'full_name',
+                                                        'date_of_birth',
+                                                            [
+                                                            'attribute' => 'department',
+                                                            'value' => function($data) {
+                                                                    if (isset($data->department)) {
+                                                                            return \common\models\Department::findOne($data->department)->department_name;
+                                                                    } else {
+                                                                            return '';
+                                                                    }
+                                                            },
+                                                        ],
+                                                            [
+                                                            'attribute' => 'designation',
+                                                            'value' => function($data) {
+                                                                    if (isset($data->designation)) {
+                                                                            return common\models\Designation::findOne($data->designation)->designation_name;
+                                                                    } else {
+                                                                            return '';
+                                                                    }
+                                                            },
+                                                        ],
+                                                        'hired_date',
+                                                            [
+                                                            'attribute' => 'recommender',
+                                                            'value' => function($data) {
+                                                                    if (isset($data->recommender)) {
+                                                                            return common\models\Employee::findOne($data->recommender)->full_name;
+                                                                    } else {
+                                                                            return '';
+                                                                    }
+                                                            },
+                                                        ],
+                                                            [
+                                                            'attribute' => 'approver',
+                                                            'value' => function($data) {
+                                                                    if (isset($data->approver)) {
+                                                                            return common\models\Employee::findOne($data->approver)->full_name;
+                                                                    } else {
+                                                                            return '';
+                                                                    }
+                                                            },
+                                                        ],
+                                                        'job_grade',
+                                                            [
+                                                            'attribute' => 'working_hours',
+                                                            'value' => function($data) {
+                                                                    if (isset($data->working_hours)) {
+                                                                            return common\models\WorkingHours::findOne($data->working_hours)->working_hour;
+                                                                    } else {
+                                                                            return '';
+                                                                    }
+                                                            },
+                                                        ],
+                                                        'user_name',
+                                                        'name',
+                                                        'email:email',
+                                                        'phone',
+                                                        'address:ntext',
+                                                    ],
+                                                ])
+                                                ?>
                                         </div>
                                 </div>
                         </div>
                 </div>
         </div>
+</div>
 
 
+<style>
+        .disp-image img{
+                width:100px;
+                height: 100px;
+                float: right;
+
+        }
+</style>

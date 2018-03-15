@@ -9,12 +9,25 @@ use common\models\Department;
 use common\models\Branch;
 use common\models\Employee;
 use common\models\WorkingHours;
+use common\models\Country;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Employee */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
+<link rel="stylesheet" type="text/css" href="<?= Yii::$app->homeUrl; ?>css/dd.css" />
+<link rel="stylesheet" type="text/css" href="<?= Yii::$app->homeUrl; ?>css/flags.css" />
+<style>
+        #employee-country_child{
+                height: auto !important;
+        }
+        #employee-country_msdd{
+                height: 36px !important;
+        }
+        #employee-country_msdd .divider{
+                height: 36px !important;
+        }
+</style>
 <div class="employee-form form-inline">
 
         <?php $form = ActiveForm::begin(); ?>
@@ -48,8 +61,35 @@ use common\models\WorkingHours;
                         ?>
 
                 </div>
+
+
+                <?php
+                $locations = ArrayHelper::map(Country::find()->where(['status' => 1])->orderBy(['country_name' => SORT_ASC])->all(), 'id', function($model) {
+                                return $model['country_name'];
+                        }
+                );
+                $flags = Country::find()->where(['status' => 1])->all();
+                $flag_img = array();
+                foreach ($flags as $flag) {
+                        $flag_img[$flag->id] = ['data-image' => Yii::$app->homeUrl . 'uploads/flags/' . $flag->id . '.' . $flag->country_flag];
+                }
+                ?>
                 <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
-                        <?php $branches = ArrayHelper::map(Branch::findAll(['status' => 1]), 'id', 'branch_name'); ?>
+                        <?= $form->field($model, 'country')->dropDownList($locations, ['options' => $flag_img, 'class' => 'form-control country-change', 'aria-invalid' => 'false', 'prompt' => '-Select Country-']) ?>
+
+                </div>
+
+
+
+
+                <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
+                        <?php
+                        if (!$model->isNewRecord) {
+                                $branches = ArrayHelper::map(Branch::find()->where(['country' => $model->country, 'status' => 1])->all(), 'id', 'branch_name');
+                        } else {
+                                $branches = [];
+                        }
+                        ?>
                         <?= $form->field($model, 'branch')->dropDownList($branches, ['prompt' => '-Choose a Branch-']) ?>
                 </div>
                 <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
@@ -176,6 +216,25 @@ use common\models\WorkingHours;
                 }).on('select2-open', function ()
                 {
                         $(this).data('select2').results.addClass('overflow-hidden').perfectScrollbar();
+                });
+        });
+</script>
+<script src="<?= Yii::$app->homeUrl; ?>js/jquery.dd.js"></script>
+<script>
+        jQuery(document).ready(function ($) {
+
+                $("#employee-country").msDropdown({roundedBorder: false});
+
+                jQuery('#employee-country').change(function () {
+                        jQuery.ajax({
+                                type: 'POST',
+                                cache: false,
+                                data: {country: $(this).val()},
+                                url: homeUrl + 'admin/employee/branch',
+                                success: function (data) {
+                                        jQuery('#employee-branch').html(data);
+                                }
+                        });
                 });
         });
 </script>

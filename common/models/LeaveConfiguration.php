@@ -51,7 +51,7 @@ class LeaveConfiguration extends \yii\db\ActiveRecord {
                 return [
                     'id' => 'ID',
                     'employee_id' => 'Employee ID',
-                    'leave_type' => 'Leave Type',
+                    'leave_type' => 'Leave Category',
                     'entitlement' => 'Entitlement',
                     'carry_forward' => 'Carry Forward',
                     'adjustments' => 'Adjustments',

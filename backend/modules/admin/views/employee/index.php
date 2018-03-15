@@ -26,9 +26,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                 </div>
                                 <div class="panel-body">
-                                        <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+                                        <?php // echo $this->render('_search', ['model' => $searchModel]);   ?>
 
                                         <?= Html::a('<i class="fa fa-users"></i><span> Add Employee</span>', ['create'], ['class' => 'btn btn-warning  btn-icon btn-icon-standalone']) ?>
+
+
                                         <?=
                                         GridView::widget([
                                             'dataProvider' => $dataProvider,

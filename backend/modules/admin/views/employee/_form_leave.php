@@ -42,8 +42,10 @@ use yii\grid\GridView;
 
                 </div>
         </div>
-        <input type="hidden" name="leave_carry" id="leave_carry" value="<?= $carry_date ?>">
+        <input type="hidden" name="leave_carry" id="leave_carry" value="">
         <input type="hidden" name="employee_id" id="employee_id" value="<?= $model->id ?>">
+
+        <input type="hidden" id="leave_category_leave">
 
         <div class="row">
                 <div class='col-md-12 col-sm-12 col-xs-12'>
@@ -128,70 +130,78 @@ use yii\grid\GridView;
                                 data: {leave_type: leave_type, employee_id: employee_id},
                                 success: function (data) {
                                         $('#leaveconfiguration-no_of_days').val(data);
+                                        $('#leave_category_leave').val(data);
                                 },
                                 error: function (data) {
 
                                 }
                         });
                 });
-                $("#leaveconfiguration-adjustments").keyup(function () {
-                        var adjustment_type = $("#leaveconfiguration-adjustments_type").val();
-                        if (this.value > 0 && adjustment_type == 1) {
-                                var days = parseInt($("#leaveconfiguration-no_of_days").val()) + parseInt($("#leaveconfiguration-adjustments").val());
-                                $('#leaveconfiguration-no_of_days').val(days);
-                        } else if (this.value > 0 && adjustment_type == 2) {
-                                if (this.value < parseInt($("#leaveconfiguration-no_of_days").val())) {
-                                        var days = parseInt($("#leaveconfiguration-no_of_days").val()) - parseInt($("#leaveconfiguration-adjustments").val());
-                                        $('#leaveconfiguration-no_of_days').val(days);
-                                } else {
-                                        alert('value shouls not exceed the alotted days');
-                                }
-                        }
-
-
+//                $("#leaveconfiguration-adjustments").keyup(function () {
+//                        var adjustment_type = $("#leaveconfiguration-adjustments_type").val();
+//                        if (this.value > 0 && adjustment_type == 1) {
+//                                var days = parseInt($("#leaveconfiguration-no_of_days").val()) + parseInt($("#leaveconfiguration-adjustments").val());
+//                                $('#leaveconfiguration-no_of_days').val(days);
+//                        } else if (this.value > 0 && adjustment_type == 2) {
+//                                if (this.value < parseInt($("#leaveconfiguration-no_of_days").val())) {
+//                                        var days = parseInt($("#leaveconfiguration-no_of_days").val()) - parseInt($("#leaveconfiguration-adjustments").val());
+//                                        $('#leaveconfiguration-no_of_days').val(days);
+//                                } else {
+//                                        alert('value shouls not exceed the alotted days');
+//                                }
+//                        }
+//
+//
+//                });
+                $("#leaveconfiguration-entitlement").keyup(function () {
+                        leaveDays();
                 });
-//		$("#leaveconfiguration-entitlement").keyup(function () {
-//			leaveDays();
-//		});
-//		$("#leaveconfiguration-carry_forward").keyup(function () {
-//			leaveDays();
-//		});
-//		$("#leaveconfiguration-adjustments").keyup(function () {
-//			leaveDays();
-//		});
-//		$("#leaveconfiguration-adjustments_type").change(function () {
-//			leaveDays();
-//		});
-//	});
-//	function leaveDays() {
-//		var entitlement = $("#leaveconfiguration-entitlement").val();
-//		var carry_forward = $("#leaveconfiguration-carry_forward").val();
-//		var adjustments = $("#leaveconfiguration-adjustments").val();
-//		var adjustments_type = $("#leaveconfiguration-adjustments_type").val();
-//		if (!entitlement) {
-//			entitlement = 0;
-//		}
-//		if (!carry_forward) {
-//			carry_forward = 0;
-//		}
-//		if (!adjustments) {
-//			adjustments = 0;
-//		}
-//		if (adjustments_type == 1) {
-//			$res = (parseInt(entitlement) + parseInt(carry_forward)) + parseInt(adjustments);
-//			$("#leaveconfiguration-no_of_days").val($res);
-//		} else if (adjustments_type == 2) {
-//			alert();
-//			$res1 = (parseInt(entitlement) + parseInt(carry_forward));
-//			$res2 = +parseInt(adjustments);
-//			if ($res1 > $res2) {
-//				$("#leaveconfiguration-no_of_days").val($res);
-//			} else {
-//				$("#leaveconfiguration-no_of_days").val(0);
-//				$("#leaveconfiguration-adjustments").val(0);
-//				alert('Please enter a value smaller than ' + $res1 + '(Entitlement+Carry forward)')
-//			}
-//		}
-
+                $("#leaveconfiguration-carry_forward").keyup(function () {
+                        leaveDays();
+                });
+                $("#leaveconfiguration-adjustments").keyup(function () {
+                        leaveDays();
+                });
+                $("#leaveconfiguration-adjustments_type").change(function () {
+                        leaveDays();
+                });
         });
+        function leaveDays() {
+                var entitlement = $("#leaveconfiguration-entitlement").val();
+                var carry_forward = $("#leaveconfiguration-carry_forward").val();
+                var adjustments = $("#leaveconfiguration-adjustments").val();
+                var adjustments_type = $("#leaveconfiguration-adjustments_type").val();
+                var leave_category_leave = $("#leave_category_leave").val();
+                if (!entitlement) {
+                        entitlement = 0;
+                }
+                if (!carry_forward) {
+                        carry_forward = 0;
+                }
+                if (!adjustments) {
+                        adjustments = 0;
+                }
+                if (!leave_category_leave) {
+                        leave_category_leave = 0;
+                }
+                if (adjustments_type == 1) {
+                        $res = (parseInt(entitlement) + parseInt(carry_forward)) + parseInt(adjustments) + parseInt(leave_category_leave);
+                        $("#leaveconfiguration-no_of_days").val($res);
+                } else if (adjustments_type == 2) {
+
+                        $res1 = (parseInt(entitlement) + parseInt(carry_forward));
+                        $res2 = +parseInt(adjustments)
+                        $res3 = $res1 - parseInt(adjustments) + parseInt(leave_category_leave);
+
+                        if ($res1 > $res2) {
+                                $("#leaveconfiguration-no_of_days").val($res3);
+                        } else {
+                                $("#leaveconfiguration-no_of_days").val(0);
+                                $("#leaveconfiguration-adjustments").val(0);
+                                alert('Please enter a value smaller than ' + $res1 + '(Entitlement+Carry forward)')
+                        }
+                }
+
+        }
+        //);
 </script>

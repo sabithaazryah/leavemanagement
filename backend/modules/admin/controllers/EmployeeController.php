@@ -160,7 +160,7 @@ class EmployeeController extends Controller {
                             'searchModel' => $searchModel,
                             'dataProvider' => $dataProvider,
                             'model_leave' => $model_leave,
-                            'carry_date' => $carry_date,
+                                // 'carry_date' => $carry_date,
                 ]);
         }
 
@@ -204,6 +204,18 @@ class EmployeeController extends Controller {
                         return $model;
                 } else {
                         throw new NotFoundHttpException('The requested page does not exist.');
+                }
+        }
+
+        public function actionBranch() {
+                if (Yii::$app->request->isAjax) {
+                        $country = $_POST['country'];
+                        $branches = \common\models\Branch::find()->where(['country' => $country])->all();
+                        $options = '<option value="">-Select-</option>';
+                        foreach ($branches as $branch) {
+                                $options .= "<option value='" . $branch->id . "'>" . $branch->branch_name . "</option>";
+                        }
+                        echo $options;
                 }
         }
 

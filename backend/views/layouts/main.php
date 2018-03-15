@@ -237,7 +237,7 @@ AppAsset::register($this);
                                                                 <li class="user-footer" style="background: #eeeeee;">
                                                                         <div class="row">
                                                                                 <div class="pull-left">
-                                                                                        <?= Html::a('Profile', ['/admin/employee/update?id=' . Yii::$app->user->identity->id], ['class' => 'btn btn-white', 'style' => 'padding: 9px 20px;border: 1px solid #a09f9f;']) ?>
+                                                                                        <?= Html::a('Profile', ['/admin/employee/view?id=' . Yii::$app->user->identity->id], ['class' => 'btn btn-white', 'style' => 'padding: 9px 20px;border: 1px solid #a09f9f;']) ?>
                                                                                 </div>
                                                                                 <div class="pull-right">
                                                                                         <?php
