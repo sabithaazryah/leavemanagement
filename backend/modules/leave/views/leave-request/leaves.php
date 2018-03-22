@@ -13,11 +13,13 @@ if (count($leaves) > 0) {
                         $leave_type = \common\models\LeaveCategory::findOne($value->leave_type);
                         ?>
                         <tr>
-                                <td><?= $leave_type->leave_name ?></td>
+                                <td><?= $leave_type->leave_name . ' (' . $value->year . ')' ?></td>
                                 <td><?= $value->available_days ?></td>
                         </tr>
                 <?php }
                 ?>
         </table>
 
-<?php } ?>
+        <?php
+}
+?>

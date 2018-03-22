@@ -72,11 +72,36 @@ class HolidaysController extends Controller {
         public function actionCreate() {
                 $model = new Holidays();
 
-                if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model) && $model->save()) {
-                        Yii::$app->getSession()->setFlash('success', 'Holidays Added Successfully');
+                if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model)) {
+                        if ($model->recurring_leave == 1) {
+                                $count = \Yii::$app->request->post('recurring_years');
+                        } else {
+                                $count = 0;
+                        }
+                        $dates = \Yii::$app->request->post('selecteddates');
+                        if (!empty($dates) && $dates != '') {
+                                for ($i = 0; $i <= $count; $i++) {
+
+                                        $selected_dates = explode(',', $dates);
+                                        foreach ($selected_dates as $value) {
+                                                $holiday = new Holidays();
+                                                $holiday->attributes = $model->attributes;
+                                                $holiday->date = date('Y-m-d', strtotime($value));
+                                                if ($count > 0) {
+                                                        $holiday->date = date('Y-m-d', strtotime($value . ' + ' . $i . 'years'));
+                                                }
+                                                if (!empty($model->country) && $model->country != '') {
+                                                        $holiday->country = implode(',', $model->country);
+                                                }
+                                                $holiday->status = 1;
+                                                $holiday->save();
+                                        }
+                                }
+                                Yii::$app->getSession()->setFlash('success', 'Holidays Added Successfully');
+                        }
                         return $this->redirect(['index']);
                 }
-                return $this->renderAjax('create', [
+                return $this->render('create', [
                             'model' => $model,
                 ]);
         }
@@ -94,7 +119,7 @@ class HolidaysController extends Controller {
                         Yii::$app->getSession()->setFlash('success', 'Holidays Updated Successfully');
                         return $this->redirect(['index']);
                 }
-                return $this->renderAjax('update', [
+                return $this->render('update', [
                             'model' => $model,
                 ]);
         }

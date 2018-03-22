@@ -132,15 +132,7 @@ AppAsset::register($this);
                                                                 <li>
                                                                         <?= Html::a('Apply leave', ['/leave/leave-request/index'], ['class' => 'title']) ?>
                                                                 </li>
-                                                                <?php
-                                                                $recommender_exists = common\models\Employee::find()->where(['recommender' => Yii::$app->user->identity->id])->exists();
-                                                                if ($recommender_exists || Yii::$app->user->identity->post_id == 1) {
-                                                                        ?>
 
-                                                                        <li>
-                                                                                <?= Html::a('Leave Recommendations', ['/leave/leave-request/recommend'], ['class' => 'title']) ?>
-                                                                        </li>
-                                                                <?php } ?>
 
                                                                 <?php
                                                                 $approver_exists = common\models\Employee::find()->where(['approver' => Yii::$app->user->identity->id])->exists();

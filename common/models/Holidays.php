@@ -10,8 +10,10 @@ use Yii;
  * @property int $id
  * @property string $holiday_name
  * @property string $date
- * @property int $country
+ * @property string $country
+ * @property string $branch
  * @property string $description
+ * @property int $recurring_leave
  * @property int $status
  * @property int $CB
  * @property int $UB
@@ -32,9 +34,8 @@ class Holidays extends \yii\db\ActiveRecord {
          */
         public function rules() {
                 return [
-                        [['date', 'country', 'holiday_name', 'description', 'branch'], 'required'],
-                        [['date', 'DOC', 'DOU'], 'safe'],
-                        [['country', 'status', 'CB', 'UB', 'branch'], 'integer'],
+                        [['date', 'DOC', 'DOU', 'country', 'branch'], 'safe'],
+                        [['recurring_leave', 'status', 'CB', 'UB'], 'integer'],
                         [['holiday_name'], 'string', 'max' => 100],
                         [['description'], 'string', 'max' => 500],
                 ];
@@ -51,6 +52,7 @@ class Holidays extends \yii\db\ActiveRecord {
                     'country' => 'Country',
                     'branch' => 'Branch',
                     'description' => 'Description',
+                    'recurring_leave' => 'Recurring Leave',
                     'status' => 'Status',
                     'CB' => 'Cb',
                     'UB' => 'Ub',

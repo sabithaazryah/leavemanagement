@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                 </div>
                                 <div class="panel-body">
-                                        <?= Html::button('<i class="fa-th-list"></i><span> Add Holidays</span>', ['value' => Url::to('create'), 'class' => 'btn btn-warning  btn-icon btn-icon-standalone modalButton']) ?>
+                                        <?= Html::a('<i class="fa-th-list"></i><span> Add Holidays</span>', ['create'], ['class' => 'btn btn-warning  btn-icon btn-icon-standalone']) ?>
                                         <?= \common\widgets\Alert::widget(); ?>
                                         <?= ModalViewWidget::widget(); ?>
                                         <?=
@@ -74,26 +74,6 @@ $this->params['breadcrumbs'][] = $this->title;
 //                                    'contentOptions' => ['style' => 'width:100px;'],
                                                     'header' => 'Actions',
                                                     'template' => '{update}{delete}',
-                                                    'buttons' => [
-                                                        'update' => function ($url, $model) {
-                                                                return Html::button('<i class="fa fa-pencil"></i>', ['value' => Url::to(['update', 'id' => $model->id]), 'class' => 'modalButton edit-btn']);
-                                                        },
-                                                        'delete' => function ($url, $model) {
-                                                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
-                                                                            'title' => Yii::t('app', 'delete'),
-                                                                            'class' => '',
-                                                                            'data' => [
-                                                                                'confirm' => 'Are you sure you want to delete this item?',
-                                                                            ],
-                                                                ]);
-                                                        },
-                                                    ],
-                                                    'urlCreator' => function ($action, $model) {
-                                                            if ($action === 'delete') {
-                                                                    $url = Url::to(['del', 'id' => $model->id]);
-                                                                    return $url;
-                                                            }
-                                                    }
                                                 ],
                                             ],
                                         ]);

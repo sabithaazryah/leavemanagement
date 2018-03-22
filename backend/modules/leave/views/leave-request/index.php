@@ -60,13 +60,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                                             if ($model->status == 1) {
                                                                     return 'Leave Applied';
                                                             } else if ($model->status == 2) {
-                                                                    return 'Leave Recommender';
-                                                            } else if ($model->status == 3) {
-                                                                    return 'Leave Rejected by the recommender';
-                                                            } else if ($model->status == 4) {
                                                                     return 'Leave Approved';
-                                                            } else if ($model->status == 5) {
-                                                                    return 'Leave Rejected by the approver';
+                                                            } else if ($model->status == 3) {
+                                                                    return 'Leave Rejected';
                                                             }
                                                     },
                                                 ],

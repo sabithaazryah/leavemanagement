@@ -117,15 +117,6 @@ class EmployeeController extends Controller {
                 $model->setScenario('update');
                 $searchModel = new \common\models\LeaveConfigurationSearch();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-                $dataProvider->query->andWhere(['employee_id' => $model->id]);
-//		var_dump(Yii::$app->request->queryParams['LeaveConfigurationSearch']['year']);
-//		exit;
-                if (Yii::$app->request->queryParams['LeaveConfigurationSearch']['year']) {
-                        $dataProvider->query->andWhere(['year' => Yii::$app->request->queryParams['LeaveConfigurationSearch']['year']]);
-                } else {
-                        $dataProvider->query->andWhere(['year' => date('Y')]);
-                }
-
                 $model_leave = new LeaveConfiguration();
                 $photo_ = $model->photo;
 
@@ -145,27 +136,22 @@ class EmployeeController extends Controller {
                         }
                 } elseif ($model_leave->load(Yii::$app->request->post())) {
                         $check_exist = LeaveConfiguration::find()->where(['leave_type' => Yii::$app->request->post()['LeaveConfiguration']['leave_type'], 'employee_id' => $model->id])->one();
+
                         if (!empty($check_exist)) {
+
                                 if (Yii::$app->request->post()['LeaveConfiguration']['leave_type'] == 1) {
-                                        $check_exist->entitlement = Yii::$app->request->post()['LeaveConfiguration']['entitlement'];
-                                        $check_exist->carry_forward = Yii::$app->request->post()['LeaveConfiguration']['carry_forward'];
-                                        $check_exist->adjustments = Yii::$app->request->post()['LeaveConfiguration']['adjustments'];
-                                        $check_exist->available_days = $check_exist->entitlement + $check_exist->carry_forward + $check_exist->adjustments;
-                                        $check_exist->no_of_days = $check_exist->entitlement + $check_exist->carry_forward + $check_exist->adjustments;
+
+                                        $check_exist->available_days = $check_exist->available_days + $model_leave->no_of_days;
+                                        $check_exist->no_of_days = $check_exist->no_of_days + $model_leave->no_of_days;
                                         $check_exist->save();
                                 } elseif (Yii::$app->request->post()['LeaveConfiguration']['leave_type'] == 2) {
-                                        $check_exist->entitlement = Yii::$app->request->post()['LeaveConfiguration']['entitlement'];
-                                        $check_exist->carry_forward = Yii::$app->request->post()['LeaveConfiguration']['carry_forward'];
-                                        $check_exist->adjustments = Yii::$app->request->post()['LeaveConfiguration']['adjustments'];
-                                        $check_exist->available_days = ($check_exist->entitlement + $check_exist->carry_forward) - $check_exist->adjustments;
-                                        $check_exist->no_of_days = ($check_exist->entitlement + $check_exist->carry_forward) - $check_exist->adjustments;
+                                        $check_exist->available_days = $check_exist->available_days - Yii::$app->request->post()['LeaveConfiguration']['adjustments'];
+                                        $check_exist->no_of_days = $check_exist->no_of_days - Yii::$app->request->post()['LeaveConfiguration']['adjustments'];
                                         $check_exist->save();
                                 }
                         } else {
                                 $model_leave->employee_id = $model->id;
                                 $model_leave->available_days = $model_leave->no_of_days;
-                                $model_leave->year = date('Y');
-
                                 $model_leave->save();
                         }
                         return $this->redirect(['update', 'id' => $model->id]);
@@ -174,7 +160,7 @@ class EmployeeController extends Controller {
                             'searchModel' => $searchModel,
                             'dataProvider' => $dataProvider,
                             'model_leave' => $model_leave,
-                            'carry_date' => $carry_date,
+                                // 'carry_date' => $carry_date,
                 ]);
         }
 
@@ -184,13 +170,9 @@ class EmployeeController extends Controller {
                                 $leave_model = \common\models\LeaveCategory::find()->where(['id' => $_POST['leave_type'], 'status' => 1])->one();
                                 $data_exist = LeaveConfiguration::find()->where(['leave_type' => $_POST['leave_type'], 'employee_id' => $_POST['employee_id']])->one();
                                 if (!empty($leave_model) && empty($data_exist)) {
-//					echo $leave_model->no_of_days;
-                                        echo json_encode(["avaialble_days" => $leave_model->no_of_days, 'entitlement' => $leave_model->no_of_days, 'carry_forward' => 0]);
+                                        echo $leave_model->no_of_days;
                                 } elseif (!empty($leave_model) && !empty($data_exist)) {
-//					var_dump($data_exist);
-//					exit;
-//					echo $data_exist->available_days;
-                                        echo json_encode(["avaialble_days" => $data_exist->available_days, 'entitlement' => $data_exist->entitlement, 'carry_forward' => $data_exist->carry_forward]);
+                                        echo $data_exist->available_days;
                                 }
                         } else {
                                 echo 0;
@@ -222,6 +204,18 @@ class EmployeeController extends Controller {
                         return $model;
                 } else {
                         throw new NotFoundHttpException('The requested page does not exist.');
+                }
+        }
+
+        public function actionBranch() {
+                if (Yii::$app->request->isAjax) {
+                        $country = $_POST['country'];
+                        $branches = \common\models\Branch::find()->where(['country' => $country])->all();
+                        $options = '<option value="">-Select-</option>';
+                        foreach ($branches as $branch) {
+                                $options .= "<option value='" . $branch->id . "'>" . $branch->branch_name . "</option>";
+                        }
+                        echo $options;
                 }
         }
 

@@ -9,6 +9,7 @@ use yii\filters\AccessControl;
 use common\models\ForgotPasswordTokens;
 use common\models\Employee;
 use common\models\AdminPost;
+use common\models\LeaveConfiguration;
 
 /**
  * Site controller
@@ -24,7 +25,7 @@ class SiteController extends Controller {
                         'class' => AccessControl::className(),
                         'rules' => [
                                 [
-                                'actions' => ['login', 'error', 'index', 'home', 'forgot', 'new-password', 'exception'],
+                                'actions' => ['login', 'error', 'index', 'home', 'forgot', 'new-password', 'exception', 'setleaves'],
                                 'allow' => true,
                             ],
                                 [
@@ -196,7 +197,6 @@ class SiteController extends Controller {
         public function actionNewPassword($token) {
                 $this->layout = 'login';
                 $data = Yii::$app->EncryptDecrypt->Encrypt('decrypt', $token);
-
                 $values = explode('_', $data);
                 $token_exist = ForgotPasswordTokens::find()->where("user_id = " . $values[0] . " AND token = " . $values[1])->one();
                 if (!empty($token_exist)) {
@@ -221,6 +221,63 @@ class SiteController extends Controller {
 
         public function actionException() {
                 return $this->render('exception');
+        }
+
+        public function actionSetleaves() {
+                if (\Yii::$app->request->post()) {
+
+                        if (isset($_POST['carry-forward'])) {
+                                $this->CarryForward();
+                        } else if (isset($_POST['transfer-leaves'])) {
+                                $this->TransferLeaves();
+                        }
+                }
+                return $this->render('set-leaves', [
+                ]);
+        }
+
+        public function CarryForward() {
+                $current_year = date('Y');
+                $employess = Employee::find()->all();
+                foreach ($employess as $employes) {
+                        $employee_years = LeaveConfiguration::find()->where(['employee_id' => $employes->id])->select(['year'])->distinct()->orderBy(['year' => SORT_DESC])->limit(1)->one();
+                        $employee_latest_leaves = LeaveConfiguration::find()->where(['employee_id' => $employes->id, 'year' => $employee_years->year])->all();
+                        foreach ($employee_latest_leaves as $latest_leaves) {
+
+                                $previous_year_leave = LeaveConfiguration::find()->where(['employee_id' => $latest_leaves->employee_id, 'year' => $latest_leaves->year - 1, 'leave_type' => $latest_leaves->leave_type])->one();
+                                if (isset($previous_year_leave)) {
+                                        $latest_leaves->carry_forward = $previous_year_leave->available_days;
+                                        $previous_year_leave->available_days = 0;
+                                        $latest_leaves->available_days = $latest_leaves->available_days + $latest_leaves->carry_forward;
+                                        if ($latest_leaves->save(FALSE)) {
+                                                $previous_year_leave->save(FALSE);
+                                        }
+                                }
+                        }
+                }
+        }
+
+        public function TransferLeaves() {
+                $current_year = date('Y');
+                $employess = Employee::find()->all();
+                foreach ($employess as $employes) {
+                        $employee_leaves = LeaveConfiguration::find()->where(['employee_id' => $employes->id, 'year' => $current_year])->all();
+                        if (count($employee_leaves) > 0) {
+                                foreach ($employee_leaves as $leaves) {
+                                        $nxt_year_leaves = LeaveConfiguration::find()->where(['employee_id' => $employes->id, 'year' => $current_year + 1, 'leave_type' => $leaves->leave_type])->exists();
+                                        if (!$nxt_year_leaves) {
+                                                $new_leaves = new LeaveConfiguration;
+                                                $new_leaves->employee_id = $leaves->employee_id;
+                                                $new_leaves->leave_type = $leaves->leave_type;
+                                                $new_leaves->entitlement = $leaves->entitlement;
+                                                $new_leaves->carry_forward = 0;
+                                                $new_leaves->available_days = $leaves->no_of_days;
+                                                $new_leaves->year = $leaves->year + 1;
+                                                $new_leaves->save();
+                                        }
+                                }
+                        }
+                }
         }
 
 }

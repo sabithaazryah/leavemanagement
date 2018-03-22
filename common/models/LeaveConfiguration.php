@@ -25,59 +25,67 @@ use Yii;
  */
 class LeaveConfiguration extends \yii\db\ActiveRecord {
 
-        /**
-         * {@inheritdoc}
-         */
-        public static function tableName() {
-                return 'leave_configuration';
-        }
+	/**
+	 * {@inheritdoc}
+	 */
+	public static function tableName() {
+		return 'leave_configuration';
+	}
 
-        /**
-         * {@inheritdoc}
-         */
-        public function rules() {
-                return [
-                        [['leave_type'], 'required'],
-                        [['employee_id', 'leave_type', 'entitlement', 'carry_forward', 'adjustments', 'adjustments_type', 'no_of_days', 'status', 'CB', 'UB'], 'integer'],
-                        [['DOC', 'DOU', 'available_days'], 'safe'],
-                        [['id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::className(), 'targetAttribute' => ['id' => 'id']],
-                ];
-        }
+	/**
+	 * {@inheritdoc}
+	 */
+	public function rules() {
+		return [
+			[['leave_type'], 'required'],
+			[['employee_id', 'leave_type', 'entitlement', 'carry_forward', 'adjustments', 'adjustments_type', 'no_of_days', 'status', 'CB', 'UB'], 'integer'],
+			[['DOC', 'DOU', 'available_days', 'year'], 'safe'],
+			[['id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::className(), 'targetAttribute' => ['id' => 'id']],
+		];
+	}
 
-        /**
-         * {@inheritdoc}
-         */
-        public function attributeLabels() {
-                return [
-                    'id' => 'ID',
-                    'employee_id' => 'Employee ID',
-                    'leave_type' => 'Leave Category',
-                    'entitlement' => 'Entitlement',
-                    'carry_forward' => 'Carry Forward',
-                    'adjustments' => 'Adjustments',
-                    'adjustments_type' => 'Adjustments Type',
-                    'no_of_days' => 'No Of Days',
-                    'status' => 'Status',
-                    'CB' => 'Cb',
-                    'UB' => 'Ub',
-                    'DOC' => 'Doc',
-                    'DOU' => 'Dou',
-                ];
-        }
+	/**
+	 * {@inheritdoc}
+	 */
+	public function attributeLabels() {
+		return [
+		    'id' => 'ID',
+		    'employee_id' => 'Employee ID',
+		    'leave_type' => 'Leave Category',
+		    'entitlement' => 'Entitlement',
+		    'carry_forward' => 'Carry Forward',
+		    'adjustments' => 'Adjustments',
+		    'adjustments_type' => 'Adjustments Type',
+		    'no_of_days' => 'No Of Days',
+		    'year' => 'Year',
+		    'status' => 'Status',
+		    'CB' => 'Cb',
+		    'UB' => 'Ub',
+		    'DOC' => 'Doc',
+		    'DOU' => 'Dou',
+		];
+	}
 
-        /**
-         * @return \yii\db\ActiveQuery
-         */
-        public function getId0() {
-                return $this->hasOne(Employee::className(), ['id' => 'id']);
-        }
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getId0() {
+		return $this->hasOne(Employee::className(), ['id' => 'id']);
+	}
 
-        public function getLeave() {
-                return $this->hasOne(LeaveCategory::className(), ['id' => 'leave_type']);
-        }
+	public function getLeave() {
+		return $this->hasOne(LeaveCategory::className(), ['id' => 'leave_type']);
+	}
 
-        public function getName() {
-                return $this->leave->leave_name;
-        }
+	public function getName() {
+		return $this->leave->leave_name;
+	}
+
+	public function getYearsList() {
+		$currentYear = date('Y') + 5;
+		$yearFrom = 2013;
+		$yearsRange = range($yearFrom, $currentYear);
+		return array_combine($yearsRange, $yearsRange);
+	}
 
 }

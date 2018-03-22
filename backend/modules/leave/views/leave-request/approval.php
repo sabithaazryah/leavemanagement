@@ -59,15 +59,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                                             if ($model->status == 1) {
                                                                     return 'Leave Applied';
                                                             } else if ($model->status == 2) {
-                                                                    return 'Recommended';
+                                                                    return 'Leave Approved';
+                                                            } else if ($model->status == 3) {
+                                                                    return 'Leave Rejected';
                                                             }
-                                                    },
-                                                ],
-                                                    [
-                                                    'attribute' => 'recommended_by',
-                                                    'value' => function($model) {
-                                                            $recommender = Employee::findOne($model->recommended_by);
-                                                            return $recommender->full_name;
                                                     },
                                                 ],
                                                     [
