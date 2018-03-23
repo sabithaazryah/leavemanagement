@@ -18,7 +18,7 @@ class LeaveCategorySearch extends LeaveCategory {
         public function rules() {
                 return [
                         [['id', 'no_of_days', 'include_docs', 'status', 'CB', 'UB'], 'integer'],
-                        [['leave_code', 'leave_name', 'DOC', 'DOU', 'country'], 'safe'],
+                        [['leave_code', 'leave_name', 'DOC', 'DOU', 'country', 'branch', 'designation'], 'safe'],
                 ];
         }
 

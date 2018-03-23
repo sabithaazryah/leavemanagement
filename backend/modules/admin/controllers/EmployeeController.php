@@ -120,7 +120,7 @@ class EmployeeController extends Controller {
                 $dataProvider->query->andWhere(['employee_id' => $model->id]);
 //		var_dump(Yii::$app->request->queryParams['LeaveConfigurationSearch']['year']);
 //		exit;
-                if (Yii::$app->request->queryParams['LeaveConfigurationSearch']['year']) {
+                if (isset(Yii::$app->request->queryParams['LeaveConfigurationSearch']['year']) && Yii::$app->request->queryParams['LeaveConfigurationSearch']['year']) {
                         $dataProvider->query->andWhere(['year' => Yii::$app->request->queryParams['LeaveConfigurationSearch']['year']]);
                 } else {
                         $dataProvider->query->andWhere(['year' => date('Y')]);
@@ -174,7 +174,6 @@ class EmployeeController extends Controller {
                             'searchModel' => $searchModel,
                             'dataProvider' => $dataProvider,
                             'model_leave' => $model_leave,
-                            'carry_date' => $carry_date,
                 ]);
         }
 
@@ -222,6 +221,18 @@ class EmployeeController extends Controller {
                         return $model;
                 } else {
                         throw new NotFoundHttpException('The requested page does not exist.');
+                }
+        }
+
+        public function actionBranch() {
+                if (Yii::$app->request->isAjax) {
+                        $country = $_POST['country'];
+                        $branches = \common\models\Branch::find()->where(['country' => $country])->all();
+                        $options = '<option value="">-Select-</option>';
+                        foreach ($branches as $branch) {
+                                $options .= "<option value='" . $branch->id . "'>" . $branch->branch_name . "</option>";
+                        }
+                        echo $options;
                 }
         }
 

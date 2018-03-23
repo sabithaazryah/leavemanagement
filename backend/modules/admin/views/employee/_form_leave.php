@@ -14,37 +14,39 @@ use yii\grid\GridView;
 
 <div class="leave-configuration-form form-inline">
 
-	<?php $form = ActiveForm::begin(); ?>
+        <?php $form = ActiveForm::begin(); ?>
 
         <div class="row">
-		<!--		<div class='col-md-4 left_padd'>
-		<?php // $form->field($model_leave, 'year')->dropDownList($model_leave->getYearsList(), ['prompt' => '-Choose a Year-']) ?>
-				</div>-->
-		<div class="clearfix"></div>
+                <!--		<div class='col-md-4 left_padd'>
+                <?php // $form->field($model_leave, 'year')->dropDownList($model_leave->getYearsList(), ['prompt' => '-Choose a Year-']) ?>
+                                </div>-->
+                <div class="clearfix"></div>
                 <div class='col-md-2 left_padd'>
-			<?php $leave_categorys = ArrayHelper::map(LeaveCategory::findAll(['status' => 1]), 'id', 'leave_name'); ?>
-			<?= $form->field($model_leave, 'leave_type')->dropDownList($leave_categorys, ['prompt' => '-Choose a Category-']) ?>
+                        <?php
+                        $leaves = LeaveCategory::find()->where(['branch' => $model->branch, 'designation' => $model->designation, 'status' => 1])->all();
+                        ?>
+                        <?= $form->field($model_leave, 'leave_type')->dropDownList(ArrayHelper::map($leaves, 'id', 'leave_name'), ['prompt' => '-Choose a Category-']) ?>
 
                 </div>
                 <div class='col-md-2 left_padd'>
-			<?= $form->field($model_leave, 'entitlement')->textInput() ?>
+                        <?= $form->field($model_leave, 'entitlement')->textInput() ?>
 
                 </div>
                 <div class='col-md-2 left_padd'>
-			<?= $form->field($model_leave, 'carry_forward')->textInput() ?>
+                        <?= $form->field($model_leave, 'carry_forward')->textInput() ?>
 
                 </div>
                 <div class='col-md-2 left_padd'>
-			<?= $form->field($model_leave, 'adjustments_type')->dropDownList(['1' => 'Add', '2' => 'Deduct']) ?>
+                        <?= $form->field($model_leave, 'adjustments_type')->dropDownList(['1' => 'Add', '2' => 'Deduct']) ?>
 
                 </div>
                 <div class='col-md-2 left_padd'>
-			<?= $form->field($model_leave, 'adjustments')->textInput() ?>
+                        <?= $form->field($model_leave, 'adjustments')->textInput() ?>
 
                 </div>
 
                 <div class='col-md-2 left_padd'>
-			<?= $form->field($model_leave, 'no_of_days')->textInput(['readOnly' => true]) ?>
+                        <?= $form->field($model_leave, 'no_of_days')->textInput(['readOnly' => true]) ?>
 
                 </div>
         </div>
@@ -57,129 +59,129 @@ use yii\grid\GridView;
         <div class="row">
                 <div class='col-md-12 col-sm-12 col-xs-12'>
                         <div class="form-group">
-				<?= Html::submitButton($model_leave->isNewRecord ? 'Create' : 'Update', ['class' => $model_leave->isNewRecord ? 'btn btn-success' : 'btn btn-primary', 'style' => 'margin-top: 18px; height: 36px; width:100px;float:right;']) ?>
+                                <?= Html::submitButton($model_leave->isNewRecord ? 'Create' : 'Update', ['class' => $model_leave->isNewRecord ? 'btn btn-success' : 'btn btn-primary', 'style' => 'margin-top: 18px; height: 36px; width:100px;float:right;']) ?>
                         </div>
                 </div>
         </div>
-	<?php ActiveForm::end(); ?>
+        <?php ActiveForm::end(); ?>
         <div>
                 <h5 style="font-weight: 600;color: #408244;font-size: 14px;text-transform: uppercase;text-decoration: underline;">Leave History</h5>
 
-		<?=
-		GridView::widget([
-		    'dataProvider' => $dataProvider,
-		    'filterModel' => $searchModel,
-		    'columns' => [
-			    ['class' => 'yii\grid\SerialColumn'],
-			    [
-			    'attribute' => 'leave_type',
-			    'value' => function($data) {
-				    if (isset($data->leave_type)) {
-					    return LeaveCategory::findOne($data->leave_type)->leave_name;
-				    } else {
-					    return '';
-				    }
-			    },
-			    'filter' => ArrayHelper::map(LeaveCategory::find()->asArray()->all(), 'id', 'leave_name'),
-			],
-			    [
-			    'attribute' => 'entitlement',
-			    'value' => function($data) {
-				    if (isset($data->entitlement)) {
-					    return $data->entitlement;
-				    } else {
-					    return '';
-				    }
-			    },
-			],
-			    [
-			    'attribute' => 'carry_forward',
-			    'value' => function($data) {
-				    if (isset($data->carry_forward)) {
-					    return $data->carry_forward;
-				    } else {
-					    return '';
-				    }
-			    },
-			],
-			    [
-			    'attribute' => 'adjustments',
-			    'value' => function($data) {
-				    if (isset($data->adjustments)) {
-					    return $data->adjustments;
-				    } else {
-					    return '';
-				    }
-			    },
-			],
+                <?=
+                GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    'filterModel' => $searchModel,
+                    'columns' => [
+                            ['class' => 'yii\grid\SerialColumn'],
+                            [
+                            'attribute' => 'leave_type',
+                            'value' => function($data) {
+                                    if (isset($data->leave_type)) {
+                                            return LeaveCategory::findOne($data->leave_type)->leave_name;
+                                    } else {
+                                            return '';
+                                    }
+                            },
+                            'filter' => ArrayHelper::map(LeaveCategory::find()->asArray()->all(), 'id', 'leave_name'),
+                        ],
+                            [
+                            'attribute' => 'entitlement',
+                            'value' => function($data) {
+                                    if (isset($data->entitlement)) {
+                                            return $data->entitlement;
+                                    } else {
+                                            return '';
+                                    }
+                            },
+                        ],
+                            [
+                            'attribute' => 'carry_forward',
+                            'value' => function($data) {
+                                    if (isset($data->carry_forward)) {
+                                            return $data->carry_forward;
+                                    } else {
+                                            return '';
+                                    }
+                            },
+                        ],
+                            [
+                            'attribute' => 'adjustments',
+                            'value' => function($data) {
+                                    if (isset($data->adjustments)) {
+                                            return $data->adjustments;
+                                    } else {
+                                            return '';
+                                    }
+                            },
+                        ],
 //             'adjustments_type',
-			'no_of_days',
-			'available_days',
-			    [
-			    'attribute' => 'year',
-			    'value' => function($data) {
-				    if (isset($data->year)) {
-					    return $data->year;
-				    } else {
-					    return '';
-				    }
-			    },
-			    'filter' => $model_leave->getYearsList(),
-			],
-		    // 'status',
-		    // 'CB',
-		    // 'UB',
-		    // 'DOC',
-		    // 'DOU',
+                        'no_of_days',
+                        'available_days',
+                            [
+                            'attribute' => 'year',
+                            'value' => function($data) {
+                                    if (isset($data->year)) {
+                                            return $data->year;
+                                    } else {
+                                            return '';
+                                    }
+                            },
+                            'filter' => $model_leave->getYearsList(),
+                        ],
+                    // 'status',
+                    // 'CB',
+                    // 'UB',
+                    // 'DOC',
+                    // 'DOU',
 //                                                ['class' => 'yii\grid\ActionColumn'],
-		    ],
-		]);
-		?>
+                    ],
+                ]);
+                ?>
         </div>
 </div>
 <script>
-	$(document).ready(function () {
+        $(document).ready(function () {
 
-		$("#leaveconfiguration-leave_type").change(function (e) {
-			var leave_type = this.value;
-			var employee_id = $("#employee_id").val();
+                $("#leaveconfiguration-leave_type").change(function (e) {
+                        var leave_type = this.value;
+                        var employee_id = $("#employee_id").val();
 //			var carry_date = $("#leave_carry").val();
-			$.ajax({
-				type: 'POST',
-				url: '<?= Yii::$app->homeUrl; ?>admin/employee/leave-type-days', // select product features
-				data: {leave_type: leave_type, employee_id: employee_id},
-				success: function (data) {
-					var json = JSON.parse(data);
-					$('#leaveconfiguration-no_of_days').val(json['avaialble_days']);
-					$('#leaveconfiguration-entitlement').val(json['entitlement']);
-					$('#leaveconfiguration-carry_forward').val(json['carry_forward']);
-					$('#entitlement_ref').val(json['entitlement']);
-				},
-				error: function (data) {
+                        $.ajax({
+                                type: 'POST',
+                                url: '<?= Yii::$app->homeUrl; ?>admin/employee/leave-type-days', // select product features
+                                data: {leave_type: leave_type, employee_id: employee_id},
+                                success: function (data) {
+                                        var json = JSON.parse(data);
+                                        $('#leaveconfiguration-no_of_days').val(json['avaialble_days']);
+                                        $('#leaveconfiguration-entitlement').val(json['entitlement']);
+                                        $('#leaveconfiguration-carry_forward').val(json['carry_forward']);
+                                        $('#entitlement_ref').val(json['entitlement']);
+                                },
+                                error: function (data) {
 
-				}
-			});
-		});
-		$("#leaveconfiguration-adjustments").keyup(function () {
-			var adjustment_type = $("#leaveconfiguration-adjustments_type").val();
-			if (this.value > 0 && adjustment_type == 1) {
-				var days = parseInt($("#leaveconfiguration-entitlement").val()) + parseInt($('#leaveconfiguration-carry_forward').val()) + parseInt($("#leaveconfiguration-adjustments").val());
-				$('#leaveconfiguration-no_of_days').val(days);
-			} else if (this.value > 0 && adjustment_type == 2) {
-				if (this.value < parseInt($("#leaveconfiguration-no_of_days").val())) {
-					var days = parseInt($("#leaveconfiguration-entitlement").val()) + parseInt($('#leaveconfiguration-carry_forward').val()) - parseInt($("#leaveconfiguration-adjustments").val());
-					$('#leaveconfiguration-no_of_days').val(days);
-				} else {
-					alert('value shouls not exceed the alotted days');
-				}
-			}
+                                }
+                        });
+                });
+                $("#leaveconfiguration-adjustments").keyup(function () {
+                        var adjustment_type = $("#leaveconfiguration-adjustments_type").val();
+                        if (this.value > 0 && adjustment_type == 1) {
+                                var days = parseInt($("#leaveconfiguration-entitlement").val()) + parseInt($('#leaveconfiguration-carry_forward').val()) + parseInt($("#leaveconfiguration-adjustments").val());
+                                $('#leaveconfiguration-no_of_days').val(days);
+                        } else if (this.value > 0 && adjustment_type == 2) {
+                                if (this.value < parseInt($("#leaveconfiguration-no_of_days").val())) {
+                                        var days = parseInt($("#leaveconfiguration-entitlement").val()) + parseInt($('#leaveconfiguration-carry_forward').val()) - parseInt($("#leaveconfiguration-adjustments").val());
+                                        $('#leaveconfiguration-no_of_days').val(days);
+                                } else {
+                                        alert('value shouls not exceed the alotted days');
+                                }
+                        }
 
 
-		});
-		$("#leaveconfiguration-entitlement").keyup(function () {
+                });
+                $("#leaveconfiguration-entitlement").keyup(function () {
 //			var entitlement_prev = $('#entitlement_ref').val();
-			var days = parseInt(this.value) + parseInt($('#leaveconfiguration-carry_forward').val());
-			$('#leaveconfiguration-no_of_days').val(days);
+                        var days = parseInt(this.value) + parseInt($('#leaveconfiguration-carry_forward').val());
+                        $('#leaveconfiguration-no_of_days').val(days);
 //			if (this.value > entitlement_prev) {
 //
 //				var days =  parseInt(this.value);
@@ -190,11 +192,11 @@ use yii\grid\GridView;
 //
 //			}
 
-		});
-		$("#leaveconfiguration-carry_forward").keyup(function () {
-			var days = parseInt(this.value) + parseInt($('#leaveconfiguration-entitlement').val());
-			$('#leaveconfiguration-no_of_days').val(days);
-		});
+                });
+                $("#leaveconfiguration-carry_forward").keyup(function () {
+                        var days = parseInt(this.value) + parseInt($('#leaveconfiguration-entitlement').val());
+                        $('#leaveconfiguration-no_of_days').val(days);
+                });
 //        $(document).ready(function () {
 //                $("#leaveconfiguration-leave_type").change(function (e) {
 //                        var leave_type = this.value;
@@ -279,5 +281,5 @@ use yii\grid\GridView;
 //                }
 //
 
-	});
+        });
 </script>

@@ -45,8 +45,31 @@ $this->params['breadcrumbs'][] = $this->title;
                                                                     return '';
                                                             }
                                                     },
-                                                    // 'filter'=> \yii\helpers\ArrayHelper::map(common\models\Country::find()->where(['status'=>1])->all)
                                                     'filter' => \yii\helpers\ArrayHelper::map(common\models\Country::find()->where(['status' => 1])->orderBy(['country_name' => SORT_ASC])->all(), 'id', 'country_name'),
+                                                ],
+                                                    [
+                                                    'attribute' => 'branch',
+                                                    'value' => function($model) {
+                                                            $branch = common\models\Branch::findOne($model->branch);
+                                                            if (!empty($branch)) {
+                                                                    return $branch->branch_name;
+                                                            } else {
+                                                                    return '';
+                                                            }
+                                                    },
+                                                    'filter' => \yii\helpers\ArrayHelper::map(common\models\Branch::find()->where(['status' => 1])->orderBy(['branch_name' => SORT_ASC])->all(), 'id', 'branch_name'),
+                                                ],
+                                                    [
+                                                    'attribute' => 'designation',
+                                                    'value' => function($model) {
+                                                            $designation = common\models\Designation::findOne($model->designation);
+                                                            if (!empty($designation)) {
+                                                                    return $designation->designation_name;
+                                                            } else {
+                                                                    return '';
+                                                            }
+                                                    },
+                                                    'filter' => \yii\helpers\ArrayHelper::map(common\models\Designation::find()->where(['status' => 1])->orderBy(['designation_name' => SORT_ASC])->all(), 'id', 'designation_name'),
                                                 ],
                                                 'leave_code',
                                                 'leave_name',

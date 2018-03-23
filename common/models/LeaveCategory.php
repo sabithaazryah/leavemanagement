@@ -32,8 +32,8 @@ class LeaveCategory extends \yii\db\ActiveRecord {
          */
         public function rules() {
                 return [
-                        [['no_of_days', 'leave_code', 'leave_name', 'country','branch','designation'], 'required'],
-                        [['no_of_days', 'include_docs', 'status', 'CB', 'UB'], 'integer'],
+                        [['no_of_days', 'leave_code', 'leave_name', 'country', 'branch'], 'required'],
+                        [['no_of_days', 'include_docs', 'status', 'CB', 'UB', 'country', 'branch', 'designation'], 'integer'],
                         [['DOC', 'DOU'], 'safe'],
                         [['leave_code'], 'string', 'max' => 15],
                         [['leave_name'], 'string', 'max' => 50],
