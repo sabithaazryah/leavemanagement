@@ -126,4 +126,16 @@ class LeaveCategoryController extends Controller {
         }
     }
 
+    public function actionBranch() {
+        if (Yii::$app->request->isAjax) {
+            $country = $_POST['country'];
+            $branch = \common\models\Branch::find()->where(['country' => $country])->all();
+            $options = "<option value=''>-Select-</option>";
+            foreach ($branch as $branch) {
+                $options .= "<option value='" . $branch->id . "'>" . $branch->branch_name ." </option>";
+            }
+            return $options;
+        }
+    }
+
 }
